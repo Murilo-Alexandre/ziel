@@ -55,3 +55,12 @@ describe('regressões de interface (beta.7)', () => {
     expect(read('../../scripts/ui-audit.js')).toMatch(/Como foi\?/);
   });
 });
+
+describe('ícone do launcher', () => {
+  it('nenhum recurso por versão (drawable-v24) sobrepõe o ícone da marca com o robô padrão do Android', async () => {
+    const { existsSync } = await import('node:fs');
+    const res = resolve(__dirname, '../../android/app/src/main/res');
+    expect(existsSync(resolve(res, 'drawable-v24'))).toBe(false);
+    expect(read('../../android/app/src/main/res/drawable/ic_launcher_foreground.xml')).toMatch(/2EFF7A59/);
+  });
+});

@@ -8,8 +8,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // Versão injetada pelo CI a partir da tag (-PzielVersionName / -PzielVersionCode); padrão para builds locais.
-        versionCode Integer.parseInt((project.findProperty('zielVersionCode') ?: '10037').toString())
-        versionName (project.findProperty('zielVersionName') ?: '0.1.0-beta.7').toString()
+        versionCode Integer.parseInt((project.findProperty('zielVersionCode') ?: '10038').toString())
+        versionName (project.findProperty('zielVersionName') ?: '0.1.0-beta.8').toString()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
