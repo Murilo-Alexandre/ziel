@@ -9,7 +9,7 @@ export const Switch: React.FC<{ checked: boolean; onChange: (v: boolean) => void
   useLayoutEffect(() => {
     if (!knob.current || !track.current) return;
     const x = checked ? 22 : 0;
-    const bg = checked ? '#F28B82' : '#2D3240';
+    const bg = checked ? '#F28B82' : '#38425C';
     if (first.current || !motionOK()) {
       gsap.set(knob.current, { x });
       gsap.set(track.current, { backgroundColor: bg });

@@ -9,6 +9,7 @@ import { Sheet } from '../../shared/ui/Sheet';
 import { GOAL_COLORS, iconFor, iconLabel } from '../../shared/ui/goalIcons';
 import { IconPickerScreen } from '../icons/IconPickerScreen';
 import { Switch } from '../../shared/ui/Switch';
+import { Select } from '../../shared/ui/Select';
 import { describeReminderTimes, validateNotify } from '../../domain/notifications/reminderPlanner';
 import { errorMessage, useAppData } from '../../shared/AppData';
 import { useToast } from '../../shared/ui/Toast';
@@ -101,7 +102,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
           const all = await goalRepo.listAllDefinitions();
           blocked = new Set([mode.goalId, ...listDescendantIds(mode.goalId, all)]);
         }
-        setParents(active.filter((l) => !blocked.has(l.definition.id)).map((l) => ({ id: l.definition.id, label: `${'— '.repeat(Math.min(l.depth, 3))}${l.revision.name}` })));
+        setParents(active.filter((l) => !blocked.has(l.definition.id)).map((l) => ({ id: l.definition.id, label: `${'  '.repeat(Math.min(l.depth, 3))}${l.depth > 0 ? '└ ' : ''}${l.revision.name}` })));
 
         if (mode.kind === 'create') {
           setForm(emptyForm(mode.parentId));
@@ -319,14 +320,14 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
             <>
               <div>
                 <Label htmlFor="g-parent">Faz parte de</Label>
-                <select id="g-parent" className="field" value={form.parentId ?? ''} onChange={(e) => set('parentId', e.target.value || null)}>
+                <Select id="g-parent" className="field" value={form.parentId ?? ''} onChange={(e) => set('parentId', e.target.value || null)}>
                   <option value="">Nenhuma (meta principal)</option>
                   {parents.map((p) => (
                     <option key={p.id} value={p.id}>
                       {p.label}
                     </option>
                   ))}
-                </select>
+                </Select>
               </div>
               <div>
                 <span className="mb-1.5 block text-xs font-semibold text-ziel-sub">Ícone e cor</span>
@@ -336,7 +337,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                   aria-label={`Ícone: ${iconLabel(form.icon)}. Trocar ícone`}
                   className="flex min-h-[72px] w-full items-center gap-4 rounded-[24px] border border-ziel-line bg-ziel-bg p-3 text-left"
                 >
-                  <span className="flex h-[52px] w-[42px] shrink-0 items-center justify-center rounded-[16px]" style={{ backgroundColor: form.color, color: '#0E0F14' }} aria-hidden>
+                  <span className="flex h-[52px] w-[42px] shrink-0 items-center justify-center rounded-[16px]" style={{ backgroundColor: form.color, color: '#0F1320' }} aria-hidden>
                     <SelectedIcon className="h-6 w-6" />
                   </span>
                   <span className="min-w-0 flex-1">
@@ -370,13 +371,13 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
             <Section title="Quando acontece">
               <div>
                 <Label htmlFor="g-kind">Repetição</Label>
-                <select id="g-kind" className="field" value={form.scheduleKind} onChange={(e) => changeKind(e.target.value as ScheduleKind)}>
+                <Select id="g-kind" className="field" value={form.scheduleKind} onChange={(e) => changeKind(e.target.value as ScheduleKind)}>
                   {(Object.keys(KIND_LABEL) as ScheduleKind[]).map((k) => (
                     <option key={k} value={k}>
                       {KIND_LABEL[k]}
                     </option>
                   ))}
-                </select>
+                </Select>
               </div>
 
               {form.scheduleKind === 'weekdays' && (
@@ -415,7 +416,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                 <div className="flex items-center gap-2">
                   <input aria-label="Quantas vezes" inputMode="numeric" className="field !w-16 shrink-0 text-center" value={form.quotaCount} onChange={(e) => set('quotaCount', e.target.value)} />
                   <span className="text-sm text-ziel-sub">vez(es) por</span>
-                  <select
+                  <Select
                     aria-label="Período da frequência"
                     className="field flex-1"
                     value={form.quotaPer}
@@ -427,7 +428,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                     <option value="day">dia</option>
                     <option value="week">semana</option>
                     <option value="month">mês</option>
-                  </select>
+                  </Select>
                 </div>
               )}
               {form.scheduleKind === 'quota' && <p className="text-xs text-ziel-muted">Você escolhe em quais dias fazer; o progresso conta quantas vezes foram feitas no período (não cria dias fixos).</p>}
@@ -436,11 +437,11 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-ziel-sub">A cada</span>
                   <input aria-label="Intervalo" inputMode="numeric" className="field !w-20 text-center" value={form.intervalEvery} onChange={(e) => set('intervalEvery', e.target.value)} />
-                  <select aria-label="Unidade do intervalo" className="field flex-1" value={form.intervalUnit} onChange={(e) => set('intervalUnit', e.target.value as GoalFormState['intervalUnit'])}>
+                  <Select aria-label="Unidade do intervalo" className="field flex-1" value={form.intervalUnit} onChange={(e) => set('intervalUnit', e.target.value as GoalFormState['intervalUnit'])}>
                     <option value="day">dia(s)</option>
                     <option value="week">semana(s)</option>
                     <option value="month">mês(es)</option>
-                  </select>
+                  </Select>
                 </div>
               )}
               {form.scheduleKind === 'interval' && <p className="text-xs text-ziel-muted">A contagem parte da data de início ({formatDateBR(form.startDate)}) e se mantém fixa.</p>}
@@ -514,33 +515,33 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                         </div>
                         <div>
                           <Label htmlFor="n-every">Repetir a cada</Label>
-                          <select id="n-every" className="field" value={form.notify.everyMin} onChange={(e) => setNotify({ everyMin: Number(e.target.value) })}>
+                          <Select id="n-every" className="field" value={form.notify.everyMin} onChange={(e) => setNotify({ everyMin: Number(e.target.value) })}>
                             {[5, 10, 15, 20, 30, 45, 60, 90, 120].map((m) => (
                               <option key={m} value={m}>
                                 {m < 60 ? `${m} min` : `${m / 60} h${m % 60 ? ' 30' : ''}`}
                               </option>
                             ))}
-                          </select>
+                          </Select>
                         </div>
                         <div>
                           <Label htmlFor="n-before">Começar antes</Label>
-                          <select id="n-before" className="field" value={form.notify.beforeMin} onChange={(e) => setNotify({ beforeMin: Number(e.target.value) })}>
+                          <Select id="n-before" className="field" value={form.notify.beforeMin} onChange={(e) => setNotify({ beforeMin: Number(e.target.value) })}>
                             {[0, 5, 10, 15, 30, 45, 60, 90, 120, 180].map((m) => (
                               <option key={m} value={m}>
                                 {m === 0 ? 'No horário' : m < 60 ? `${m} min antes` : `${m / 60} h antes`.replace('.5', ' h 30')}
                               </option>
                             ))}
-                          </select>
+                          </Select>
                         </div>
                         <div>
                           <Label htmlFor="n-after">Terminar depois</Label>
-                          <select id="n-after" className="field" value={form.notify.afterMin} onChange={(e) => setNotify({ afterMin: Number(e.target.value) })}>
+                          <Select id="n-after" className="field" value={form.notify.afterMin} onChange={(e) => setNotify({ afterMin: Number(e.target.value) })}>
                             {[0, 5, 10, 15, 30, 45, 60, 90, 120, 180].map((m) => (
                               <option key={m} value={m}>
                                 {m === 0 ? 'No horário' : m < 60 ? `${m} min depois` : `${m / 60} h depois`.replace('.5', ' h 30')}
                               </option>
                             ))}
-                          </select>
+                          </Select>
                         </div>
                       </div>
                       <div aria-label="Prévia dos lembretes" className="rounded-[20px] border border-ziel-line-soft bg-ziel-surface p-3">
@@ -590,7 +591,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <Label htmlFor="g-cycle">Ciclo</Label>
-                      <select
+                      <Select
                         id="g-cycle"
                         className="field"
                         value={form.cycleType}
@@ -603,16 +604,16 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                         <option value="weekly">Semanal</option>
                         <option value="monthly">Mensal</option>
                         <option value="annual">Anual</option>
-                      </select>
+                      </Select>
                     </div>
                     {form.cycleType === 'weekly' && (
                       <div>
                         <Label htmlFor="g-wk">Semana começa</Label>
-                        <select id="g-wk" className="field" value={form.weekStartsOn} onChange={(e) => set('weekStartsOn', Number(e.target.value) as Weekday)}>
+                        <Select id="g-wk" className="field" value={form.weekStartsOn} onChange={(e) => set('weekStartsOn', Number(e.target.value) as Weekday)}>
                           <option value={1}>Segunda</option>
                           <option value={0}>Domingo</option>
                           <option value={6}>Sábado</option>
-                        </select>
+                        </Select>
                       </div>
                     )}
                   </div>
@@ -654,11 +655,11 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                   <Section title="Conclusão e agregação" hint="Vale para o ciclo desta meta e das submetas que ela agrega.">
                     <div>
                       <Label htmlFor="g-comp">Considerar concluída quando</Label>
-                      <select id="g-comp" className="field" value={form.completionType} onChange={(e) => set('completionType', e.target.value as GoalFormState['completionType'])}>
+                      <Select id="g-comp" className="field" value={form.completionType} onChange={(e) => set('completionType', e.target.value as GoalFormState['completionType'])}>
                         <option value="allRequired">Todas as obrigatórias forem concluídas</option>
                         <option value="minimumCount">Um mínimo de execuções for concluído</option>
                         <option value="minimumPercentage">O progresso atingir uma porcentagem</option>
-                      </select>
+                      </Select>
                     </div>
                     {form.completionType === 'minimumCount' && (
                       <div className="flex items-center gap-2 text-sm text-ziel-sub">
@@ -678,10 +679,10 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                       <>
                         <div>
                           <Label htmlFor="g-agg">Como calcular o progresso</Label>
-                          <select id="g-agg" className="field" value={form.aggregationType} onChange={(e) => set('aggregationType', e.target.value as GoalFormState['aggregationType'])}>
+                          <Select id="g-agg" className="field" value={form.aggregationType} onChange={(e) => set('aggregationType', e.target.value as GoalFormState['aggregationType'])}>
                             <option value="scheduledOccurrences">Pelas execuções agendadas (cada execução conta)</option>
                             <option value="directChildren">Pelas submetas (cada submeta conta uma vez, com peso)</option>
-                          </select>
+                          </Select>
                         </div>
                         {form.aggregationType === 'directChildren' && childNames.length > 0 && (
                           <div className="space-y-2">

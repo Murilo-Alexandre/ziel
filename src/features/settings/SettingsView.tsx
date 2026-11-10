@@ -81,7 +81,7 @@ export const SettingsView: React.FC<{ storagePersisted: boolean | null }> = ({ s
       </header>
 
       <div ref={revealRef} className="space-y-4">
-        <section data-reveal className="space-y-3 rounded-[30px] border border-white/[0.08] p-5" style={{ background: 'linear-gradient(135deg, rgba(242,139,130,0.22), rgba(23,26,34,0.96) 62%)' }} aria-label="Atualizações">
+        <section data-reveal className="space-y-3 rounded-[30px] border border-white/[0.08] p-5" style={{ background: 'linear-gradient(135deg, rgba(242,139,130,0.22), rgba(29,36,51,0.96) 62%)' }} aria-label="Atualizações">
           <h2 className="flex items-center gap-2 text-lg font-extrabold">
             <RefreshCw className="h-5 w-5" /> Atualizações
           </h2>

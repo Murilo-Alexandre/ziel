@@ -97,7 +97,7 @@ export const AgendaView: React.FC = () => {
                         <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: toneFor(it.colorToken, it.goalId).bg }} aria-hidden />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[15px] font-medium">{it.name}</span>
-                          {(it.parentName || it.isQuotaSlot) && <span className="block truncate text-xs text-ziel-muted">{[it.parentName, it.isQuotaSlot ? 'frequência flexível' : null].filter(Boolean).join(' · ')}</span>}
+                          {(it.parentName || it.isQuotaSlot) && <span className="block truncate text-xs text-ziel-muted">{[it.parentName ? `↳ ${it.parentName}` : null, it.isQuotaSlot ? 'frequência flexível' : null].filter(Boolean).join(' · ')}</span>}
                         </span>
                         <span className="rounded-full bg-ziel-ink"><StatusPill status={it.status} compact /></span>
                       </button>

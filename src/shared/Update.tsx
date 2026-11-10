@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { PluginListenerHandle } from '@capacitor/core';
+import { App as CapApp } from '@capacitor/app';
 import { UpdateInfo, checkForUpdate, parseSha256, UpdateCheckError } from '../application/services/UpdateService';
 import { AppInfo, isNativeUpdater, updater } from '../infrastructure/platform/updater/ZielUpdater';
 
@@ -21,11 +22,12 @@ type Ctx = {
   update: UpdateInfo | null;
   progress: number; // 0..1 durante o download
   error: string | null;
-  /** O aviso discreto já foi dispensado para esta versão? */
+  /** O aviso foi adiado ("Depois") para esta versão? */
   bannerHidden: boolean;
   lastChecked: number | null;
   check: (opts?: { silent?: boolean }) => Promise<void>;
   install: () => Promise<void>;
+  /** "Depois": esconde o aviso desta versão por 24 h. */
   dismissBanner: () => void;
   openPermissionSettings: () => Promise<void>;
 };
@@ -37,9 +39,12 @@ export const useUpdate = (): Ctx => {
   return c;
 };
 
-const LAST_CHECK_KEY = 'ziel.update.lastCheck';
-const DISMISSED_KEY = 'ziel.update.dismissed';
-const AUTO_INTERVAL_MS = 12 * 60 * 60 * 1000;
+export const LAST_CHECK_KEY = 'ziel.update.lastCheck';
+export const SNOOZE_KEY = 'ziel.update.snooze';
+export const FOUND_KEY = 'ziel.update.found';
+/** Intervalo mínimo entre consultas automáticas ao GitHub. */
+export const AUTO_INTERVAL_MS = 24 * 60 * 60 * 1000;
+export const SNOOZE_MS = 24 * 60 * 60 * 1000;
 
 const safeGet = (k: string) => {
   try {
@@ -56,6 +61,29 @@ const safeSet = (k: string, v: string) => {
   }
 };
 
+/** Já passou o intervalo mínimo desde a última consulta? (pura, testável) */
+export function isCheckDue(lastCheck: number | null, now: number, interval = AUTO_INTERVAL_MS): boolean {
+  return !lastCheck || now - lastCheck >= interval || lastCheck > now; // relógio voltou atrás => consulta
+}
+
+type Snooze = { tag: string; until: number };
+const readSnooze = (): Snooze | null => {
+  try {
+    const v = JSON.parse(safeGet(SNOOZE_KEY) ?? 'null');
+    return v && typeof v.tag === 'string' && typeof v.until === 'number' ? v : null;
+  } catch {
+    return null;
+  }
+};
+const readFound = (): UpdateInfo | null => {
+  try {
+    const v = JSON.parse(safeGet(FOUND_KEY) ?? 'null');
+    return v && typeof v.tag === 'string' && typeof v.versionCode === 'number' ? (v as UpdateInfo) : null;
+  } catch {
+    return null;
+  }
+};
+
 export const UpdateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const native = isNativeUpdater();
   const [installed, setInstalled] = useState<AppInfo | null>(null);
@@ -63,14 +91,27 @@ export const UpdateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [update, setUpdate] = useState<UpdateInfo | null>(null);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [dismissed, setDismissed] = useState<string | null>(() => safeGet(DISMISSED_KEY));
+  const [snooze, setSnooze] = useState<Snooze | null>(readSnooze);
   const [lastChecked, setLastChecked] = useState<number | null>(() => Number(safeGet(LAST_CHECK_KEY)) || null);
+  const [clock, setClock] = useState(() => Date.now());
   const busy = useRef(false);
 
   useEffect(() => {
     if (!native) return;
     updater.getAppInfo().then(setInstalled).catch(() => setInstalled(null));
   }, [native]);
+
+  // Atualização já descoberta numa consulta anterior continua visível mesmo sem rede / sem nova consulta.
+  useEffect(() => {
+    if (!installed) return;
+    const found = readFound();
+    if (found && found.versionCode > installed.versionCode) {
+      setUpdate(found);
+      setStatus((s) => (s === 'idle' ? 'available' : s));
+    } else if (found) {
+      safeSet(FOUND_KEY, 'null'); // já instalada
+    }
+  }, [installed]);
 
   const check = useCallback(
     async (opts: { silent?: boolean } = {}) => {
@@ -81,21 +122,21 @@ export const UpdateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         setError(null);
       }
       try {
-        // Sem a versão instalada (web/PWA) não dá para comparar: trata como 0 só para exibir a última release.
         const info = native ? (installed ?? (await updater.getAppInfo())) : null;
         if (info) setInstalled(info);
         const found = await checkForUpdate(info?.versionCode ?? Number.MAX_SAFE_INTEGER);
         const now = Date.now();
         safeSet(LAST_CHECK_KEY, String(now));
         setLastChecked(now);
+        safeSet(FOUND_KEY, found ? JSON.stringify(found) : 'null');
         setUpdate(found);
         setStatus(found ? 'available' : 'uptodate');
       } catch (e) {
-        // verificação automática falha em silêncio; a manual mostra o motivo
+        // A consulta automática falha em silêncio (offline não atrapalha nada); a manual explica o motivo.
         if (!opts.silent) {
           setError(e instanceof UpdateCheckError ? e.message : 'Não foi possível verificar atualizações.');
           setStatus('error');
-        } else setStatus('idle');
+        } else setStatus((s) => (s === 'checking' ? 'idle' : s));
       } finally {
         busy.current = false;
       }
@@ -103,13 +144,36 @@ export const UpdateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     [native, installed]
   );
 
-  // verificação automática ao abrir (no máx. a cada 12 h), só no app Android
-  useEffect(() => {
+  // Verificação automática: ao abrir e ao voltar para o app, no máximo 1x a cada 24 h.
+  const checkIfDue = useCallback(() => {
+    setClock(Date.now());
     if (!native || !installed) return;
-    const last = Number(safeGet(LAST_CHECK_KEY)) || 0;
-    if (Date.now() - last > AUTO_INTERVAL_MS) check({ silent: true });
+    const last = Number(safeGet(LAST_CHECK_KEY)) || null;
+    if (isCheckDue(last, Date.now())) check({ silent: true });
+  }, [native, installed, check]);
+
+  useEffect(() => {
+    checkIfDue();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [native, installed?.versionCode]);
+
+  useEffect(() => {
+    if (!native) return;
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') checkIfDue();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    let handle: PluginListenerHandle | null = null;
+    CapApp.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) checkIfDue();
+    }).then((h) => {
+      handle = h;
+    });
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      handle?.remove().catch(() => undefined);
+    };
+  }, [native, checkIfDue]);
 
   const doInstallIntent = useCallback(async () => {
     try {
@@ -127,7 +191,6 @@ export const UpdateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const install = useCallback(async () => {
     if (!update || !native) return;
-    // Já baixado e aguardando permissão: só reabre o instalador.
     if (status === 'needs-permission') return doInstallIntent();
     let handle: PluginListenerHandle | null = null;
     try {
@@ -137,8 +200,7 @@ export const UpdateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const sha = parseSha256(await updater.fetchText(update.sha256Url));
       if (!sha) throw new Error('O arquivo de verificação (SHA-256) da Release está inválido.');
       handle = await updater.onProgress((received, total) => setProgress(total > 0 ? received / total : 0));
-      const done = updater.download(update.apkUrl, sha, update.versionCode);
-      await done;
+      await updater.download(update.apkUrl, sha, update.versionCode);
       setProgress(1);
       setStatus('verifying');
       await doInstallIntent();
@@ -155,26 +217,17 @@ export const UpdateProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const dismissBanner = useCallback(() => {
     if (!update) return;
-    safeSet(DISMISSED_KEY, update.tag);
-    setDismissed(update.tag);
+    const s = { tag: update.tag, until: Date.now() + SNOOZE_MS };
+    safeSet(SNOOZE_KEY, JSON.stringify(s));
+    setSnooze(s);
+    setClock(Date.now());
   }, [update]);
 
+  const bannerHidden = !update || (snooze?.tag === update.tag && snooze.until > clock);
+
   const value = useMemo<Ctx>(
-    () => ({
-      native,
-      installed,
-      status,
-      update,
-      progress,
-      error,
-      bannerHidden: !update || dismissed === update.tag,
-      lastChecked,
-      check,
-      install,
-      dismissBanner,
-      openPermissionSettings,
-    }),
-    [native, installed, status, update, progress, error, dismissed, lastChecked, check, install, dismissBanner, openPermissionSettings]
+    () => ({ native, installed, status, update, progress, error, bannerHidden, lastChecked, check, install, dismissBanner, openPermissionSettings }),
+    [native, installed, status, update, progress, error, bannerHidden, lastChecked, check, install, dismissBanner, openPermissionSettings]
   );
 
   return <UpdateContext.Provider value={value}>{children}</UpdateContext.Provider>;

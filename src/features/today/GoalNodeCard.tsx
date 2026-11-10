@@ -7,7 +7,6 @@ import { iconFor, toneFor } from '../../shared/ui/goalIcons';
 import { cycleScopeLabel, describeSchedule } from '../../domain/recurrence/scheduleLabels';
 import { gsap, motionOK } from '../../shared/motion';
 import { AnimBar, Collapse } from '../../shared/ui/Anim';
-import { indentFor } from './treeLayout';
 
 type Props = {
   node: TodayGoalNode;
@@ -38,7 +37,7 @@ const StatusRing: React.FC<{
       onClick={onClick}
       aria-label={label}
       className="relative flex shrink-0 items-center justify-center rounded-full"
-      style={{ width: size, height: size, border: `2.5px solid ${color}`, backgroundColor: done ? color : 'transparent', color: done ? '#0E0F14' : color }}
+      style={{ width: size, height: size, border: `2.5px solid ${color}`, backgroundColor: done ? color : 'transparent', color: done ? '#0F1320' : color }}
     >
       {done && <Check className="h-5 w-5" strokeWidth={3.2} />}
       {status === 'partial' && <Minus className="h-5 w-5" strokeWidth={3.2} />}
@@ -107,12 +106,30 @@ export const GoalNodeCard: React.FC<Props> = ({ node, isExpanded, onToggle, onOp
       </button>
     ) : null;
 
+  // Árvore explícita: bandeja "Submetas · N" + conector em cotovelo ligando cada filha à mãe (na cor da mãe).
   const kids = hasKids ? (
     <Collapse open={expanded}>
-      <div className="ml-6 mt-3 space-y-2.5 border-l-2 pl-4" style={{ borderColor: `${hex}55` }}>
-        {children.map((c) => (
-          <GoalNodeCard key={c.goal.id} node={c} isExpanded={isExpanded} onToggle={onToggle} onOpenDetails={onOpenDetails} onSelectStatus={onSelectStatus} onOpenEvidence={onOpenEvidence} />
-        ))}
+      <div className="mt-3.5" role="group" aria-label={`Submetas de ${displayName}`}>
+        <div className="mb-2 flex items-center gap-2 pl-1 text-[11px] font-extrabold uppercase tracking-wider text-ziel-muted">
+          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: hex }} aria-hidden />
+          Submetas · {children.length}
+        </div>
+        <div className="space-y-2.5">
+          {children.map((c, i) => {
+            // recuo limitado: níveis fundos ficam mais compactos para nunca estourar telas de 320 px
+            const lvl = c.depth <= 1 ? 0 : c.depth === 2 ? 1 : 2; // 0 normal · 1 compacto · 2 bem compacto
+            const padCls = ['pl-7', 'pl-5', 'pl-3'][lvl];
+            const elbowCls = ['left-2 w-[18px]', 'left-1.5 w-[14px]', 'left-1 w-[10px]'][lvl];
+            const lineLeft = ['left-2', 'left-1.5', 'left-1'][lvl];
+            return (
+            <div key={c.goal.id} className={`relative ${padCls}`}>
+              <span aria-hidden className={`absolute top-0 h-[32px] rounded-bl-[16px] border-b-2 border-l-2 ${elbowCls}`} style={{ borderColor: `${hex}88` }} />
+              {i < children.length - 1 && <span aria-hidden className={`absolute -bottom-[10px] top-[32px] border-l-2 ${lineLeft}`} style={{ borderColor: `${hex}88` }} />}
+              <GoalNodeCard node={c} isExpanded={isExpanded} onToggle={onToggle} onOpenDetails={onOpenDetails} onSelectStatus={onSelectStatus} onOpenEvidence={onOpenEvidence} />
+            </div>
+            );
+          })}
+        </div>
       </div>
     </Collapse>
   ) : null;
@@ -123,11 +140,11 @@ export const GoalNodeCard: React.FC<Props> = ({ node, isExpanded, onToggle, onOp
       <article
         data-reveal
         className="rounded-[30px] p-4 shadow-[0_14px_34px_-18px_rgba(0,0,0,0.9)]"
-        style={{ border: `1px solid ${hex}66`, background: `linear-gradient(140deg, ${hex}26 0%, rgba(23,26,34,0.96) 58%)` }}
+        style={{ border: `1px solid ${hex}66`, background: `linear-gradient(140deg, ${hex}26 0%, rgba(29,36,51,0.96) 58%)` }}
       >
         <div className="flex items-start gap-3.5">
           <button type="button" onClick={() => onOpenDetails(node)} className="flex min-w-0 flex-1 items-start gap-3.5 text-left" aria-label={`Abrir ${displayName}`}>
-            <span className="flex h-[68px] w-[52px] shrink-0 items-center justify-center rounded-[20px]" style={{ backgroundColor: hex, color: '#0E0F14' }} aria-hidden>
+            <span className="flex h-[68px] w-[52px] shrink-0 items-center justify-center rounded-[20px]" style={{ backgroundColor: hex, color: '#0F1320' }} aria-hidden>
               <Icon className="h-6 w-6" />
             </span>
             <span className="min-w-0 flex-1 pt-0.5">
@@ -173,10 +190,14 @@ export const GoalNodeCard: React.FC<Props> = ({ node, isExpanded, onToggle, onOp
 
   /* -------- linha de submeta -------- */
   return (
-    <div style={{ marginLeft: Math.min(Math.max(indentFor(depth) - 12, 0), 18) }} className="rounded-[22px] bg-white/[0.045] p-2.5 pl-3">
+    <div
+      data-depth={depth}
+      className={`rounded-[22px] ${depth >= 2 ? 'p-2 pl-2.5' : 'p-2.5 pl-3'}`}
+      style={{ border: `1px solid ${hex}44`, background: `linear-gradient(135deg, ${hex}1F 0%, rgba(255,255,255,${depth > 1 ? 0.07 : 0.045}) 70%)` }}
+    >
       <div className="flex items-center gap-3">
         <button type="button" onClick={() => onOpenDetails(node)} className="flex min-h-[52px] min-w-0 flex-1 items-center gap-3 text-left">
-          <span className="flex h-11 w-9 shrink-0 items-center justify-center rounded-[13px]" style={{ backgroundColor: hex, color: '#0E0F14' }} aria-hidden>
+          <span className="flex h-11 w-9 shrink-0 items-center justify-center rounded-[13px]" style={{ backgroundColor: hex, color: '#0F1320' }} aria-hidden>
             <Icon className="h-[19px] w-[19px]" />
           </span>
           <span className="min-w-0 flex-1">

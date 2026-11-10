@@ -11,7 +11,7 @@ export const DayProgressCard: React.FC<Props> = ({ progress, total, completed, i
       data-reveal
       data-progress-card
       className="flex items-center gap-5 rounded-[30px] border border-white/[0.08] p-5"
-      style={{ background: 'linear-gradient(135deg, rgba(139,124,246,0.20) 0%, rgba(91,155,224,0.10) 45%, rgba(23,26,34,0.95) 100%)' }}
+      style={{ background: 'linear-gradient(135deg, rgba(139,124,246,0.20) 0%, rgba(91,155,224,0.10) 45%, rgba(29,36,51,0.95) 100%)' }}
       aria-label="Progresso do dia"
     >
       <Ring value={progress} size={108} stroke={12} label={`Progresso do dia: ${pct}%`} gradient={['#F28B82', '#F5C542', '#62C48A']} trackClass="stroke-white/10">

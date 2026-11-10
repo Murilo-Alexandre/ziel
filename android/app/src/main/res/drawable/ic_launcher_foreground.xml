@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Marca do Ziel: um "Z" (caminho) que parte de um ponto violeta e chega à meta amarela -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M32,36 L76,36 L32,72 L76,72"
+        android:strokeColor="#F28B82"
+        android:strokeWidth="10"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="#8B7CF6"
+        android:pathData="M25.5,36 a6.5,6.5 0 1,0 13,0 a6.5,6.5 0 1,0 -13,0" />
+    <path
+        android:fillColor="#F5C542"
+        android:pathData="M68.5,72 a7.5,7.5 0 1,0 15,0 a7.5,7.5 0 1,0 -15,0" />
+</vector>

@@ -103,9 +103,9 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
         aria-modal="true"
         aria-label={title}
         tabIndex={-1}
-        className={`relative flex w-full max-w-lg flex-col rounded-t-sheet border border-b-0 border-ziel-line-soft bg-ziel-surface shadow-2xl outline-none sm:rounded-sheet sm:border-b ${
-          tall ? 'max-h-[94dvh]' : 'max-h-[88dvh]'
-        }`}
+        className="relative flex w-full max-w-lg flex-col rounded-t-sheet border border-b-0 border-ziel-line-soft bg-ziel-surface shadow-2xl outline-none sm:rounded-sheet sm:border-b"
+        // altura vem de --app-h (px) e NÃO de dvh: WebViews antigos ignoram dvh e o modal estourava a tela
+        style={{ maxHeight: `calc(var(--app-h, 100vh) * ${tall ? 0.94 : 0.9} - env(safe-area-inset-top, 0px))` }}
       >
         <div className="mx-auto mt-2.5 h-1.5 w-11 shrink-0 rounded-full bg-ziel-line sm:hidden" aria-hidden />
         <header className="flex shrink-0 items-start justify-between gap-3 px-6 pb-3 pt-4">
@@ -118,8 +118,8 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
             <X className="h-5 w-5" />
           </button>
         </header>
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-4">{children}</div>
-        {footer && <footer className="pb-safe shrink-0 border-t border-ziel-line-soft px-6 pb-3 pt-3">{footer}</footer>}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-4 [-webkit-overflow-scrolling:touch] [touch-action:pan-y]" data-sheet-scroll>{children}</div>
+        {footer && <footer className="pb-safe shrink-0 border-t border-ziel-line-soft bg-ziel-surface px-6 pb-3 pt-3">{footer}</footer>}
         {!footer && <div className="pb-safe shrink-0" />}
       </div>
     </div>

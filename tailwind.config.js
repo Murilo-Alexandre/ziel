@@ -6,15 +6,15 @@ export default {
       /* Design tokens do Ziel (direção: reference-ziel9): grafite + blocos de cor + botões circulares pretos. */
       colors: {
         ziel: {
-          bg: '#0E0F14',
-          surface: '#171A22',
-          raised: '#20242E',
-          line: '#2D3240',
-          'line-soft': '#232733',
-          ink: '#0E0F14', // texto/ícones sobre superfícies coloridas
-          text: '#F2F4F8',
-          sub: '#C3C8D4',
-          muted: '#8E95A5',
+          bg: '#141926',
+          surface: '#1D2433',
+          raised: '#283046',
+          line: '#38425C',
+          'line-soft': '#2B3349',
+          ink: '#0F1320', // texto/ícones sobre superfícies coloridas
+          text: '#F3F5FA',
+          sub: '#C8CEDD',
+          muted: '#98A1B8',
           accent: '#F28B82',
           'accent-soft': 'rgba(242,139,130,0.16)',
           success: '#62C48A',

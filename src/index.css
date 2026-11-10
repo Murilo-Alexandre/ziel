@@ -13,10 +13,10 @@
   }
   body {
     background:
-      radial-gradient(120% 55% at 50% -12%, rgba(139, 124, 246, 0.17), transparent 62%),
-      radial-gradient(90% 45% at 105% 105%, rgba(91, 155, 224, 0.13), transparent 60%),
-      radial-gradient(70% 35% at -10% 70%, rgba(242, 139, 130, 0.07), transparent 60%),
-      #0e0f14 fixed;
+      radial-gradient(120% 55% at 50% -12%, rgba(139, 124, 246, 0.26), transparent 62%),
+      radial-gradient(90% 45% at 105% 100%, rgba(91, 155, 224, 0.20), transparent 60%),
+      radial-gradient(70% 35% at -10% 65%, rgba(242, 139, 130, 0.10), transparent 60%),
+      #141926 fixed;
     @apply font-sans text-ziel-text antialiased;
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;

@@ -4,6 +4,7 @@ import { notificationPort, reminderService } from '../../application/container';
 import { NotificationSettings, PlannedReminder } from '../../domain/notifications/reminderPlanner';
 import { NotificationPermission } from '../../infrastructure/ports/NotificationPort';
 import { Switch } from '../../shared/ui/Switch';
+import { Select } from '../../shared/ui/Select';
 import { useAppData } from '../../shared/AppData';
 import { useToast } from '../../shared/ui/Toast';
 
@@ -118,13 +119,13 @@ export const NotificationsSection: React.FC = () => {
               Máximo por dia
               <span className="block text-xs font-normal text-ziel-muted">Evita excesso de avisos</span>
             </span>
-            <select aria-label="Máximo de notificações por dia" className="field !w-24" value={settings.maxPerDay} onChange={(e) => apply({ maxPerDay: Number(e.target.value) })}>
+            <Select aria-label="Máximo de notificações por dia" className="field !w-24" value={settings.maxPerDay} onChange={(e) => apply({ maxPerDay: Number(e.target.value) })}>
               {LIMITS.map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
 
           <div className="border-t border-ziel-line-soft pt-4">

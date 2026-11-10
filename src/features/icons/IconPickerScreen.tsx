@@ -133,8 +133,8 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
           <span className="text-xs font-semibold text-ziel-muted">{list.length} de {ICON_CATALOG.length}</span>
         </div>
 
-        <div className="mt-4 flex items-center gap-4 rounded-[26px] border border-white/[0.08] bg-ziel-surface p-3.5" style={{ background: `linear-gradient(135deg, ${color}26, rgba(23,26,34,0.96) 60%)` }}>
-          <div ref={previewRef} className="flex h-[68px] w-[56px] shrink-0 items-center justify-center rounded-[20px]" style={{ backgroundColor: color, color: '#0E0F14' }} aria-hidden>
+        <div className="mt-4 flex items-center gap-4 rounded-[26px] border border-white/[0.08] bg-ziel-surface p-3.5" style={{ background: `linear-gradient(135deg, ${color}26, rgba(29,36,51,0.96) 60%)` }}>
+          <div ref={previewRef} className="flex h-[68px] w-[56px] shrink-0 items-center justify-center rounded-[20px]" style={{ backgroundColor: color, color: '#0F1320' }} aria-hidden>
             <Preview className="h-8 w-8" />
           </div>
           <div className="min-w-0 flex-1" aria-live="polite">

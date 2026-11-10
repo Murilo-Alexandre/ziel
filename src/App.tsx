@@ -47,7 +47,7 @@ export const App: React.FC = () => {
 
   if (boot.status === 'loading') {
     return (
-      <div className="flex min-h-dvh items-center justify-center text-sm text-ziel-muted" aria-busy="true">
+      <div className="flex min-h-screen min-h-dvh items-center justify-center text-sm text-ziel-muted" aria-busy="true">
         Abrindo o Ziel…
       </div>
     );
@@ -55,7 +55,7 @@ export const App: React.FC = () => {
 
   if (boot.status === 'error') {
     return (
-      <div role="alert" className="mx-auto flex min-h-dvh max-w-sm flex-col items-center justify-center gap-4 px-6 text-center">
+      <div role="alert" className="mx-auto flex min-h-screen min-h-dvh max-w-sm flex-col items-center justify-center gap-4 px-6 text-center">
         <h1 className="text-xl font-bold text-ziel-danger">Não foi possível abrir seus dados</h1>
         <p className="text-sm text-ziel-muted">O armazenamento local do aparelho não respondeu. Nada foi apagado. Feche e abra o app novamente.</p>
         <p className="break-words rounded-chip bg-ziel-raised px-3 py-2 text-xs text-ziel-sub">{boot.message}</p>
