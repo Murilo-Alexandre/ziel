@@ -47,7 +47,8 @@ jobs:
             echo "::error::Secret ZIEL_KEYSTORE_BASE64 ausente. A Release NÃO é publicada sem assinatura."
             exit 1
           fi
-          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/ziel-release.jks"
+          printf "%s" "$KEYSTORE_B64" | tr -d "
+ " | base64 -d > "$RUNNER_TEMP/ziel-release.jks"
           echo "ZIEL_KEYSTORE_PATH=$RUNNER_TEMP/ziel-release.jks" >> "$GITHUB_ENV"
 
       - name: Compilar APK de release assinado
