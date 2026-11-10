@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap, motionOK, tweenNumber } from '../motion';
 
-type Props = { value: number; size?: number; stroke?: number; trackClass?: string; barColor?: string; label: string; children?: React.ReactNode };
+type Props = { value: number; size?: number; stroke?: number; trackClass?: string; barColor?: string; gradient?: string[]; label: string; children?: React.ReactNode };
 
 /** Anel de progresso animado com GSAP (stroke-dashoffset). */
-export const Ring: React.FC<Props> = ({ value, size = 132, stroke = 14, trackClass = 'stroke-ziel-raised', barColor = '#F6C85F', label, children }) => {
+export const Ring: React.FC<Props> = ({ value, size = 132, stroke = 14, trackClass = 'stroke-ziel-raised', barColor = '#F28B82', gradient, label, children }) => {
+  const gid = React.useId().replace(/:/g, '');
   const arc = useRef<SVGCircleElement>(null);
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
@@ -26,6 +27,15 @@ export const Ring: React.FC<Props> = ({ value, size = 132, stroke = 14, trackCla
   return (
     <div className="relative shrink-0" style={{ width: size, height: size }} role="img" aria-label={label}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
+        {gradient && (
+          <defs>
+            <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
+              {gradient.map((c, i) => (
+                <stop key={c} offset={`${(i / (gradient.length - 1)) * 100}%`} stopColor={c} />
+              ))}
+            </linearGradient>
+          </defs>
+        )}
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={stroke} className={trackClass} />
         <circle
           ref={arc}
@@ -35,7 +45,7 @@ export const Ring: React.FC<Props> = ({ value, size = 132, stroke = 14, trackCla
           fill="none"
           strokeWidth={stroke}
           strokeLinecap="round"
-          stroke={barColor}
+          stroke={gradient ? `url(#${gid})` : barColor}
           strokeDasharray={c}
           strokeDashoffset={c}
         />

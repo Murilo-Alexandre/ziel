@@ -72,6 +72,15 @@ export type ReminderRule = {
   daysOfWeek?: Weekday[];
 };
 
+/** Lembretes locais de uma meta: horário estimado + janela de avisos antes/depois, repetidos a cada N minutos. */
+export type NotifyConfig = {
+  enabled: boolean;
+  time: string; // HH:mm - horário estimado da execução
+  beforeMin: number; // começa a avisar X min antes
+  afterMin: number; // para de avisar Y min depois
+  everyMin: number; // intervalo entre avisos
+};
+
 export type GoalRevision = {
   id: string;
   goalId: string;
@@ -98,6 +107,8 @@ export type GoalRevision = {
   showParentOnHome: boolean;
   inherit: InheritanceRule;
   reminders: ReminderRule[];
+  /** Lembretes por ocorrência (opcional; ausente = sem lembretes). */
+  notify?: NotifyConfig | null;
 };
 
 export type GoalDefinition = {

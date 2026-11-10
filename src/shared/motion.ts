@@ -73,3 +73,34 @@ export function tweenNumber(el: HTMLElement, from: number, to: number, format: (
     },
   });
 }
+
+/**
+ * Feedback tátil global: elementos interativos "afundam" levemente ao toque e voltam com mola.
+ * Um único conjunto de listeners delegados (sem custo por componente). Respeita reduced-motion.
+ */
+export function installPressFeedback(): () => void {
+  if (typeof document === 'undefined' || !motionOK()) return () => undefined;
+  const sel = 'button, a[href], [role="option"], [role="radio"], [role="tab"], [role="switch"], label[for]';
+  let active: HTMLElement | null = null;
+
+  const down = (e: PointerEvent) => {
+    const el = (e.target as HTMLElement | null)?.closest?.(sel) as HTMLElement | null;
+    if (!el || (el as HTMLButtonElement).disabled || el.closest('[data-no-press]')) return;
+    active = el;
+    gsap.to(el, { scale: el.offsetWidth > 220 ? 0.985 : 0.94, duration: 0.12, ease: 'power2.out', overwrite: 'auto' });
+  };
+  const release = () => {
+    if (!active) return;
+    const el = active;
+    active = null;
+    gsap.to(el, { scale: 1, duration: 0.4, ease: 'elastic.out(1, 0.55)', overwrite: 'auto', clearProps: 'scale' });
+  };
+  document.addEventListener('pointerdown', down, { passive: true });
+  document.addEventListener('pointerup', release, { passive: true, capture: true });
+  document.addEventListener('pointercancel', release, { passive: true, capture: true });
+  return () => {
+    document.removeEventListener('pointerdown', down);
+    document.removeEventListener('pointerup', release, true);
+    document.removeEventListener('pointercancel', release, true);
+  };
+}

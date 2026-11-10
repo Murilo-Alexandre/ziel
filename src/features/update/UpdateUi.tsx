@@ -10,13 +10,13 @@ export const UpdateBanner: React.FC<{ onOpen: () => void }> = ({ onOpen }) => {
   const { update, bannerHidden, dismissBanner, native } = useUpdate();
   if (!native || !update || bannerHidden) return null;
   return (
-    <div data-reveal className="mb-4 flex items-center gap-1 rounded-full bg-ziel-accent py-1.5 pl-4 pr-1.5 text-ziel-ink">
-      <ArrowUpCircle className="h-5 w-5 shrink-0" aria-hidden />
+    <div data-reveal className="mb-4 flex items-center gap-1 rounded-full border border-ziel-accent/50 bg-ziel-accent-soft py-1.5 pl-4 pr-1.5 text-ziel-text">
+      <ArrowUpCircle className="h-5 w-5 shrink-0 text-ziel-accent" aria-hidden />
       <button type="button" onClick={onOpen} className="min-h-[44px] min-w-0 flex-1 truncate px-2 text-left text-sm font-extrabold">
         Nova versão {update.versionName}
         <span className="ml-1 font-semibold opacity-70">· novidades</span>
       </button>
-      <button type="button" onClick={dismissBanner} aria-label="Dispensar aviso" className="orb !h-10 !w-10">
+      <button type="button" onClick={dismissBanner} aria-label="Dispensar aviso" className="orb !h-10 !w-10 !bg-white/10">
         <X className="h-4 w-4" />
       </button>
     </div>
@@ -35,14 +35,14 @@ export const UpdateSheet: React.FC<{ open: boolean; onClose: () => void }> = ({ 
   const working = u.status === 'downloading' || u.status === 'verifying';
 
   return (
-    <Sheet open={open} title="Atualização do Ziel" subtitle={info ? `${u.installed?.versionName ?? 'instalada'} → ${info.versionName}` : undefined} onClose={working ? () => undefined : onClose} tone="#F6C85F">
+    <Sheet open={open} title="Atualização do Ziel" subtitle={info ? `${u.installed?.versionName ?? 'instalada'} → ${info.versionName}` : undefined} onClose={working ? () => undefined : onClose} tone="#F28B82">
       {!info ? (
         <p className="py-8 text-center text-sm text-ziel-muted">Nenhuma atualização disponível.</p>
       ) : (
         <div className="space-y-4 pb-2">
-          <div className="rounded-[26px] bg-block-amber p-5 text-ziel-ink">
-            <p className="text-xs font-bold uppercase tracking-wider text-black/60">Novidades · {info.versionName}</p>
-            <p className="mt-2 whitespace-pre-wrap break-words text-[15px] font-semibold leading-relaxed">
+          <div className="rounded-[26px] border border-white/[0.08] p-5" style={{ background: 'linear-gradient(135deg, rgba(242,139,130,0.22), rgba(23,26,34,0.96) 65%)' }}>
+            <p className="text-xs font-bold uppercase tracking-wider text-ziel-accent">Novidades · {info.versionName}</p>
+            <p className="mt-2 whitespace-pre-wrap break-words text-[15px] font-semibold leading-relaxed text-ziel-text">
               {info.notes || 'Melhorias e correções. Veja os detalhes na página da versão.'}
             </p>
           </div>

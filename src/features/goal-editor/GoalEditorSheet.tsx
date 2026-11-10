@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ChevronDown, ChevronUp, CalendarDays } from 'lucide-react';
+import { Bell, ChevronDown, ChevronRight, ChevronUp, CalendarDays } from 'lucide-react';
 import { Weekday } from '../../domain/types';
-import { goalService, occurrenceService, queryService, goalRepo } from '../../application/container';
+import { goalService, occurrenceService, queryService, goalRepo, reminderService, notificationPort } from '../../application/container';
 import { listDescendantIds } from '../../domain/goals/goalTree';
 import { formatDateBR } from '../../domain/recurrence/scheduleLabels';
 import { parseLocalDate } from '../../domain/dates';
 import { Sheet } from '../../shared/ui/Sheet';
-import { GOAL_COLORS, GOAL_ICONS } from '../../shared/ui/goalIcons';
+import { GOAL_COLORS, iconFor, iconLabel } from '../../shared/ui/goalIcons';
+import { IconPickerScreen } from '../icons/IconPickerScreen';
+import { Switch } from '../../shared/ui/Switch';
+import { describeReminderTimes, validateNotify } from '../../domain/notifications/reminderPlanner';
 import { errorMessage, useAppData } from '../../shared/AppData';
 import { useToast } from '../../shared/ui/Toast';
 import {
@@ -73,6 +76,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [parents, setParents] = useState<ParentOption[]>([]);
   const [childNames, setChildNames] = useState<{ id: string; name: string }[]>([]);
   const [scope, setScope] = useState<'future' | 'occurrence'>('future');
@@ -138,6 +142,10 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
   }, [open, form.parentId, mode]);
 
   const errors = useMemo(() => validateForm(form), [form]);
+  const SelectedIcon = iconFor(form.icon);
+  const canRemind = form.scheduleKind !== 'quota' && form.scheduleKind !== 'container';
+  const reminderTimes = useMemo(() => (form.notify.enabled && validateNotify(form.notify).length === 0 ? describeReminderTimes(form.notify) : []), [form.notify]);
+  const setNotify = (patch: Partial<typeof form.notify>) => setForm((f) => ({ ...f, notify: { ...f.notify, ...patch } }));
   const preview = useMemo(() => previewDates(form), [form]);
   const isRecurring = form.scheduleKind !== 'once';
   const canScopeOccurrence = isEdit && mode.occurrenceId !== null && isRecurring;
@@ -176,6 +184,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
           aggregationRule: d.aggregationRule,
           isRequired: d.isRequired,
           showParentOnHome: d.showParentOnHome,
+          notify: d.notify,
         });
         notify('Meta criada', 'success');
       } else if (scope === 'occurrence' && mode.occurrenceId) {
@@ -197,6 +206,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
           aggregationRule: d.aggregationRule,
           isRequired: d.isRequired,
           showParentOnHome: d.showParentOnHome,
+          notify: d.notify,
         });
         if (onceMoved && d.schedule.type === 'once') {
           await occurrenceService.rescheduleOneTimeGoal(mode.occurrenceId!, d.schedule.date);
@@ -206,6 +216,12 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
       bump();
       onSaved();
       onClose();
+      // lembretes: pede a permissão do Android no momento em que fazem sentido (uma vez)
+      if (scope === 'future' && d.notify?.enabled && notificationPort.isSupported()) {
+        const perm = await reminderService.requestPermission();
+        if (perm !== 'granted') notify('Para receber os lembretes, permita as notificações do Ziel nas configurações do Android.', 'error');
+        else bump();
+      }
     } catch (e) {
       notify(errorMessage(e), 'error');
     } finally {
@@ -314,24 +330,22 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
               </div>
               <div>
                 <span className="mb-1.5 block text-xs font-semibold text-ziel-sub">Ícone e cor</span>
-                <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="radiogroup" aria-label="Ícone">
-                  {Object.entries(GOAL_ICONS).map(([name, Icon]) => (
-                    <button
-                      key={name}
-                      type="button"
-                      role="radio"
-                      aria-checked={form.icon === name}
-                      aria-label={name}
-                      onClick={() => set('icon', name)}
-                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-chip border ${
-                        form.icon === name ? 'border-ziel-accent bg-ziel-accent-soft text-ziel-accent' : 'border-ziel-line bg-ziel-raised text-ziel-sub'
-                      }`}
-                    >
-                      <Icon className="h-5 w-5" />
-                    </button>
-                  ))}
-                </div>
-                <div className="mt-2 flex gap-2.5" role="radiogroup" aria-label="Cor">
+                <button
+                  type="button"
+                  onClick={() => setPickerOpen(true)}
+                  aria-label={`Ícone: ${iconLabel(form.icon)}. Trocar ícone`}
+                  className="flex min-h-[72px] w-full items-center gap-4 rounded-[24px] border border-ziel-line bg-ziel-bg p-3 text-left"
+                >
+                  <span className="flex h-[52px] w-[42px] shrink-0 items-center justify-center rounded-[16px]" style={{ backgroundColor: form.color, color: '#0E0F14' }} aria-hidden>
+                    <SelectedIcon className="h-6 w-6" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[15px] font-bold">{iconLabel(form.icon)}</span>
+                    <span className="block text-xs text-ziel-muted">Toque para escolher entre centenas de ícones</span>
+                  </span>
+                  <ChevronRight className="h-5 w-5 shrink-0 text-ziel-muted" />
+                </button>
+                <div className="mt-2 flex gap-1" role="radiogroup" aria-label="Cor">
                   {GOAL_COLORS.map((c) => (
                     <button
                       key={c}
@@ -342,7 +356,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                       onClick={() => set('color', c)}
                       className="flex h-11 w-11 items-center justify-center"
                     >
-                      <span className={`h-7 w-7 rounded-full border-2 ${form.color === c ? 'border-ziel-text' : 'border-transparent'}`} style={{ backgroundColor: c }} />
+                      <span className={`h-8 w-8 rounded-full border-2 transition-transform ${form.color === c ? 'scale-110 border-ziel-text' : 'border-transparent'}`} style={{ backgroundColor: c }} />
                     </button>
                   ))}
                 </div>
@@ -478,6 +492,76 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                 )}
                 {form.parentId && Object.keys(siblingDays).length > 0 && <p className="mt-1 text-[11px] text-ziel-muted">“+n” = outras submetas do mesmo pai naquele dia.</p>}
               </div>
+            </Section>
+
+            <Section title="Lembretes" hint="Avisos no horário estimado, antes e depois dele. Se você registrar a meta, os avisos pendentes daquele dia são cancelados.">
+              {!canRemind ? (
+                <p className="text-sm text-ziel-muted">Lembretes precisam de dias definidos (dias da semana, todo dia, data única, intervalo ou dia do mês).</p>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="flex items-center gap-2 text-[15px] font-bold">
+                      <Bell className="h-4 w-4 text-ziel-accent" /> Avisar neste horário
+                    </span>
+                    <Switch checked={form.notify.enabled} onChange={(v) => setNotify({ enabled: v })} label="Ativar lembretes desta meta" />
+                  </div>
+                  {form.notify.enabled && (
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label htmlFor="n-time">Horário estimado</Label>
+                          <input id="n-time" type="time" className="field" value={form.notify.time} onChange={(e) => setNotify({ time: e.target.value })} />
+                        </div>
+                        <div>
+                          <Label htmlFor="n-every">Repetir a cada</Label>
+                          <select id="n-every" className="field" value={form.notify.everyMin} onChange={(e) => setNotify({ everyMin: Number(e.target.value) })}>
+                            {[5, 10, 15, 20, 30, 45, 60, 90, 120].map((m) => (
+                              <option key={m} value={m}>
+                                {m < 60 ? `${m} min` : `${m / 60} h${m % 60 ? ' 30' : ''}`}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <Label htmlFor="n-before">Começar antes</Label>
+                          <select id="n-before" className="field" value={form.notify.beforeMin} onChange={(e) => setNotify({ beforeMin: Number(e.target.value) })}>
+                            {[0, 5, 10, 15, 30, 45, 60, 90, 120, 180].map((m) => (
+                              <option key={m} value={m}>
+                                {m === 0 ? 'No horário' : m < 60 ? `${m} min antes` : `${m / 60} h antes`.replace('.5', ' h 30')}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <Label htmlFor="n-after">Terminar depois</Label>
+                          <select id="n-after" className="field" value={form.notify.afterMin} onChange={(e) => setNotify({ afterMin: Number(e.target.value) })}>
+                            {[0, 5, 10, 15, 30, 45, 60, 90, 120, 180].map((m) => (
+                              <option key={m} value={m}>
+                                {m === 0 ? 'No horário' : m < 60 ? `${m} min depois` : `${m / 60} h depois`.replace('.5', ' h 30')}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      <div aria-label="Prévia dos lembretes" className="rounded-[20px] border border-ziel-line-soft bg-ziel-surface p-3">
+                        <p className="mb-2 text-xs font-semibold text-ziel-sub">Vai avisar às</p>
+                        {reminderTimes.length ? (
+                          <div className="flex flex-wrap gap-1.5">
+                            {reminderTimes.map((t, i) => (
+                              <span key={`${t}-${i}`} className="rounded-full bg-ziel-accent-soft px-3 py-1.5 text-sm font-bold tabular-nums text-ziel-accent">
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm text-ziel-danger">{validateNotify(form.notify)[0]}</p>
+                        )}
+                        <p className="mt-2 text-[11px] text-ziel-muted">Só dispara com o app fechado no Android. Quanto menos avisos, melhor: o padrão é um aviso só, no horário.</p>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </Section>
 
             <button
@@ -635,6 +719,16 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
           </button>
         )}
       </div>
+      <IconPickerScreen
+        open={pickerOpen}
+        value={form.icon}
+        color={form.color}
+        onClose={() => setPickerOpen(false)}
+        onSelect={(id) => {
+          set('icon', id);
+          setPickerOpen(false);
+        }}
+      />
     </Sheet>
   );
 };

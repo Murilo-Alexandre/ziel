@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useRef } from 'react';
-import { CalendarDays, Settings, Sun, Target } from 'lucide-react';
+import { CalendarDays, Plus, Settings, Sun, Target } from 'lucide-react';
 import { gsap, motionOK } from '../motion';
+import { useOverlays } from '../Overlays';
 
 export type Tab = 'today' | 'agenda' | 'goals' | 'settings';
 
@@ -13,72 +14,78 @@ const TABS: { key: Tab; label: string; Icon: React.FC<{ className?: string }> }[
   { key: 'settings', label: 'Ajustes', Icon: Settings },
 ];
 
-/** Navegação flutuante em pílula (referência 9). O círculo amarelo desliza até a aba ativa (GSAP). */
+/** Barra inferior com ícone + rótulo (referência 4) e botão "+" coral. Indicador desliza com GSAP. */
 export const BottomNav: React.FC<Props> = ({ activeTab, onTabChange }) => {
+  const { openEditor } = useOverlays();
   const trackRef = useRef<HTMLDivElement>(null);
-  const dotRef = useRef<HTMLSpanElement>(null);
+  const barRef = useRef<HTMLSpanElement>(null);
   const first = useRef(true);
 
-  useLayoutEffect(() => {
+  const place = (animate: boolean) => {
     const track = trackRef.current;
-    const dot = dotRef.current;
-    if (!track || !dot) return;
+    const bar = barRef.current;
+    if (!track || !bar) return;
     const idx = TABS.findIndex((t) => t.key === activeTab);
     const btn = track.querySelectorAll('button')[idx] as HTMLElement | undefined;
     if (!btn) return;
-    const x = btn.offsetLeft + btn.offsetWidth / 2 - dot.offsetWidth / 2;
-    if (first.current || !motionOK()) {
-      gsap.set(dot, { x });
-      first.current = false;
-    } else {
-      gsap.to(dot, { x, duration: 0.5, ease: 'back.out(1.5)' });
-      gsap.fromTo(btn, { scale: 0.86 }, { scale: 1, duration: 0.45, ease: 'back.out(2.2)' });
+    const x = btn.offsetLeft + btn.offsetWidth / 2 - bar.offsetWidth / 2;
+    if (!animate || !motionOK()) gsap.set(bar, { x });
+    else {
+      gsap.to(bar, { x, duration: 0.5, ease: 'back.out(1.6)' });
+      const icon = btn.querySelector('svg');
+      if (icon) gsap.fromTo(icon, { y: 4, scale: 0.8 }, { y: 0, scale: 1, duration: 0.5, ease: 'back.out(2.4)', clearProps: 'transform' });
     }
+  };
+
+  useLayoutEffect(() => {
+    place(!first.current);
+    first.current = false;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
-  // largura mudou (rotação/redimensionar): reposiciona o círculo sem animar
   useLayoutEffect(() => {
     const track = trackRef.current;
     if (!track || typeof ResizeObserver === 'undefined') return;
-    const ro = new ResizeObserver(() => {
-      const dot = dotRef.current;
-      const idx = TABS.findIndex((t) => t.key === activeTab);
-      const btn = track.querySelectorAll('button')[idx] as HTMLElement | undefined;
-      if (dot && btn) gsap.set(dot, { x: btn.offsetLeft + btn.offsetWidth / 2 - dot.offsetWidth / 2 });
-    });
+    const ro = new ResizeObserver(() => place(false));
     ro.observe(track);
     return () => ro.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
   return (
     <nav
       aria-label="Navegação principal"
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-6"
-      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 14px)' }}
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-4"
+      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}
     >
-      <div
-        ref={trackRef}
-        className="pointer-events-auto relative flex w-full max-w-[22rem] items-center justify-between rounded-full border border-white/5 bg-ziel-ink p-2 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.85)]"
-      >
-        <span ref={dotRef} aria-hidden className="absolute left-0 top-2 h-[52px] w-[52px] rounded-full bg-ziel-accent" />
-        {TABS.map(({ key, label, Icon }) => {
-          const active = activeTab === key;
-          return (
-            <button
-              key={key}
-              type="button"
-              onClick={() => onTabChange(key)}
-              aria-label={label}
-              title={label}
-              aria-current={active ? 'page' : undefined}
-              className={`relative z-10 flex h-[52px] w-[52px] items-center justify-center rounded-full transition-colors ${
-                active ? 'text-ziel-ink' : 'text-ziel-sub'
-              }`}
-            >
-              <Icon className="h-[22px] w-[22px]" />
-            </button>
-          );
-        })}
+      <div className="pointer-events-auto flex w-full max-w-[26rem] items-end gap-3">
+        <div ref={trackRef} className="relative flex flex-1 items-center rounded-[28px] border border-white/[0.08] bg-ziel-surface/95 px-2 pb-1.5 pt-2.5 shadow-[0_18px_40px_-14px_rgba(0,0,0,0.9)] backdrop-blur">
+          <span ref={barRef} aria-hidden className="absolute left-0 top-0 h-1 w-8 rounded-b-full bg-ziel-accent" />
+          {TABS.map(({ key, label, Icon }) => {
+            const active = activeTab === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => onTabChange(key)}
+                aria-label={label}
+                aria-current={active ? 'page' : undefined}
+                className={`flex min-h-[52px] flex-1 flex-col items-center justify-center gap-1 rounded-2xl transition-colors ${active ? 'text-ziel-accent' : 'text-ziel-muted'}`}
+              >
+                <Icon className="h-[22px] w-[22px]" />
+                <span className="text-[11px] font-bold leading-none">{label}</span>
+              </button>
+            );
+          })}
+        </div>
+        <button
+          type="button"
+          onClick={() => openEditor({ kind: 'create', parentId: null })}
+          aria-label="Nova meta"
+          className="mb-1 flex h-[58px] w-[58px] shrink-0 items-center justify-center rounded-full bg-ziel-accent text-ziel-ink shadow-[0_14px_30px_-8px_rgba(242,139,130,0.85)]"
+        >
+          <Plus className="h-7 w-7" strokeWidth={2.6} />
+        </button>
       </div>
     </nav>
   );

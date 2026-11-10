@@ -8,6 +8,7 @@ import {
   ProgressRule,
   ScheduleRule,
   TrackingCycleRule,
+  NotifyConfig,
 } from '../../domain/types';
 import { listDescendantIds, validateNoHierarchyCycle } from '../../domain/goals/goalTree';
 import { GoalValidationError, validateGoalDraft } from '../../domain/goals/goalValidation';
@@ -31,6 +32,7 @@ export type CreateGoalInput = {
 
   isRequired?: boolean;
   showParentOnHome?: boolean;
+  notify?: NotifyConfig | null;
 };
 
 export type RevisionUpdates = Partial<Omit<GoalRevision, 'id' | 'goalId' | 'effectiveFrom'>>;
@@ -50,7 +52,7 @@ export class GoalService {
     const progressRule = input.progressRule ?? { type: 'binary' };
     const completionRule = input.completionRule ?? { type: 'allRequired' };
 
-    const errors = validateGoalDraft({ name: input.name, activePeriod, schedule, trackingCycle, progressRule, completionRule });
+    const errors = validateGoalDraft({ name: input.name, activePeriod, schedule, trackingCycle, progressRule, completionRule, notify: input.notify });
     if (input.parentId) {
       const parent = await this.goalRepo.getDefinition(input.parentId);
       if (!parent || parent.archivedAt) errors.push('A meta pai não existe ou está arquivada.');
@@ -95,6 +97,7 @@ export class GoalService {
       showParentOnHome: input.showParentOnHome ?? true,
       inherit: { period: false, category: false, icon: false, color: false, reminders: false },
       reminders: [],
+      notify: input.notify ?? null,
     };
 
     await this.goalRepo.saveGoalWithRevision(definition, revision);
@@ -124,6 +127,7 @@ export class GoalService {
       trackingCycle: merged.trackingCycle,
       progressRule: merged.progressRule,
       completionRule: merged.completionRule,
+      notify: merged.notify,
     });
     if (errors.length) throw new GoalValidationError(errors);
 

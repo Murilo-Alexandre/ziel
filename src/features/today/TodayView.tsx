@@ -12,7 +12,7 @@ import { defaultExpanded } from './treeLayout';
 import { QuickStatusSheet } from '../../shared/components/QuickStatusSheet';
 import { useOverlays } from '../../shared/Overlays';
 import { UpdateBanner, UpdateSheet } from '../update/UpdateUi';
-import { useRevealOnKey } from '../../shared/motion';
+import { gsap, motionOK, ScrollTrigger, useRevealOnKey } from '../../shared/motion';
 import { errorMessage, useAppData } from '../../shared/AppData';
 import { useToast } from '../../shared/ui/Toast';
 
@@ -102,6 +102,18 @@ export const TodayView: React.FC = () => {
     if (occ) mutate(() => occurrenceService.recordQuantity(occ.id, value));
   };
 
+  const heroRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!heroRef.current || !motionOK()) return;
+    const ctx = gsap.context(() => {
+      // o título "afunda" e esmaece conforme a página rola (scrub; sem pin, a rolagem continua nativa)
+      gsap.to(heroRef.current, { opacity: 0.0, y: -34, scale: 0.96, transformOrigin: 'left top', ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: '+=240', scrub: 0.6 } });
+      gsap.to('[data-progress-card]', { y: -14, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: '+=360', scrub: 0.8 } });
+    });
+    return () => ctx.revert();
+  }, []);
+  void ScrollTrigger;
+
   const todayStr = todayLocal();
   const revealRef = useRevealOnKey(treeDate ?? '', treeDate !== null);
   const dateLabel = useMemo(() => {
@@ -118,12 +130,8 @@ export const TodayView: React.FC = () => {
 
   return (
     <div className="pb-nav mx-auto w-full max-w-lg px-5 pt-safe">
-      <header className="pb-5 pt-5">
+      <header ref={heroRef} className="pb-5 pt-5">
         <div className="flex items-center justify-between">
-          <button type="button" onClick={() => openEditor({ kind: 'create', parentId: null })} className="flex min-h-[48px] items-center gap-2.5 rounded-full bg-ziel-accent py-1.5 pl-1.5 pr-5 text-sm font-extrabold text-ziel-ink active:opacity-80">
-            <span className="orb !h-9 !w-9"><Plus className="h-5 w-5" /></span>
-            Nova meta
-          </button>
           <p className="text-sm font-semibold text-ziel-muted">{greeting()}</p>
         </div>
         <h1 className="mt-6 text-[34px] font-extrabold leading-[1.05] tracking-tight">{selectedDate === todayStr ? 'Suas metas de hoje' : 'Metas do dia'}</h1>

@@ -1,10 +1,23 @@
-import React, { createContext, useCallback, useContext, useRef, useState } from 'react';
+import React, { createContext, useCallback, useContext, useLayoutEffect, useRef, useState } from 'react';
+import { gsap, motionOK } from '../motion';
 
 type Toast = { id: number; message: string; tone: 'info' | 'error' | 'success' };
 type Ctx = { notify: (message: string, tone?: Toast['tone']) => void };
 
 const ToastContext = createContext<Ctx>({ notify: () => undefined });
 export const useToast = () => useContext(ToastContext);
+
+const ToastItem: React.FC<{ className: string; children: React.ReactNode }> = ({ className, children }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (ref.current && motionOK()) gsap.fromTo(ref.current, { y: -28, opacity: 0, scale: 0.94 }, { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.7)' });
+  }, []);
+  return (
+    <div ref={ref} role="status" className={className}>
+      {children}
+    </div>
+  );
+};
 
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -30,9 +43,9 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         className="pointer-events-none fixed inset-x-0 top-0 z-[60] flex flex-col items-center gap-2 px-4 pt-[calc(env(safe-area-inset-top)+0.75rem)]"
       >
         {toasts.map((t) => (
-          <div key={t.id} role="status" className={`pointer-events-auto max-w-md animate-fade rounded-chip border bg-ziel-raised px-4 py-3 text-sm shadow-xl ${tone[t.tone]}`}>
+          <ToastItem key={t.id} className={`pointer-events-auto max-w-md rounded-[20px] border bg-ziel-raised px-4 py-3 text-sm shadow-xl ${tone[t.tone]}`}>
             {t.message}
-          </div>
+          </ToastItem>
         ))}
       </div>
     </ToastContext.Provider>

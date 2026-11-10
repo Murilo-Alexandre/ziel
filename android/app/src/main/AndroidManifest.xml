@@ -40,4 +40,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Atualização do app pelo próprio Ziel (abre o instalador do Android; o usuário confirma) -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- Lembretes pontuais: alarmes exatos (Android 13+ concede automaticamente; 12 usa SCHEDULE_EXACT_ALARM) -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
 </manifest>

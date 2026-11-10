@@ -16,7 +16,7 @@ type Props = {
 };
 
 const OPTIONS: OccurrenceStatus[] = ['completed', 'partial', 'not_done'];
-const BLOCK: Record<OccurrenceStatus, string> = { completed: 'bg-block-lime', partial: 'bg-block-amber', not_done: 'bg-block-coral', pending: 'bg-block-sand' };
+const BLOCK: Record<OccurrenceStatus, string> = { completed: 'bg-block-green', partial: 'bg-block-yellow', not_done: 'bg-block-coral', pending: 'bg-ziel-raised' };
 
 export const QuickStatusSheet: React.FC<Props> = ({
   open,

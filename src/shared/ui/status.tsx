@@ -1,6 +1,7 @@
 import React from 'react';
 import { CheckCircle2, Circle, CircleDot, XCircle } from 'lucide-react';
 import { CycleComputedStatus, OccurrenceStatus } from '../../domain/types';
+import { AnimBar } from './Anim';
 
 /** Semântica de status centralizada: concluído=lima, parcial=âmbar, pendente=neutro, não realizado=coral. */
 export const STATUS_META: Record<
@@ -15,7 +16,7 @@ export const STATUS_META: Record<
 
 export const CYCLE_STATUS_META: Record<CycleComputedStatus, { label: string; text: string; bar: string }> = {
   completed: { label: 'Concluído', text: 'text-ziel-success', bar: 'bg-ziel-success' },
-  in_progress: { label: 'Em andamento', text: 'text-ziel-accent', bar: 'bg-ziel-accent' },
+  in_progress: { label: 'Em andamento', text: 'text-ziel-warning', bar: 'bg-ziel-warning' },
   pending: { label: 'Pendente', text: 'text-ziel-muted', bar: 'bg-ziel-accent' },
   not_done: { label: 'Não realizado', text: 'text-ziel-danger', bar: 'bg-ziel-danger' },
 };
@@ -26,21 +27,7 @@ export const ProgressBar: React.FC<{ value: number; barClass?: string; className
   className = '',
   label,
   trackClass = 'bg-ziel-line-soft',
-}) => {
-  const pct = Math.round(Math.min(1, Math.max(0, value)) * 100);
-  return (
-    <div
-      role="progressbar"
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={pct}
-      aria-label={label ?? 'Progresso'}
-      className={`h-2 w-full overflow-hidden rounded-full ${trackClass} ${className}`}
-    >
-      <div className={`h-full rounded-full transition-[width] duration-500 ease-out ${barClass}`} style={{ width: `${pct}%` }} />
-    </div>
-  );
-};
+}) => <AnimBar value={value} label={label} className={`h-2 w-full ${trackClass} ${className}`} fillClassName={barClass} />;
 
 export const StatusPill: React.FC<{ status: OccurrenceStatus; compact?: boolean }> = ({ status, compact }) => {
   const m = STATUS_META[status];

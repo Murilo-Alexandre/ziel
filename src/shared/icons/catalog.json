@@ -1,0 +1,2325 @@
+{
+ "categories": {
+  "saude": "Saúde",
+  "esportes": "Esportes",
+  "fitness": "Fitness e corpo",
+  "veiculos": "Veículos",
+  "comida": "Alimentação",
+  "trabalho": "Trabalho",
+  "estudos": "Estudos",
+  "viagens": "Viagens",
+  "financas": "Finanças",
+  "casa": "Casa",
+  "lazer": "Lazer e cultura",
+  "familia": "Família e pets",
+  "natureza": "Natureza",
+  "tech": "Tecnologia",
+  "bemestar": "Bem-estar e hábitos",
+  "geral": "Geral"
+ },
+ "icons": [
+  {
+   "id": "ph:pill",
+   "ph": "pill",
+   "label": "Remédio",
+   "cat": "saude",
+   "kw": "medicamento comprimido tomar"
+  },
+  {
+   "id": "ph:first-aid-kit",
+   "ph": "first-aid-kit",
+   "label": "Kit de primeiros socorros",
+   "cat": "saude",
+   "kw": "curativo emergência"
+  },
+  {
+   "id": "ph:first-aid",
+   "ph": "first-aid",
+   "label": "Primeiros socorros",
+   "cat": "saude",
+   "kw": "cruz saúde"
+  },
+  {
+   "id": "ph:stethoscope",
+   "ph": "stethoscope",
+   "label": "Médico",
+   "cat": "saude",
+   "kw": "consulta doutor estetoscópio"
+  },
+  {
+   "id": "ph:syringe",
+   "ph": "syringe",
+   "label": "Vacina / injeção",
+   "cat": "saude",
+   "kw": "seringa insulina aplicar"
+  },
+  {
+   "id": "ph:heartbeat",
+   "ph": "heartbeat",
+   "label": "Batimentos",
+   "cat": "saude",
+   "kw": "coração pulso cardio"
+  },
+  {
+   "id": "ph:hospital",
+   "ph": "hospital",
+   "label": "Hospital",
+   "cat": "saude",
+   "kw": "clínica pronto socorro"
+  },
+  {
+   "id": "ph:ambulance",
+   "ph": "ambulance",
+   "label": "Ambulância",
+   "cat": "saude",
+   "kw": "emergência samu"
+  },
+  {
+   "id": "ph:thermometer",
+   "ph": "thermometer",
+   "label": "Termômetro",
+   "cat": "saude",
+   "kw": "febre temperatura"
+  },
+  {
+   "id": "ph:tooth",
+   "ph": "tooth",
+   "label": "Dentista",
+   "cat": "saude",
+   "kw": "dente odontologia"
+  },
+  {
+   "id": "ph:eyeglasses",
+   "ph": "eyeglasses",
+   "label": "Óculos",
+   "cat": "saude",
+   "kw": "oftalmologista visão"
+  },
+  {
+   "id": "ph:eye",
+   "ph": "eye",
+   "label": "Olho",
+   "cat": "saude",
+   "kw": "visão colírio"
+  },
+  {
+   "id": "ph:ear",
+   "ph": "ear",
+   "label": "Ouvido",
+   "cat": "saude",
+   "kw": "audição otorrino"
+  },
+  {
+   "id": "ph:brain",
+   "ph": "brain",
+   "label": "Cérebro",
+   "cat": "saude",
+   "kw": "mente neurologia psicólogo"
+  },
+  {
+   "id": "ph:heart",
+   "ph": "heart",
+   "label": "Coração",
+   "cat": "saude",
+   "kw": "amor cardiologista"
+  },
+  {
+   "id": "ph:bandaids",
+   "ph": "bandaids",
+   "label": "Curativo",
+   "cat": "saude",
+   "kw": "machucado band-aid"
+  },
+  {
+   "id": "ph:test-tube",
+   "ph": "test-tube",
+   "label": "Exame",
+   "cat": "saude",
+   "kw": "laboratório sangue"
+  },
+  {
+   "id": "ph:dna",
+   "ph": "dna",
+   "label": "DNA",
+   "cat": "saude",
+   "kw": "genética"
+  },
+  {
+   "id": "ph:virus",
+   "ph": "virus",
+   "label": "Vírus",
+   "cat": "saude",
+   "kw": "gripe doença"
+  },
+  {
+   "id": "ph:wheelchair",
+   "ph": "wheelchair",
+   "label": "Acessibilidade",
+   "cat": "saude",
+   "kw": "cadeira de rodas fisioterapia"
+  },
+  {
+   "id": "ph:hand-heart",
+   "ph": "hand-heart",
+   "label": "Cuidado",
+   "cat": "saude",
+   "kw": "voluntariado doação"
+  },
+  {
+   "id": "ph:drop",
+   "ph": "drop",
+   "label": "Gota",
+   "cat": "saude",
+   "kw": "água hidratação sangue"
+  },
+  {
+   "id": "ph:drop-half",
+   "ph": "drop-half",
+   "label": "Hidratação",
+   "cat": "saude",
+   "kw": "água beber"
+  },
+  {
+   "id": "ph:bed",
+   "ph": "bed",
+   "label": "Cama",
+   "cat": "saude",
+   "kw": "dormir sono descanso"
+  },
+  {
+   "id": "ph:moon-stars",
+   "ph": "moon-stars",
+   "label": "Sono",
+   "cat": "saude",
+   "kw": "dormir noite"
+  },
+  {
+   "id": "ph:wind",
+   "ph": "wind",
+   "label": "Respiração",
+   "cat": "saude",
+   "kw": "pulmão fôlego"
+  },
+  {
+   "id": "ph:bone",
+   "ph": "bone",
+   "label": "Osso",
+   "cat": "saude",
+   "kw": "ortopedista fratura"
+  },
+  {
+   "id": "ph:baby",
+   "ph": "baby",
+   "label": "Bebê",
+   "cat": "saude",
+   "kw": "pediatra criança"
+  },
+  {
+   "id": "ph:prescription",
+   "ph": "prescription",
+   "label": "Receita",
+   "cat": "saude",
+   "kw": "receituário medicamento"
+  },
+  {
+   "id": "ph:clipboard-text",
+   "ph": "clipboard-text",
+   "label": "Prontuário",
+   "cat": "saude",
+   "kw": "ficha anotações"
+  },
+  {
+   "id": "ph:soccer-ball",
+   "ph": "soccer-ball",
+   "label": "Futebol",
+   "cat": "esportes",
+   "kw": "bola gol campo pelada"
+  },
+  {
+   "id": "ph:basketball",
+   "ph": "basketball",
+   "label": "Basquete",
+   "cat": "esportes",
+   "kw": "bola cesta"
+  },
+  {
+   "id": "ph:volleyball",
+   "ph": "volleyball",
+   "label": "Vôlei",
+   "cat": "esportes",
+   "kw": "bola rede"
+  },
+  {
+   "id": "ph:football",
+   "ph": "football",
+   "label": "Futebol americano",
+   "cat": "esportes",
+   "kw": "bola rugby"
+  },
+  {
+   "id": "ph:baseball",
+   "ph": "baseball",
+   "label": "Beisebol",
+   "cat": "esportes",
+   "kw": "bola"
+  },
+  {
+   "id": "ph:tennis-ball",
+   "ph": "tennis-ball",
+   "label": "Tênis (esporte)",
+   "cat": "esportes",
+   "kw": "raquete quadra bola"
+  },
+  {
+   "id": "ph:golf",
+   "ph": "golf",
+   "label": "Golfe",
+   "cat": "esportes",
+   "kw": "bola taco"
+  },
+  {
+   "id": "ph:boxing-glove",
+   "ph": "boxing-glove",
+   "label": "Boxe",
+   "cat": "esportes",
+   "kw": "luta luva"
+  },
+  {
+   "id": "ph:person-simple-run",
+   "ph": "person-simple-run",
+   "label": "Corrida",
+   "cat": "esportes",
+   "kw": "correr running treino"
+  },
+  {
+   "id": "ph:person-simple-walk",
+   "ph": "person-simple-walk",
+   "label": "Caminhada",
+   "cat": "esportes",
+   "kw": "andar passos"
+  },
+  {
+   "id": "ph:person-simple-swim",
+   "ph": "person-simple-swim",
+   "label": "Natação",
+   "cat": "esportes",
+   "kw": "nadar piscina"
+  },
+  {
+   "id": "ph:swimming-pool",
+   "ph": "swimming-pool",
+   "label": "Piscina",
+   "cat": "esportes",
+   "kw": "nadar natação"
+  },
+  {
+   "id": "ph:person-simple-bike",
+   "ph": "person-simple-bike",
+   "label": "Ciclismo",
+   "cat": "esportes",
+   "kw": "bicicleta pedalar"
+  },
+  {
+   "id": "ph:person-simple-hike",
+   "ph": "person-simple-hike",
+   "label": "Trilha",
+   "cat": "esportes",
+   "kw": "caminhada montanha hiking"
+  },
+  {
+   "id": "ph:person-simple-ski",
+   "ph": "person-simple-ski",
+   "label": "Esqui",
+   "cat": "esportes",
+   "kw": "neve"
+  },
+  {
+   "id": "ph:person-simple-snowboard",
+   "ph": "person-simple-snowboard",
+   "label": "Snowboard",
+   "cat": "esportes",
+   "kw": "neve"
+  },
+  {
+   "id": "ph:person-simple-tai-chi",
+   "ph": "person-simple-tai-chi",
+   "label": "Artes marciais",
+   "cat": "esportes",
+   "kw": "tai chi luta karatê judô"
+  },
+  {
+   "id": "ph:sneaker",
+   "ph": "sneaker",
+   "label": "Tênis esportivo",
+   "cat": "esportes",
+   "kw": "calçado corrida treino sapatilha"
+  },
+  {
+   "id": "ph:sneaker-move",
+   "ph": "sneaker-move",
+   "label": "Tênis em movimento",
+   "cat": "esportes",
+   "kw": "corrida calçado"
+  },
+  {
+   "id": "ph:trophy",
+   "ph": "trophy",
+   "label": "Troféu",
+   "cat": "esportes",
+   "kw": "campeonato vitória"
+  },
+  {
+   "id": "ph:medal",
+   "ph": "medal",
+   "label": "Medalha",
+   "cat": "esportes",
+   "kw": "conquista prêmio"
+  },
+  {
+   "id": "ph:flag-checkered",
+   "ph": "flag-checkered",
+   "label": "Bandeira quadriculada",
+   "cat": "esportes",
+   "kw": "corrida automobilismo largada"
+  },
+  {
+   "id": "ph:target",
+   "ph": "target",
+   "label": "Alvo",
+   "cat": "esportes",
+   "kw": "mira meta foco"
+  },
+  {
+   "id": "ph:hockey",
+   "ph": "hockey",
+   "label": "Hóquei",
+   "cat": "esportes",
+   "kw": "taco"
+  },
+  {
+   "id": "ph:court-basketball",
+   "ph": "court-basketball",
+   "label": "Quadra",
+   "cat": "esportes",
+   "kw": "basquete"
+  },
+  {
+   "id": "ph:sword",
+   "ph": "sword",
+   "label": "Espada",
+   "cat": "esportes",
+   "kw": "esgrima luta"
+  },
+  {
+   "id": "ph:bowling-ball",
+   "ph": "bowling-ball",
+   "label": "Boliche",
+   "cat": "esportes",
+   "kw": "bola jogo"
+  },
+  {
+   "id": "ph:person-arms-spread",
+   "ph": "person-arms-spread",
+   "label": "Treino funcional",
+   "cat": "esportes",
+   "kw": "exercício"
+  },
+  {
+   "id": "ph:mountains",
+   "ph": "mountains",
+   "label": "Escalada",
+   "cat": "esportes",
+   "kw": "montanha"
+  },
+  {
+   "id": "ph:barbell",
+   "ph": "barbell",
+   "label": "Musculação",
+   "cat": "fitness",
+   "kw": "academia treino peso halteres"
+  },
+  {
+   "id": "ph:person-simple-circle",
+   "ph": "person-simple-circle",
+   "label": "Corpo",
+   "cat": "fitness",
+   "kw": "postura"
+  },
+  {
+   "id": "ph:timer",
+   "ph": "timer",
+   "label": "Cronômetro",
+   "cat": "fitness",
+   "kw": "tempo série"
+  },
+  {
+   "id": "ph:scales",
+   "ph": "scales",
+   "label": "Balança",
+   "cat": "fitness",
+   "kw": "peso dieta"
+  },
+  {
+   "id": "ph:ruler",
+   "ph": "ruler",
+   "label": "Medidas",
+   "cat": "fitness",
+   "kw": "fita métrica"
+  },
+  {
+   "id": "ph:fire",
+   "ph": "fire",
+   "label": "Calorias",
+   "cat": "fitness",
+   "kw": "queimar chama"
+  },
+  {
+   "id": "ph:lightning",
+   "ph": "lightning",
+   "label": "Energia",
+   "cat": "fitness",
+   "kw": "força raio"
+  },
+  {
+   "id": "ph:hand-fist",
+   "ph": "hand-fist",
+   "label": "Força",
+   "cat": "fitness",
+   "kw": "punho luta"
+  },
+  {
+   "id": "ph:bicycle",
+   "ph": "bicycle",
+   "label": "Spinning",
+   "cat": "fitness",
+   "kw": "bicicleta pedal"
+  },
+  {
+   "id": "ph:heart-half",
+   "ph": "heart-half",
+   "label": "Cardio",
+   "cat": "fitness",
+   "kw": "aeróbico coração"
+  },
+  {
+   "id": "ph:motorcycle",
+   "ph": "motorcycle",
+   "label": "Moto / Motocross",
+   "cat": "veiculos",
+   "kw": "motocicleta motocross trilha cross enduro motoboy"
+  },
+  {
+   "id": "ph:scooter",
+   "ph": "scooter",
+   "label": "Scooter",
+   "cat": "veiculos",
+   "kw": "lambreta moto elétrica"
+  },
+  {
+   "id": "ph:car",
+   "ph": "car",
+   "label": "Carro",
+   "cat": "veiculos",
+   "kw": "automóvel dirigir"
+  },
+  {
+   "id": "ph:car-simple",
+   "ph": "car-simple",
+   "label": "Carro simples",
+   "cat": "veiculos",
+   "kw": "automóvel"
+  },
+  {
+   "id": "ph:car-profile",
+   "ph": "car-profile",
+   "label": "Carro (perfil)",
+   "cat": "veiculos",
+   "kw": "automóvel esportivo"
+  },
+  {
+   "id": "ph:taxi",
+   "ph": "taxi",
+   "label": "Táxi",
+   "cat": "veiculos",
+   "kw": "aplicativo corrida"
+  },
+  {
+   "id": "ph:jeep",
+   "ph": "jeep",
+   "label": "Jipe",
+   "cat": "veiculos",
+   "kw": "4x4 off-road"
+  },
+  {
+   "id": "ph:van",
+   "ph": "van",
+   "label": "Van",
+   "cat": "veiculos",
+   "kw": "utilitário"
+  },
+  {
+   "id": "ph:truck",
+   "ph": "truck",
+   "label": "Caminhão",
+   "cat": "veiculos",
+   "kw": "frete mudança"
+  },
+  {
+   "id": "ph:truck-trailer",
+   "ph": "truck-trailer",
+   "label": "Carreta",
+   "cat": "veiculos",
+   "kw": "transporte"
+  },
+  {
+   "id": "ph:bus",
+   "ph": "bus",
+   "label": "Ônibus",
+   "cat": "veiculos",
+   "kw": "transporte público"
+  },
+  {
+   "id": "ph:train",
+   "ph": "train",
+   "label": "Trem",
+   "cat": "veiculos",
+   "kw": "metrô ferrovia"
+  },
+  {
+   "id": "ph:airplane",
+   "ph": "airplane",
+   "label": "Avião",
+   "cat": "veiculos",
+   "kw": "voo viagem"
+  },
+  {
+   "id": "ph:boat",
+   "ph": "boat",
+   "label": "Barco",
+   "cat": "veiculos",
+   "kw": "lancha navegar"
+  },
+  {
+   "id": "ph:sailboat",
+   "ph": "sailboat",
+   "label": "Veleiro",
+   "cat": "veiculos",
+   "kw": "vela náutico"
+  },
+  {
+   "id": "ph:gas-pump",
+   "ph": "gas-pump",
+   "label": "Combustível",
+   "cat": "veiculos",
+   "kw": "posto abastecer gasolina"
+  },
+  {
+   "id": "ph:gas-can",
+   "ph": "gas-can",
+   "label": "Galão",
+   "cat": "veiculos",
+   "kw": "combustível"
+  },
+  {
+   "id": "ph:car-battery",
+   "ph": "car-battery",
+   "label": "Bateria do carro",
+   "cat": "veiculos",
+   "kw": "elétrica"
+  },
+  {
+   "id": "ph:wrench",
+   "ph": "wrench",
+   "label": "Manutenção",
+   "cat": "veiculos",
+   "kw": "oficina chave mecânico"
+  },
+  {
+   "id": "ph:engine",
+   "ph": "engine",
+   "label": "Motor",
+   "cat": "veiculos",
+   "kw": "mecânica revisão"
+  },
+  {
+   "id": "ph:steering-wheel",
+   "ph": "steering-wheel",
+   "label": "Volante",
+   "cat": "veiculos",
+   "kw": "dirigir direção"
+  },
+  {
+   "id": "ph:traffic-cone",
+   "ph": "traffic-cone",
+   "label": "Trânsito",
+   "cat": "veiculos",
+   "kw": "cone obra"
+  },
+  {
+   "id": "ph:hard-drives",
+   "ph": "hard-drives",
+   "label": "Pneu e revisão",
+   "cat": "veiculos",
+   "kw": "calibrar"
+  },
+  {
+   "id": "ph:airplane-in-flight",
+   "ph": "airplane-in-flight",
+   "label": "Voo",
+   "cat": "veiculos",
+   "kw": "avião piloto"
+  },
+  {
+   "id": "ph:rocket",
+   "ph": "rocket",
+   "label": "Foguete",
+   "cat": "veiculos",
+   "kw": "lançamento projeto"
+  },
+  {
+   "id": "ph:fork-knife",
+   "ph": "fork-knife",
+   "label": "Refeição",
+   "cat": "comida",
+   "kw": "almoço jantar comer restaurante"
+  },
+  {
+   "id": "ph:bowl-food",
+   "ph": "bowl-food",
+   "label": "Prato",
+   "cat": "comida",
+   "kw": "refeição comida"
+  },
+  {
+   "id": "ph:cooking-pot",
+   "ph": "cooking-pot",
+   "label": "Cozinhar",
+   "cat": "comida",
+   "kw": "panela receita marmita"
+  },
+  {
+   "id": "ph:chef-hat",
+   "ph": "chef-hat",
+   "label": "Chef",
+   "cat": "comida",
+   "kw": "cozinha culinária"
+  },
+  {
+   "id": "ph:coffee",
+   "ph": "coffee",
+   "label": "Café",
+   "cat": "comida",
+   "kw": "cafezinho manhã"
+  },
+  {
+   "id": "ph:coffee-bean",
+   "ph": "coffee-bean",
+   "label": "Café em grão",
+   "cat": "comida",
+   "kw": "cafeína"
+  },
+  {
+   "id": "ph:bread",
+   "ph": "bread",
+   "label": "Pão",
+   "cat": "comida",
+   "kw": "padaria café da manhã"
+  },
+  {
+   "id": "ph:cookie",
+   "ph": "cookie",
+   "label": "Lanche",
+   "cat": "comida",
+   "kw": "biscoito padaria"
+  },
+  {
+   "id": "ph:egg",
+   "ph": "egg",
+   "label": "Ovo",
+   "cat": "comida",
+   "kw": "proteína café da manhã"
+  },
+  {
+   "id": "ph:apple-logo",
+   "ph": "apple-logo",
+   "label": "Maçã",
+   "cat": "comida",
+   "kw": "fruta"
+  },
+  {
+   "id": "ph:orange",
+   "ph": "orange",
+   "label": "Laranja",
+   "cat": "comida",
+   "kw": "fruta vitamina c"
+  },
+  {
+   "id": "ph:orange-slice",
+   "ph": "orange-slice",
+   "label": "Fruta",
+   "cat": "comida",
+   "kw": "laranja"
+  },
+  {
+   "id": "ph:carrot",
+   "ph": "carrot",
+   "label": "Cenoura",
+   "cat": "comida",
+   "kw": "legume vegetal"
+  },
+  {
+   "id": "ph:pepper",
+   "ph": "pepper",
+   "label": "Pimenta",
+   "cat": "comida",
+   "kw": "tempero"
+  },
+  {
+   "id": "ph:fish",
+   "ph": "fish",
+   "label": "Peixe",
+   "cat": "comida",
+   "kw": "proteína"
+  },
+  {
+   "id": "ph:fish-simple",
+   "ph": "fish-simple",
+   "label": "Peixe simples",
+   "cat": "comida",
+   "kw": "pescado"
+  },
+  {
+   "id": "ph:hamburger",
+   "ph": "hamburger",
+   "label": "Hambúrguer",
+   "cat": "comida",
+   "kw": "lanche fast food"
+  },
+  {
+   "id": "ph:pizza",
+   "ph": "pizza",
+   "label": "Pizza",
+   "cat": "comida",
+   "kw": "lanche"
+  },
+  {
+   "id": "ph:popsicle",
+   "ph": "popsicle",
+   "label": "Picolé",
+   "cat": "comida",
+   "kw": "sorvete sobremesa"
+  },
+  {
+   "id": "ph:cake",
+   "ph": "cake",
+   "label": "Bolo",
+   "cat": "comida",
+   "kw": "sobremesa aniversário"
+  },
+  {
+   "id": "ph:ice-cream",
+   "ph": "ice-cream",
+   "label": "Sorvete",
+   "cat": "comida",
+   "kw": "sobremesa"
+  },
+  {
+   "id": "ph:cheese",
+   "ph": "cheese",
+   "label": "Queijo",
+   "cat": "comida",
+   "kw": "laticínio"
+  },
+  {
+   "id": "ph:wine",
+   "ph": "wine",
+   "label": "Vinho",
+   "cat": "comida",
+   "kw": "bebida"
+  },
+  {
+   "id": "ph:beer-bottle",
+   "ph": "beer-bottle",
+   "label": "Cerveja",
+   "cat": "comida",
+   "kw": "bebida"
+  },
+  {
+   "id": "ph:martini",
+   "ph": "martini",
+   "label": "Drink",
+   "cat": "comida",
+   "kw": "bebida coquetel"
+  },
+  {
+   "id": "ph:beer-stein",
+   "ph": "beer-stein",
+   "label": "Chope",
+   "cat": "comida",
+   "kw": "cerveja bar"
+  },
+  {
+   "id": "ph:grains",
+   "ph": "grains",
+   "label": "Grãos",
+   "cat": "comida",
+   "kw": "cereais aveia"
+  },
+  {
+   "id": "ph:avocado",
+   "ph": "avocado",
+   "label": "Abacate",
+   "cat": "comida",
+   "kw": "fruta"
+  },
+  {
+   "id": "ph:cherries",
+   "ph": "cherries",
+   "label": "Cerejas",
+   "cat": "comida",
+   "kw": "fruta"
+  },
+  {
+   "id": "ph:bowl-steam",
+   "ph": "bowl-steam",
+   "label": "Sopa",
+   "cat": "comida",
+   "kw": "caldo"
+  },
+  {
+   "id": "ph:shopping-cart",
+   "ph": "shopping-cart",
+   "label": "Mercado",
+   "cat": "comida",
+   "kw": "compras supermercado feira"
+  },
+  {
+   "id": "ph:basket",
+   "ph": "basket",
+   "label": "Cesta",
+   "cat": "comida",
+   "kw": "feira compras"
+  },
+  {
+   "id": "ph:knife",
+   "ph": "knife",
+   "label": "Faca",
+   "cat": "comida",
+   "kw": "cozinha"
+  },
+  {
+   "id": "ph:flower-tulip",
+   "ph": "flower-tulip",
+   "label": "Tulipa",
+   "cat": "comida",
+   "kw": "chá flor"
+  },
+  {
+   "id": "ph:plant",
+   "ph": "plant",
+   "label": "Salada",
+   "cat": "comida",
+   "kw": "verdura saudável"
+  },
+  {
+   "id": "ph:briefcase",
+   "ph": "briefcase",
+   "label": "Trabalho",
+   "cat": "trabalho",
+   "kw": "emprego escritório"
+  },
+  {
+   "id": "ph:briefcase-metal",
+   "ph": "briefcase-metal",
+   "label": "Pasta executiva",
+   "cat": "trabalho",
+   "kw": "reunião"
+  },
+  {
+   "id": "ph:suitcase",
+   "ph": "suitcase",
+   "label": "Maleta",
+   "cat": "trabalho",
+   "kw": "negócios"
+  },
+  {
+   "id": "ph:office-chair",
+   "ph": "office-chair",
+   "label": "Escritório",
+   "cat": "trabalho",
+   "kw": "home office cadeira"
+  },
+  {
+   "id": "ph:desktop",
+   "ph": "desktop",
+   "label": "Computador",
+   "cat": "trabalho",
+   "kw": "pc estação"
+  },
+  {
+   "id": "ph:laptop",
+   "ph": "laptop",
+   "label": "Notebook",
+   "cat": "trabalho",
+   "kw": "trabalhar remoto"
+  },
+  {
+   "id": "ph:presentation-chart",
+   "ph": "presentation-chart",
+   "label": "Apresentação",
+   "cat": "trabalho",
+   "kw": "slides reunião"
+  },
+  {
+   "id": "ph:chart-line-up",
+   "ph": "chart-line-up",
+   "label": "Resultados",
+   "cat": "trabalho",
+   "kw": "crescimento metas vendas"
+  },
+  {
+   "id": "ph:chart-bar",
+   "ph": "chart-bar",
+   "label": "Relatório",
+   "cat": "trabalho",
+   "kw": "gráfico dados"
+  },
+  {
+   "id": "ph:chart-pie",
+   "ph": "chart-pie",
+   "label": "Gráfico de pizza",
+   "cat": "trabalho",
+   "kw": "análise"
+  },
+  {
+   "id": "ph:handshake",
+   "ph": "handshake",
+   "label": "Negócio",
+   "cat": "trabalho",
+   "kw": "acordo cliente"
+  },
+  {
+   "id": "ph:users-three",
+   "ph": "users-three",
+   "label": "Equipe",
+   "cat": "trabalho",
+   "kw": "time reunião amigos grupo"
+  },
+  {
+   "id": "ph:calendar-check",
+   "ph": "calendar-check",
+   "label": "Compromisso",
+   "cat": "trabalho",
+   "kw": "agenda reunião"
+  },
+  {
+   "id": "ph:envelope",
+   "ph": "envelope",
+   "label": "E-mail",
+   "cat": "trabalho",
+   "kw": "mensagem responder"
+  },
+  {
+   "id": "ph:phone",
+   "ph": "phone",
+   "label": "Ligação",
+   "cat": "trabalho",
+   "kw": "telefonar contato"
+  },
+  {
+   "id": "ph:phone-call",
+   "ph": "phone-call",
+   "label": "Telefonema",
+   "cat": "trabalho",
+   "kw": "ligar"
+  },
+  {
+   "id": "ph:list-checks",
+   "ph": "list-checks",
+   "label": "Checklist",
+   "cat": "trabalho",
+   "kw": "lista tarefas"
+  },
+  {
+   "id": "ph:folder-open",
+   "ph": "folder-open",
+   "label": "Projeto",
+   "cat": "trabalho",
+   "kw": "pasta arquivos"
+  },
+  {
+   "id": "ph:file-text",
+   "ph": "file-text",
+   "label": "Documento",
+   "cat": "trabalho",
+   "kw": "contrato relatório"
+  },
+  {
+   "id": "ph:printer",
+   "ph": "printer",
+   "label": "Impressora",
+   "cat": "trabalho",
+   "kw": "imprimir"
+  },
+  {
+   "id": "ph:paperclip",
+   "ph": "paperclip",
+   "label": "Anexo",
+   "cat": "trabalho",
+   "kw": "arquivo"
+  },
+  {
+   "id": "ph:hard-hat",
+   "ph": "hard-hat",
+   "label": "Obra",
+   "cat": "trabalho",
+   "kw": "construção engenheiro"
+  },
+  {
+   "id": "ph:factory",
+   "ph": "factory",
+   "label": "Indústria",
+   "cat": "trabalho",
+   "kw": "fábrica produção"
+  },
+  {
+   "id": "ph:storefront",
+   "ph": "storefront",
+   "label": "Loja",
+   "cat": "trabalho",
+   "kw": "comércio negócio"
+  },
+  {
+   "id": "ph:buildings",
+   "ph": "buildings",
+   "label": "Prédio",
+   "cat": "trabalho",
+   "kw": "empresa escritório"
+  },
+  {
+   "id": "ph:identification-card",
+   "ph": "identification-card",
+   "label": "Crachá",
+   "cat": "trabalho",
+   "kw": "documento rh"
+  },
+  {
+   "id": "ph:lightbulb",
+   "ph": "lightbulb",
+   "label": "Ideia",
+   "cat": "trabalho",
+   "kw": "criatividade inovação lâmpada"
+  },
+  {
+   "id": "ph:stamp",
+   "ph": "stamp",
+   "label": "Burocracia",
+   "cat": "trabalho",
+   "kw": "carimbo cartório"
+  },
+  {
+   "id": "ph:graduation-cap",
+   "ph": "graduation-cap",
+   "label": "Formatura",
+   "cat": "estudos",
+   "kw": "faculdade universidade"
+  },
+  {
+   "id": "ph:book-open",
+   "ph": "book-open",
+   "label": "Leitura",
+   "cat": "estudos",
+   "kw": "livro ler"
+  },
+  {
+   "id": "ph:book",
+   "ph": "book",
+   "label": "Livro",
+   "cat": "estudos",
+   "kw": "ler estudo"
+  },
+  {
+   "id": "ph:books",
+   "ph": "books",
+   "label": "Biblioteca",
+   "cat": "estudos",
+   "kw": "livros"
+  },
+  {
+   "id": "ph:book-bookmark",
+   "ph": "book-bookmark",
+   "label": "Livro marcado",
+   "cat": "estudos",
+   "kw": "leitura"
+  },
+  {
+   "id": "ph:notebook",
+   "ph": "notebook",
+   "label": "Caderno",
+   "cat": "estudos",
+   "kw": "anotações aula"
+  },
+  {
+   "id": "ph:pencil-simple",
+   "ph": "pencil-simple",
+   "label": "Escrever",
+   "cat": "estudos",
+   "kw": "lápis redação"
+  },
+  {
+   "id": "ph:pen-nib",
+   "ph": "pen-nib",
+   "label": "Caneta",
+   "cat": "estudos",
+   "kw": "escrita caligrafia"
+  },
+  {
+   "id": "ph:student",
+   "ph": "student",
+   "label": "Estudante",
+   "cat": "estudos",
+   "kw": "aluno aula"
+  },
+  {
+   "id": "ph:chalkboard-teacher",
+   "ph": "chalkboard-teacher",
+   "label": "Professor",
+   "cat": "estudos",
+   "kw": "aula lousa"
+  },
+  {
+   "id": "ph:chalkboard",
+   "ph": "chalkboard",
+   "label": "Lousa",
+   "cat": "estudos",
+   "kw": "aula"
+  },
+  {
+   "id": "ph:exam",
+   "ph": "exam",
+   "label": "Prova",
+   "cat": "estudos",
+   "kw": "teste exame vestibular enem"
+  },
+  {
+   "id": "ph:translate",
+   "ph": "translate",
+   "label": "Idiomas",
+   "cat": "estudos",
+   "kw": "inglês línguas tradução"
+  },
+  {
+   "id": "ph:calculator",
+   "ph": "calculator",
+   "label": "Calculadora",
+   "cat": "estudos",
+   "kw": "matemática contas"
+  },
+  {
+   "id": "ph:math-operations",
+   "ph": "math-operations",
+   "label": "Matemática",
+   "cat": "estudos",
+   "kw": "cálculo"
+  },
+  {
+   "id": "ph:atom",
+   "ph": "atom",
+   "label": "Física",
+   "cat": "estudos",
+   "kw": "ciência átomo"
+  },
+  {
+   "id": "ph:flask",
+   "ph": "flask",
+   "label": "Química",
+   "cat": "estudos",
+   "kw": "laboratório ciência"
+  },
+  {
+   "id": "ph:microscope",
+   "ph": "microscope",
+   "label": "Biologia",
+   "cat": "estudos",
+   "kw": "ciência"
+  },
+  {
+   "id": "ph:globe-hemisphere-west",
+   "ph": "globe-hemisphere-west",
+   "label": "Geografia",
+   "cat": "estudos",
+   "kw": "mundo planeta"
+  },
+  {
+   "id": "ph:compass-tool",
+   "ph": "compass-tool",
+   "label": "Geometria",
+   "cat": "estudos",
+   "kw": "desenho compasso"
+  },
+  {
+   "id": "ph:code",
+   "ph": "code",
+   "label": "Programação",
+   "cat": "estudos",
+   "kw": "código desenvolver"
+  },
+  {
+   "id": "ph:terminal-window",
+   "ph": "terminal-window",
+   "label": "Terminal",
+   "cat": "estudos",
+   "kw": "programar"
+  },
+  {
+   "id": "ph:headphones",
+   "ph": "headphones",
+   "label": "Podcast / aula",
+   "cat": "estudos",
+   "kw": "áudio ouvir fones"
+  },
+  {
+   "id": "ph:video",
+   "ph": "video",
+   "label": "Videoaula",
+   "cat": "estudos",
+   "kw": "curso vídeo"
+  },
+  {
+   "id": "ph:certificate",
+   "ph": "certificate",
+   "label": "Certificado",
+   "cat": "estudos",
+   "kw": "curso diploma"
+  },
+  {
+   "id": "ph:backpack",
+   "ph": "backpack",
+   "label": "Mochila",
+   "cat": "estudos",
+   "kw": "escola aula"
+  },
+  {
+   "id": "ph:airplane-tilt",
+   "ph": "airplane-tilt",
+   "label": "Viagem de avião",
+   "cat": "viagens",
+   "kw": "voo aeroporto"
+  },
+  {
+   "id": "ph:airplane-takeoff",
+   "ph": "airplane-takeoff",
+   "label": "Decolagem",
+   "cat": "viagens",
+   "kw": "voo partida"
+  },
+  {
+   "id": "ph:suitcase-rolling",
+   "ph": "suitcase-rolling",
+   "label": "Mala",
+   "cat": "viagens",
+   "kw": "bagagem viagem"
+  },
+  {
+   "id": "ph:map-trifold",
+   "ph": "map-trifold",
+   "label": "Mapa",
+   "cat": "viagens",
+   "kw": "roteiro"
+  },
+  {
+   "id": "ph:map-pin",
+   "ph": "map-pin",
+   "label": "Local",
+   "cat": "viagens",
+   "kw": "lugar endereço"
+  },
+  {
+   "id": "ph:compass",
+   "ph": "compass",
+   "label": "Bússola",
+   "cat": "viagens",
+   "kw": "direção aventura"
+  },
+  {
+   "id": "ph:globe",
+   "ph": "globe",
+   "label": "Mundo",
+   "cat": "viagens",
+   "kw": "internacional"
+  },
+  {
+   "id": "ph:tent",
+   "ph": "tent",
+   "label": "Camping",
+   "cat": "viagens",
+   "kw": "acampar barraca"
+  },
+  {
+   "id": "ph:campfire",
+   "ph": "campfire",
+   "label": "Fogueira",
+   "cat": "viagens",
+   "kw": "acampamento"
+  },
+  {
+   "id": "ph:beach-ball",
+   "ph": "beach-ball",
+   "label": "Praia",
+   "cat": "viagens",
+   "kw": "verão bola"
+  },
+  {
+   "id": "ph:umbrella-simple",
+   "ph": "umbrella-simple",
+   "label": "Guarda-chuva",
+   "cat": "viagens",
+   "kw": "chuva praia"
+  },
+  {
+   "id": "ph:sun",
+   "ph": "sun",
+   "label": "Sol",
+   "cat": "viagens",
+   "kw": "verão dia"
+  },
+  {
+   "id": "ph:sun-horizon",
+   "ph": "sun-horizon",
+   "label": "Pôr do sol",
+   "cat": "viagens",
+   "kw": "paisagem manhã acordar cedo"
+  },
+  {
+   "id": "ph:camera",
+   "ph": "camera",
+   "label": "Fotografia",
+   "cat": "viagens",
+   "kw": "foto câmera hobby"
+  },
+  {
+   "id": "ph:ticket",
+   "ph": "ticket",
+   "label": "Ingresso",
+   "cat": "viagens",
+   "kw": "evento passagem show"
+  },
+  {
+   "id": "ph:train-simple",
+   "ph": "train-simple",
+   "label": "Trem de viagem",
+   "cat": "viagens",
+   "kw": "trem"
+  },
+  {
+   "id": "ph:anchor",
+   "ph": "anchor",
+   "label": "Âncora",
+   "cat": "viagens",
+   "kw": "navegar porto"
+  },
+  {
+   "id": "ph:lighthouse",
+   "ph": "lighthouse",
+   "label": "Farol",
+   "cat": "viagens",
+   "kw": "mar"
+  },
+  {
+   "id": "ph:island",
+   "ph": "island",
+   "label": "Ilha",
+   "cat": "viagens",
+   "kw": "férias tropical"
+  },
+  {
+   "id": "ph:cactus",
+   "ph": "cactus",
+   "label": "Deserto",
+   "cat": "viagens",
+   "kw": "cacto"
+  },
+  {
+   "id": "ph:binoculars",
+   "ph": "binoculars",
+   "label": "Observação",
+   "cat": "viagens",
+   "kw": "aventura"
+  },
+  {
+   "id": "ph:wallet",
+   "ph": "wallet",
+   "label": "Carteira",
+   "cat": "financas",
+   "kw": "dinheiro gastos"
+  },
+  {
+   "id": "ph:piggy-bank",
+   "ph": "piggy-bank",
+   "label": "Poupança",
+   "cat": "financas",
+   "kw": "economizar cofrinho"
+  },
+  {
+   "id": "ph:bank",
+   "ph": "bank",
+   "label": "Banco",
+   "cat": "financas",
+   "kw": "conta agência"
+  },
+  {
+   "id": "ph:credit-card",
+   "ph": "credit-card",
+   "label": "Cartão",
+   "cat": "financas",
+   "kw": "fatura crédito"
+  },
+  {
+   "id": "ph:money",
+   "ph": "money",
+   "label": "Dinheiro",
+   "cat": "financas",
+   "kw": "notas"
+  },
+  {
+   "id": "ph:coins",
+   "ph": "coins",
+   "label": "Moedas",
+   "cat": "financas",
+   "kw": "troco economia"
+  },
+  {
+   "id": "ph:currency-dollar",
+   "ph": "currency-dollar",
+   "label": "Dólar",
+   "cat": "financas",
+   "kw": "câmbio moeda"
+  },
+  {
+   "id": "ph:currency-circle-dollar",
+   "ph": "currency-circle-dollar",
+   "label": "Moeda",
+   "cat": "financas",
+   "kw": "dinheiro"
+  },
+  {
+   "id": "ph:trend-up",
+   "ph": "trend-up",
+   "label": "Alta / investimentos",
+   "cat": "financas",
+   "kw": "lucro rendimento ações"
+  },
+  {
+   "id": "ph:trend-down",
+   "ph": "trend-down",
+   "label": "Queda",
+   "cat": "financas",
+   "kw": "prejuízo gasto"
+  },
+  {
+   "id": "ph:receipt",
+   "ph": "receipt",
+   "label": "Nota fiscal",
+   "cat": "financas",
+   "kw": "recibo comprovante"
+  },
+  {
+   "id": "ph:invoice",
+   "ph": "invoice",
+   "label": "Boleto",
+   "cat": "financas",
+   "kw": "conta pagar fatura"
+  },
+  {
+   "id": "ph:hand-coins",
+   "ph": "hand-coins",
+   "label": "Receber",
+   "cat": "financas",
+   "kw": "salário pagamento"
+  },
+  {
+   "id": "ph:percent",
+   "ph": "percent",
+   "label": "Juros",
+   "cat": "financas",
+   "kw": "desconto taxa"
+  },
+  {
+   "id": "ph:shopping-bag",
+   "ph": "shopping-bag",
+   "label": "Compras",
+   "cat": "financas",
+   "kw": "sacola shopping"
+  },
+  {
+   "id": "ph:tag",
+   "ph": "tag",
+   "label": "Promoção",
+   "cat": "financas",
+   "kw": "preço desconto"
+  },
+  {
+   "id": "ph:vault",
+   "ph": "vault",
+   "label": "Cofre",
+   "cat": "financas",
+   "kw": "reserva segurança"
+  },
+  {
+   "id": "ph:calendar-dots",
+   "ph": "calendar-dots",
+   "label": "Vencimento",
+   "cat": "financas",
+   "kw": "data pagar"
+  },
+  {
+   "id": "ph:house",
+   "ph": "house",
+   "label": "Casa",
+   "cat": "casa",
+   "kw": "lar moradia"
+  },
+  {
+   "id": "ph:couch",
+   "ph": "couch",
+   "label": "Sofá",
+   "cat": "casa",
+   "kw": "sala descansar"
+  },
+  {
+   "id": "ph:armchair",
+   "ph": "armchair",
+   "label": "Poltrona",
+   "cat": "casa",
+   "kw": "sala"
+  },
+  {
+   "id": "ph:bathtub",
+   "ph": "bathtub",
+   "label": "Banho",
+   "cat": "casa",
+   "kw": "banheiro"
+  },
+  {
+   "id": "ph:shower",
+   "ph": "shower",
+   "label": "Chuveiro",
+   "cat": "casa",
+   "kw": "banho higiene"
+  },
+  {
+   "id": "ph:toilet",
+   "ph": "toilet",
+   "label": "Banheiro",
+   "cat": "casa",
+   "kw": "higiene"
+  },
+  {
+   "id": "ph:broom",
+   "ph": "broom",
+   "label": "Limpeza",
+   "cat": "casa",
+   "kw": "vassoura faxina"
+  },
+  {
+   "id": "ph:washing-machine",
+   "ph": "washing-machine",
+   "label": "Lavar roupa",
+   "cat": "casa",
+   "kw": "máquina lavanderia"
+  },
+  {
+   "id": "ph:t-shirt",
+   "ph": "t-shirt",
+   "label": "Roupas",
+   "cat": "casa",
+   "kw": "vestuário lavar"
+  },
+  {
+   "id": "ph:lamp",
+   "ph": "lamp",
+   "label": "Luz",
+   "cat": "casa",
+   "kw": "abajur"
+  },
+  {
+   "id": "ph:plug",
+   "ph": "plug",
+   "label": "Tomada",
+   "cat": "casa",
+   "kw": "energia"
+  },
+  {
+   "id": "ph:hammer",
+   "ph": "hammer",
+   "label": "Reparos",
+   "cat": "casa",
+   "kw": "consertar obra reforma"
+  },
+  {
+   "id": "ph:paint-roller",
+   "ph": "paint-roller",
+   "label": "Pintura",
+   "cat": "casa",
+   "kw": "reforma parede"
+  },
+  {
+   "id": "ph:key",
+   "ph": "key",
+   "label": "Chaves",
+   "cat": "casa",
+   "kw": "casa aluguel"
+  },
+  {
+   "id": "ph:lock",
+   "ph": "lock",
+   "label": "Segurança",
+   "cat": "casa",
+   "kw": "trancar cadeado"
+  },
+  {
+   "id": "ph:trash",
+   "ph": "trash",
+   "label": "Lixo",
+   "cat": "casa",
+   "kw": "descartar limpeza"
+  },
+  {
+   "id": "ph:recycle",
+   "ph": "recycle",
+   "label": "Reciclagem",
+   "cat": "casa",
+   "kw": "lixo seletiva"
+  },
+  {
+   "id": "ph:flower",
+   "ph": "flower",
+   "label": "Flor",
+   "cat": "casa",
+   "kw": "jardim"
+  },
+  {
+   "id": "ph:fan",
+   "ph": "fan",
+   "label": "Ventilador",
+   "cat": "casa",
+   "kw": "clima"
+  },
+  {
+   "id": "ph:package",
+   "ph": "package",
+   "label": "Encomenda",
+   "cat": "casa",
+   "kw": "entrega correios"
+  },
+  {
+   "id": "ph:game-controller",
+   "ph": "game-controller",
+   "label": "Videogame",
+   "cat": "lazer",
+   "kw": "jogar console"
+  },
+  {
+   "id": "ph:puzzle-piece",
+   "ph": "puzzle-piece",
+   "label": "Quebra-cabeça",
+   "cat": "lazer",
+   "kw": "jogo"
+  },
+  {
+   "id": "ph:dice-five",
+   "ph": "dice-five",
+   "label": "Dados",
+   "cat": "lazer",
+   "kw": "jogo tabuleiro"
+  },
+  {
+   "id": "ph:cards",
+   "ph": "cards",
+   "label": "Cartas",
+   "cat": "lazer",
+   "kw": "baralho jogo"
+  },
+  {
+   "id": "ph:music-notes",
+   "ph": "music-notes",
+   "label": "Música",
+   "cat": "lazer",
+   "kw": "tocar ouvir"
+  },
+  {
+   "id": "ph:guitar",
+   "ph": "guitar",
+   "label": "Violão",
+   "cat": "lazer",
+   "kw": "instrumento música"
+  },
+  {
+   "id": "ph:piano-keys",
+   "ph": "piano-keys",
+   "label": "Piano",
+   "cat": "lazer",
+   "kw": "instrumento teclado"
+  },
+  {
+   "id": "ph:microphone",
+   "ph": "microphone",
+   "label": "Microfone",
+   "cat": "lazer",
+   "kw": "cantar karaokê"
+  },
+  {
+   "id": "ph:film-slate",
+   "ph": "film-slate",
+   "label": "Cinema",
+   "cat": "lazer",
+   "kw": "filme"
+  },
+  {
+   "id": "ph:television",
+   "ph": "television",
+   "label": "Série",
+   "cat": "lazer",
+   "kw": "tv assistir streaming"
+  },
+  {
+   "id": "ph:popcorn",
+   "ph": "popcorn",
+   "label": "Pipoca",
+   "cat": "lazer",
+   "kw": "filme cinema"
+  },
+  {
+   "id": "ph:paint-brush",
+   "ph": "paint-brush",
+   "label": "Pintura artística",
+   "cat": "lazer",
+   "kw": "arte desenho"
+  },
+  {
+   "id": "ph:palette",
+   "ph": "palette",
+   "label": "Arte",
+   "cat": "lazer",
+   "kw": "tinta criativo"
+  },
+  {
+   "id": "ph:scissors",
+   "ph": "scissors",
+   "label": "Artesanato",
+   "cat": "lazer",
+   "kw": "recortar costura"
+  },
+  {
+   "id": "ph:confetti",
+   "ph": "confetti",
+   "label": "Festa",
+   "cat": "lazer",
+   "kw": "comemorar"
+  },
+  {
+   "id": "ph:balloon",
+   "ph": "balloon",
+   "label": "Aniversário",
+   "cat": "lazer",
+   "kw": "festa balão"
+  },
+  {
+   "id": "ph:gift",
+   "ph": "gift",
+   "label": "Presente",
+   "cat": "lazer",
+   "kw": "surpresa comprar"
+  },
+  {
+   "id": "ph:mask-happy",
+   "ph": "mask-happy",
+   "label": "Teatro",
+   "cat": "lazer",
+   "kw": "peça cultura"
+  },
+  {
+   "id": "ph:mask-sad",
+   "ph": "mask-sad",
+   "label": "Drama",
+   "cat": "lazer",
+   "kw": "teatro peça"
+  },
+  {
+   "id": "ph:book-open-text",
+   "ph": "book-open-text",
+   "label": "Romance",
+   "cat": "lazer",
+   "kw": "ler hobby"
+  },
+  {
+   "id": "ph:dog",
+   "ph": "dog",
+   "label": "Cachorro",
+   "cat": "familia",
+   "kw": "pet passear ração"
+  },
+  {
+   "id": "ph:cat",
+   "ph": "cat",
+   "label": "Gato",
+   "cat": "familia",
+   "kw": "pet"
+  },
+  {
+   "id": "ph:paw-print",
+   "ph": "paw-print",
+   "label": "Pet",
+   "cat": "familia",
+   "kw": "animal veterinário"
+  },
+  {
+   "id": "ph:bird",
+   "ph": "bird",
+   "label": "Pássaro",
+   "cat": "familia",
+   "kw": "pet ave"
+  },
+  {
+   "id": "ph:baby-carriage",
+   "ph": "baby-carriage",
+   "label": "Carrinho de bebê",
+   "cat": "familia",
+   "kw": "passeio filho"
+  },
+  {
+   "id": "ph:users",
+   "ph": "users",
+   "label": "Família",
+   "cat": "familia",
+   "kw": "pessoas reunião"
+  },
+  {
+   "id": "ph:user-circle",
+   "ph": "user-circle",
+   "label": "Pessoa",
+   "cat": "familia",
+   "kw": "perfil"
+  },
+  {
+   "id": "ph:heart-straight",
+   "ph": "heart-straight",
+   "label": "Amor",
+   "cat": "familia",
+   "kw": "namoro casal"
+  },
+  {
+   "id": "ph:hands-praying",
+   "ph": "hands-praying",
+   "label": "Oração",
+   "cat": "familia",
+   "kw": "fé religião"
+  },
+  {
+   "id": "ph:church",
+   "ph": "church",
+   "label": "Igreja",
+   "cat": "familia",
+   "kw": "culto missa"
+  },
+  {
+   "id": "ph:cross",
+   "ph": "cross",
+   "label": "Fé",
+   "cat": "familia",
+   "kw": "religião"
+  },
+  {
+   "id": "ph:hand-waving",
+   "ph": "hand-waving",
+   "label": "Ligar para alguém",
+   "cat": "familia",
+   "kw": "cumprimentar saudade"
+  },
+  {
+   "id": "ph:chat-circle-dots",
+   "ph": "chat-circle-dots",
+   "label": "Conversar",
+   "cat": "familia",
+   "kw": "mensagem papo"
+  },
+  {
+   "id": "ph:flower-lotus",
+   "ph": "flower-lotus",
+   "label": "Gratidão",
+   "cat": "familia",
+   "kw": "espiritual"
+  },
+  {
+   "id": "ph:house-simple",
+   "ph": "house-simple",
+   "label": "Visitar família",
+   "cat": "familia",
+   "kw": "casa parentes"
+  },
+  {
+   "id": "ph:tree",
+   "ph": "tree",
+   "label": "Árvore",
+   "cat": "natureza",
+   "kw": "plantar mata"
+  },
+  {
+   "id": "ph:tree-evergreen",
+   "ph": "tree-evergreen",
+   "label": "Pinheiro",
+   "cat": "natureza",
+   "kw": "floresta"
+  },
+  {
+   "id": "ph:tree-palm",
+   "ph": "tree-palm",
+   "label": "Palmeira",
+   "cat": "natureza",
+   "kw": "praia"
+  },
+  {
+   "id": "ph:leaf",
+   "ph": "leaf",
+   "label": "Folha",
+   "cat": "natureza",
+   "kw": "planta sustentável"
+  },
+  {
+   "id": "ph:cloud",
+   "ph": "cloud",
+   "label": "Nuvem",
+   "cat": "natureza",
+   "kw": "clima tempo"
+  },
+  {
+   "id": "ph:cloud-rain",
+   "ph": "cloud-rain",
+   "label": "Chuva",
+   "cat": "natureza",
+   "kw": "clima"
+  },
+  {
+   "id": "ph:snowflake",
+   "ph": "snowflake",
+   "label": "Neve",
+   "cat": "natureza",
+   "kw": "frio inverno"
+  },
+  {
+   "id": "ph:waves",
+   "ph": "waves",
+   "label": "Mar",
+   "cat": "natureza",
+   "kw": "onda praia"
+  },
+  {
+   "id": "ph:bug",
+   "ph": "bug",
+   "label": "Inseto",
+   "cat": "natureza",
+   "kw": "dedetização"
+  },
+  {
+   "id": "ph:butterfly",
+   "ph": "butterfly",
+   "label": "Borboleta",
+   "cat": "natureza",
+   "kw": "jardim"
+  },
+  {
+   "id": "ph:rainbow",
+   "ph": "rainbow",
+   "label": "Arco-íris",
+   "cat": "natureza",
+   "kw": "céu"
+  },
+  {
+   "id": "ph:thermometer-hot",
+   "ph": "thermometer-hot",
+   "label": "Calor",
+   "cat": "natureza",
+   "kw": "verão"
+  },
+  {
+   "id": "ph:desktop-tower",
+   "ph": "desktop-tower",
+   "label": "PC",
+   "cat": "tech",
+   "kw": "computador"
+  },
+  {
+   "id": "ph:device-mobile",
+   "ph": "device-mobile",
+   "label": "Celular",
+   "cat": "tech",
+   "kw": "telefone app"
+  },
+  {
+   "id": "ph:wifi-high",
+   "ph": "wifi-high",
+   "label": "Internet",
+   "cat": "tech",
+   "kw": "wifi rede"
+  },
+  {
+   "id": "ph:battery-charging",
+   "ph": "battery-charging",
+   "label": "Carregar",
+   "cat": "tech",
+   "kw": "bateria celular"
+  },
+  {
+   "id": "ph:cloud-arrow-up",
+   "ph": "cloud-arrow-up",
+   "label": "Backup",
+   "cat": "tech",
+   "kw": "nuvem salvar"
+  },
+  {
+   "id": "ph:shield-check",
+   "ph": "shield-check",
+   "label": "Antivírus",
+   "cat": "tech",
+   "kw": "segurança proteção"
+  },
+  {
+   "id": "ph:database",
+   "ph": "database",
+   "label": "Dados",
+   "cat": "tech",
+   "kw": "banco servidor"
+  },
+  {
+   "id": "ph:robot",
+   "ph": "robot",
+   "label": "Robô",
+   "cat": "tech",
+   "kw": "ia automação"
+  },
+  {
+   "id": "ph:cpu",
+   "ph": "cpu",
+   "label": "Hardware",
+   "cat": "tech",
+   "kw": "processador"
+  },
+  {
+   "id": "ph:git-branch",
+   "ph": "git-branch",
+   "label": "Git",
+   "cat": "tech",
+   "kw": "versionamento"
+  },
+  {
+   "id": "ph:qr-code",
+   "ph": "qr-code",
+   "label": "QR code",
+   "cat": "tech",
+   "kw": "scanner"
+  },
+  {
+   "id": "ph:smiley",
+   "ph": "smiley",
+   "label": "Humor",
+   "cat": "bemestar",
+   "kw": "feliz emoção diário"
+  },
+  {
+   "id": "ph:smiley-meh",
+   "ph": "smiley-meh",
+   "label": "Humor neutro",
+   "cat": "bemestar",
+   "kw": "emoção"
+  },
+  {
+   "id": "ph:smiley-sad",
+   "ph": "smiley-sad",
+   "label": "Humor triste",
+   "cat": "bemestar",
+   "kw": "emoção"
+  },
+  {
+   "id": "ph:sparkle",
+   "ph": "sparkle",
+   "label": "Autocuidado",
+   "cat": "bemestar",
+   "kw": "brilho skincare"
+  },
+  {
+   "id": "ph:alarm",
+   "ph": "alarm",
+   "label": "Despertador",
+   "cat": "bemestar",
+   "kw": "acordar rotina"
+  },
+  {
+   "id": "ph:pencil-line",
+   "ph": "pencil-line",
+   "label": "Anotar",
+   "cat": "bemestar",
+   "kw": "escrever diário gratidão"
+  },
+  {
+   "id": "ph:hourglass",
+   "ph": "hourglass",
+   "label": "Tempo",
+   "cat": "bemestar",
+   "kw": "foco pomodoro"
+  },
+  {
+   "id": "ph:prohibit",
+   "ph": "prohibit",
+   "label": "Parar vício",
+   "cat": "bemestar",
+   "kw": "evitar proibido"
+  },
+  {
+   "id": "ph:cigarette-slash",
+   "ph": "cigarette-slash",
+   "label": "Sem cigarro",
+   "cat": "bemestar",
+   "kw": "parar de fumar"
+  },
+  {
+   "id": "ph:phone-slash",
+   "ph": "phone-slash",
+   "label": "Sem celular",
+   "cat": "bemestar",
+   "kw": "detox digital"
+  },
+  {
+   "id": "ph:hands-clapping",
+   "ph": "hands-clapping",
+   "label": "Conquista",
+   "cat": "bemestar",
+   "kw": "parabéns palmas"
+  },
+  {
+   "id": "ph:star",
+   "ph": "star",
+   "label": "Estrela",
+   "cat": "bemestar",
+   "kw": "favorito destaque"
+  },
+  {
+   "id": "ph:seal-check",
+   "ph": "seal-check",
+   "label": "Hábito cumprido",
+   "cat": "bemestar",
+   "kw": "check ok"
+  },
+  {
+   "id": "ph:repeat",
+   "ph": "repeat",
+   "label": "Rotina",
+   "cat": "bemestar",
+   "kw": "repetir hábito"
+  },
+  {
+   "id": "ph:flag",
+   "ph": "flag",
+   "label": "Bandeira",
+   "cat": "geral",
+   "kw": "marco objetivo"
+  },
+  {
+   "id": "ph:flag-banner",
+   "ph": "flag-banner",
+   "label": "Marco",
+   "cat": "geral",
+   "kw": "meta etapa"
+  },
+  {
+   "id": "ph:rocket-launch",
+   "ph": "rocket-launch",
+   "label": "Lançamento",
+   "cat": "geral",
+   "kw": "projeto foguete"
+  },
+  {
+   "id": "ph:crown",
+   "ph": "crown",
+   "label": "Coroa",
+   "cat": "geral",
+   "kw": "premium"
+  },
+  {
+   "id": "ph:diamond",
+   "ph": "diamond",
+   "label": "Diamante",
+   "cat": "geral",
+   "kw": "valor"
+  },
+  {
+   "id": "ph:bell",
+   "ph": "bell",
+   "label": "Lembrete",
+   "cat": "geral",
+   "kw": "alerta notificação"
+  },
+  {
+   "id": "ph:calendar-blank",
+   "ph": "calendar-blank",
+   "label": "Data",
+   "cat": "geral",
+   "kw": "calendário"
+  },
+  {
+   "id": "ph:clock",
+   "ph": "clock",
+   "label": "Horário",
+   "cat": "geral",
+   "kw": "relógio hora"
+  },
+  {
+   "id": "ph:check-circle",
+   "ph": "check-circle",
+   "label": "Concluído",
+   "cat": "geral",
+   "kw": "ok feito"
+  },
+  {
+   "id": "ph:list-bullets",
+   "ph": "list-bullets",
+   "label": "Lista",
+   "cat": "geral",
+   "kw": "itens"
+  },
+  {
+   "id": "ph:squares-four",
+   "ph": "squares-four",
+   "label": "Grupo",
+   "cat": "geral",
+   "kw": "categoria"
+  },
+  {
+   "id": "ph:stack",
+   "ph": "stack",
+   "label": "Camadas",
+   "cat": "geral",
+   "kw": "agrupar"
+  },
+  {
+   "id": "ph:infinity",
+   "ph": "infinity",
+   "label": "Contínuo",
+   "cat": "geral",
+   "kw": "sempre"
+  },
+  {
+   "id": "ph:path",
+   "ph": "path",
+   "label": "Caminho",
+   "cat": "geral",
+   "kw": "jornada trilha"
+  },
+  {
+   "id": "ph:crosshair",
+   "ph": "crosshair",
+   "label": "Foco",
+   "cat": "geral",
+   "kw": "mira"
+  }
+ ]
+}

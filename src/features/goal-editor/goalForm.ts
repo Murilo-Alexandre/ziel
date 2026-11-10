@@ -3,12 +3,15 @@ import {
   AggregationRule,
   CompletionRule,
   GoalRevision,
+  NotifyConfig,
   ProgressRule,
   ScheduleRule,
   TrackingCycleRule,
   Weekday,
 } from '../../domain/types';
 import { addDays, todayLocal } from '../../domain/dates';
+import { DEFAULT_NOTIFY } from '../../domain/notifications/reminderPlanner';
+import { DEFAULT_ICON } from '../../shared/icons/registry';
 import { GoalValidationError, validateGoalDraft } from '../../domain/goals/goalValidation';
 import { isQuotaAvailableOn, scheduleMatchesDate } from '../../domain/recurrence/scheduleEvaluator';
 
@@ -43,6 +46,7 @@ export type GoalFormState = {
   showParentOnHome: boolean;
   aggregationType: 'scheduledOccurrences' | 'directChildren';
   childWeights: Record<string, string>;
+  notify: NotifyConfig;
 };
 
 export function emptyForm(parentId: string | null, today = todayLocal()): GoalFormState {
@@ -50,7 +54,7 @@ export function emptyForm(parentId: string | null, today = todayLocal()): GoalFo
     name: '',
     description: '',
     parentId,
-    icon: 'Target',
+    icon: DEFAULT_ICON,
     color: '#C8DA7A',
     scheduleKind: 'weekdays',
     weekdays: [1, 3, 5],
@@ -74,6 +78,7 @@ export function emptyForm(parentId: string | null, today = todayLocal()): GoalFo
     showParentOnHome: true,
     aggregationType: 'scheduledOccurrences',
     childWeights: {},
+    notify: { ...DEFAULT_NOTIFY },
   };
 }
 
@@ -98,7 +103,7 @@ export function formFromRevision(rev: GoalRevision, base = emptyForm(rev.parentI
     name: rev.name,
     description: rev.description ?? '',
     parentId: rev.parentId,
-    icon: rev.icon ?? 'Target',
+    icon: rev.icon ?? DEFAULT_ICON,
     color: rev.colorToken ?? '#C8DA7A',
     startDate: rev.activePeriod.startDate,
     endDate: rev.activePeriod.endDate ?? '',
@@ -108,6 +113,7 @@ export function formFromRevision(rev: GoalRevision, base = emptyForm(rev.parentI
       ? (rev.trackingCycle.type as GoalFormState['cycleType'])
       : 'weekly',
     weekStartsOn: rev.trackingCycle.type === 'weekly' ? rev.trackingCycle.weekStartsOn : 1,
+    notify: rev.notify ? { ...rev.notify } : { ...DEFAULT_NOTIFY },
   };
   const s = rev.schedule;
   switch (s.type) {
@@ -175,6 +181,7 @@ export type GoalDraftValues = {
   aggregationRule: AggregationRule;
   isRequired: boolean;
   showParentOnHome: boolean;
+  notify: NotifyConfig | null;
 };
 
 /** Converte o formulário em valores da engine. TUDO que o formulário expõe é aplicado aqui. */
@@ -249,6 +256,7 @@ export function toDraft(f: GoalFormState): GoalDraftValues {
     aggregationRule,
     isRequired: f.isRequired,
     showParentOnHome: f.showParentOnHome,
+    notify: f.notify.enabled ? { ...f.notify, enabled: true } : null,
   };
 }
 
@@ -261,6 +269,7 @@ export function validateForm(f: GoalFormState): string[] {
     trackingCycle: d.trackingCycle,
     progressRule: d.progressRule,
     completionRule: d.completionRule,
+    notify: d.notify,
   });
   if (f.aggregationType === 'directChildren') {
     for (const v of Object.values(f.childWeights)) {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { TodayView } from './features/today/TodayView';
 import { AgendaView } from './features/agenda/AgendaView';
 import { GoalsLibraryView } from './features/goals/GoalsLibraryView';
@@ -8,6 +8,8 @@ import { AppDataProvider } from './shared/AppData';
 import { OverlayProvider } from './shared/Overlays';
 import { ToastProvider } from './shared/ui/Toast';
 import { UpdateProvider } from './shared/Update';
+import { ReminderHost } from './shared/ReminderHost';
+import { gsap, installPressFeedback, motionOK } from './shared/motion';
 import { getDB, requestPersistentStorage } from './infrastructure/persistence/indexeddb/database';
 
 type BootState = { status: 'loading' } | { status: 'ready'; persisted: boolean } | { status: 'error'; message: string };
@@ -15,6 +17,17 @@ type BootState = { status: 'loading' } | { status: 'ready'; persisted: boolean }
 export const App: React.FC = () => {
   const [tab, setTab] = useState<Tab>('today');
   const [boot, setBoot] = useState<BootState>({ status: 'loading' });
+  const mainRef = useRef<HTMLElement>(null);
+  const firstTab = useRef(true);
+  useLayoutEffect(() => {
+    if (firstTab.current) {
+      firstTab.current = false;
+      return;
+    }
+    if (mainRef.current && motionOK()) gsap.fromTo(mainRef.current, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out', clearProps: 'transform,opacity' });
+  }, [tab]);
+
+  useEffect(() => installPressFeedback(), []);
 
   useEffect(() => {
     let alive = true;
@@ -58,7 +71,8 @@ export const App: React.FC = () => {
       <AppDataProvider>
         <UpdateProvider>
         <OverlayProvider>
-          <main>
+          <ReminderHost />
+          <main ref={mainRef}>
             {tab === 'today' && <TodayView />}
             {tab === 'agenda' && <AgendaView />}
             {tab === 'goals' && <GoalsLibraryView />}

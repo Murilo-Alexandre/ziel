@@ -4,6 +4,7 @@ import { useUpdate } from '../../shared/Update';
 import { UpdateSheet } from '../update/UpdateUi';
 import { RELEASES_PAGE } from '../../application/services/UpdateService';
 import { useRevealOnKey } from '../../shared/motion';
+import { NotificationsSection } from './NotificationsSection';
 import { backupService } from '../../application/container';
 import { BackupFile } from '../../application/services/BackupService';
 import { todayLocal } from '../../domain/dates';
@@ -80,13 +81,13 @@ export const SettingsView: React.FC<{ storagePersisted: boolean | null }> = ({ s
       </header>
 
       <div ref={revealRef} className="space-y-4">
-        <section data-reveal className="space-y-3 rounded-card bg-block-amber p-5 text-ziel-ink" aria-label="Atualizações">
+        <section data-reveal className="space-y-3 rounded-[30px] border border-white/[0.08] p-5" style={{ background: 'linear-gradient(135deg, rgba(242,139,130,0.22), rgba(23,26,34,0.96) 62%)' }} aria-label="Atualizações">
           <h2 className="flex items-center gap-2 text-lg font-extrabold">
             <RefreshCw className="h-5 w-5" /> Atualizações
           </h2>
           {up.native ? (
             <>
-              <p className="text-sm font-semibold text-black/70">
+              <p className="text-sm font-semibold text-ziel-sub">
                 Instalada: {up.installed ? `${up.installed.versionName} (${up.installed.versionCode})` : 'lendo…'}
               </p>
               <p className="text-sm font-semibold" aria-live="polite">
@@ -98,25 +99,27 @@ export const SettingsView: React.FC<{ storagePersisted: boolean | null }> = ({ s
               </p>
               <div className="grid grid-cols-1 gap-2 pt-1">
                 {up.update && (
-                  <button type="button" className="btn-dark" onClick={() => setUpdateOpen(true)}>
+                  <button type="button" className="btn-primary" onClick={() => setUpdateOpen(true)}>
                     Ver novidades e instalar
                   </button>
                 )}
-                <button type="button" className="btn bg-black/10 text-ziel-ink" disabled={up.status === 'checking'} onClick={() => up.check()}>
+                <button type="button" className="btn-ghost" disabled={up.status === 'checking'} onClick={() => up.check()}>
                   Verificar atualizações
                 </button>
               </div>
             </>
           ) : (
-            <p className="text-sm font-semibold text-black/70">
+            <p className="text-sm font-semibold text-ziel-sub">
               A atualização pelo app funciona na versão Android. Na web, veja as versões em{' '}
-              <a className="underline" href={RELEASES_PAGE} target="_blank" rel="noopener noreferrer">
+              <a className="inline-flex min-h-[44px] items-center font-bold text-ziel-accent underline" href={RELEASES_PAGE} target="_blank" rel="noopener noreferrer">
                 GitHub Releases
               </a>
               .
             </p>
           )}
         </section>
+
+        <NotificationsSection />
 
         <section data-reveal className="card space-y-3 p-5">
           <h2 className="flex items-center gap-2 text-base font-semibold">

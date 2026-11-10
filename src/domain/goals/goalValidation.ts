@@ -1,4 +1,5 @@
-import { ActivePeriod, CompletionRule, ProgressRule, ScheduleRule, TrackingCycleRule } from '../types';
+import { ActivePeriod, CompletionRule, NotifyConfig, ProgressRule, ScheduleRule, TrackingCycleRule } from '../types';
+import { validateNotify } from '../notifications/reminderPlanner';
 import { isValidDateString } from '../dates';
 
 export type GoalDraft = {
@@ -8,6 +9,7 @@ export type GoalDraft = {
   trackingCycle: TrackingCycleRule;
   progressRule: ProgressRule;
   completionRule: CompletionRule;
+  notify?: NotifyConfig | null;
 };
 
 export class GoalValidationError extends Error {
@@ -76,6 +78,13 @@ export function validateGoalDraft(d: GoalDraft): string[] {
 
   if (d.trackingCycle.type === 'custom' && !(d.trackingCycle.duration >= 1)) {
     errors.push('O ciclo personalizado precisa de uma duração de pelo menos 1.');
+  }
+
+  if (d.notify?.enabled) {
+    errors.push(...validateNotify(d.notify));
+    if (d.schedule.type === 'quota' || d.schedule.type === 'custom') {
+      errors.push('Lembretes precisam de dias definidos: use dias da semana, todo dia, data única, intervalo ou dia do mês.');
+    }
   }
 
   return errors;

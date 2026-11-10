@@ -1,12 +1,17 @@
 import { RepositoryFactory } from '../infrastructure/persistence/RepositoryFactory';
 import { BrowserCameraAdapter } from '../infrastructure/platform/camera/BrowserCameraAdapter';
 import { BrowserFilePickerAdapter } from '../infrastructure/platform/files/BrowserFilePickerAdapter';
+import { AndroidNotificationAdapter } from '../infrastructure/platform/notifications/AndroidNotificationAdapter';
+import { NullNotificationAdapter } from '../infrastructure/platform/notifications/NullNotificationAdapter';
+import { LocalStorageSettingsStore } from '../infrastructure/platform/notifications/settingsStore';
+import { NotificationPort } from '../infrastructure/ports/NotificationPort';
 import { GoalService } from './services/GoalService';
 import { OccurrenceService } from './services/OccurrenceService';
 import { JournalService } from './services/JournalService';
 import { BackupService } from './services/BackupService';
 import { GoalQueryService } from './services/GoalQueryService';
 import { SeedService } from './services/SeedService';
+import { ReminderService } from './services/ReminderService';
 
 /** Raiz de composição única: toda a UI usa os MESMOS serviços (e a mesma fila de operações). */
 const goalRepo = RepositoryFactory.getGoalRepository();
@@ -16,10 +21,14 @@ const journalRepo = RepositoryFactory.getJournalRepository();
 export const cameraAdapter = new BrowserCameraAdapter();
 export const filePickerAdapter = new BrowserFilePickerAdapter();
 
+const android = new AndroidNotificationAdapter();
+export const notificationPort: NotificationPort = android.isSupported() ? android : new NullNotificationAdapter();
+
 export const goalService = new GoalService(goalRepo);
 export const occurrenceService = new OccurrenceService(goalRepo, occRepo, journalRepo);
 export const journalService = new JournalService(journalRepo, cameraAdapter, filePickerAdapter);
 export const queryService = new GoalQueryService(goalRepo, occRepo, journalRepo);
 export const seedService = new SeedService(goalService);
 export const backupService = new BackupService(RepositoryFactory.getBackupStore());
+export const reminderService = new ReminderService(goalRepo, occRepo, notificationPort, new LocalStorageSettingsStore());
 export { goalRepo, occRepo, journalRepo };
