@@ -45,12 +45,12 @@ export const DateStrip: React.FC<Props> = ({ selectedDate, onSelectDate }) => {
             aria-selected={selected}
             aria-label={date.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
             onClick={() => onSelectDate(d)}
-            className="flex w-[50px] shrink-0 snap-center flex-col items-center gap-1.5 py-1 text-center"
+            className="flex w-[42px] shrink-0 snap-center flex-col items-center gap-1.5 py-1 text-center"
           >
-            <span className={`text-[12px] font-semibold capitalize ${selected ? 'text-ziel-text' : 'text-ziel-muted'}`}>{wd}</span>
+            <span className={`text-[11px] font-semibold capitalize ${selected ? 'text-ziel-text' : 'text-ziel-muted'}`}>{wd}</span>
             <span
               data-circle
-              className={`flex h-11 w-11 items-center justify-center rounded-full text-[17px] font-extrabold transition-colors duration-300 ${
+              className={`flex h-9 w-9 items-center justify-center rounded-full text-[14px] font-extrabold transition-colors duration-300 ${
                 selected ? 'bg-ziel-accent text-ziel-ink shadow-[0_8px_20px_-8px_rgba(242,139,130,0.9)]' : isToday ? 'border border-ziel-accent/70 text-ziel-accent' : 'text-ziel-sub'
               }`}
             >

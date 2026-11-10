@@ -36,9 +36,9 @@ export default {
       fontFamily: {
         sans: ['"Plus Jakarta Sans Variable"', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
-      borderRadius: { card: '32px', sheet: '36px', chip: '20px' },
-      minHeight: { touch: '44px' },
-      minWidth: { touch: '44px' },
+      borderRadius: { card: '24px', sheet: '28px', chip: '16px' },
+      minHeight: { touch: '40px' },
+      minWidth: { touch: '40px' },
     },
   },
   plugins: [],

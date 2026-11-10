@@ -33,19 +33,19 @@ const Node: React.FC<{ node: TreeNode; level: number; onOpen: (id: string) => vo
   return (
     <div
       data-row={root ? '' : undefined}
-      className={`rounded-[26px] ${level >= 2 ? 'p-2.5' : 'p-3'}`}
+      className={`rounded-[22px] ${level >= 2 ? 'p-2.5' : 'p-3'}`}
       style={{
         opacity: archived ? 0.6 : 1,
         border: `1px solid ${hex}${root ? '66' : '44'}`,
         background: `linear-gradient(135deg, ${hex}${root ? '26' : '1A'} 0%, rgba(255,255,255,${level > 1 ? 0.07 : 0.04}) 70%)`,
       }}
     >
-      <button type="button" onClick={() => onOpen(definition.id)} className="flex min-h-[56px] w-full items-center gap-3 text-left" aria-label={`Abrir ${revision.name}`}>
-        <span className="flex h-[54px] w-[42px] shrink-0 items-center justify-center rounded-[16px]" style={{ backgroundColor: hex, color: '#0F1320' }} aria-hidden>
+      <button type="button" onClick={() => onOpen(definition.id)} className="flex min-h-[50px] w-full items-center gap-3 text-left" aria-label={`Abrir ${revision.name}`}>
+        <span className="flex h-[49px] w-[38px] shrink-0 items-center justify-center rounded-[14px]" style={{ backgroundColor: hex, color: '#0F1320' }} aria-hidden>
           <Icon className="h-[22px] w-[22px]" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="line-clamp-2 break-words text-[16px] font-extrabold leading-snug text-ziel-text">{revision.name}</span>
+          <span className="line-clamp-2 break-words text-[14px] font-extrabold leading-snug text-ziel-text">{revision.name}</span>
           <span className="mt-0.5 block truncate text-xs text-ziel-muted">
             {describeSchedule(revision.schedule)}
             {childCount > 0 ? ` · ${childCount} submeta${childCount > 1 ? 's' : ''}` : ''}
@@ -67,7 +67,7 @@ const Node: React.FC<{ node: TreeNode; level: number; onOpen: (id: string) => vo
               const lineLeft = ['left-2', 'left-1.5', 'left-1'][lvl];
               return (
                 <div key={c.item.definition.id} className={`relative ${padCls}`}>
-                  <span aria-hidden className={`absolute top-0 h-[34px] rounded-bl-[16px] border-b-2 border-l-2 ${elbowCls}`} style={{ borderColor: `${hex}88` }} />
+                  <span aria-hidden className={`absolute top-0 h-[34px] rounded-bl-[14px] border-b-2 border-l-2 ${elbowCls}`} style={{ borderColor: `${hex}88` }} />
                   {i < node.children.length - 1 && <span aria-hidden className={`absolute -bottom-[10px] top-[34px] border-l-2 ${lineLeft}`} style={{ borderColor: `${hex}88` }} />}
                   <Node node={c} level={level + 1} onOpen={onOpen} />
                 </div>
@@ -110,7 +110,7 @@ export const GoalsLibraryView: React.FC = () => {
       <header className="flex items-end justify-between gap-3 pb-4 pt-5">
         <div>
           <p className="text-sm text-ziel-muted">Sua estrutura</p>
-          <h1 className="text-[34px] font-extrabold leading-[1.05] tracking-tight">Metas</h1>
+          <h1 className="text-[26px] font-extrabold leading-[1.05] tracking-tight">Metas</h1>
         </div>
         <button type="button" className="btn-primary" onClick={() => openEditor({ kind: 'create', parentId: null })}>
           <Plus className="h-4 w-4" /> Nova
@@ -129,7 +129,7 @@ export const GoalsLibraryView: React.FC = () => {
             role="tab"
             aria-selected={filter === k}
             onClick={() => setFilter(k)}
-            className={`min-h-[44px] rounded-full text-sm font-bold transition-colors ${filter === k ? 'bg-ziel-accent text-ziel-ink' : 'text-ziel-muted'}`}
+            className={`min-h-[40px] rounded-full text-sm font-bold transition-colors ${filter === k ? 'bg-ziel-accent text-ziel-ink' : 'text-ziel-muted'}`}
           >
             {label}
           </button>

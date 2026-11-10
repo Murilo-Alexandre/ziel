@@ -77,11 +77,11 @@ export const SettingsView: React.FC<{ storagePersisted: boolean | null }> = ({ s
     <div className="pb-nav mx-auto w-full max-w-lg px-5 pt-safe">
       <header className="pb-4 pt-5">
         <p className="text-sm text-ziel-muted">Ziel · {up.installed ? `versão ${up.installed.versionName}` : "versão web"}</p>
-        <h1 className="text-[34px] font-extrabold leading-[1.05] tracking-tight">Ajustes</h1>
+        <h1 className="text-[26px] font-extrabold leading-[1.05] tracking-tight">Ajustes</h1>
       </header>
 
       <div ref={revealRef} className="space-y-4">
-        <section data-reveal className="space-y-3 rounded-[30px] border border-white/[0.08] p-5" style={{ background: 'linear-gradient(135deg, rgba(242,139,130,0.22), rgba(29,36,51,0.96) 62%)' }} aria-label="Atualizações">
+        <section data-reveal className="space-y-3 rounded-[26px] border border-white/[0.08] p-5" style={{ background: 'linear-gradient(135deg, rgba(242,139,130,0.22), rgba(29,36,51,0.96) 62%)' }} aria-label="Atualizações">
           <h2 className="flex items-center gap-2 text-lg font-extrabold">
             <RefreshCw className="h-5 w-5" /> Atualizações
           </h2>
@@ -111,7 +111,7 @@ export const SettingsView: React.FC<{ storagePersisted: boolean | null }> = ({ s
           ) : (
             <p className="text-sm font-semibold text-ziel-sub">
               A atualização pelo app funciona na versão Android. Na web, veja as versões em{' '}
-              <a className="inline-flex min-h-[44px] items-center font-bold text-ziel-accent underline" href={RELEASES_PAGE} target="_blank" rel="noopener noreferrer">
+              <a className="inline-flex min-h-[40px] items-center font-bold text-ziel-accent underline" href={RELEASES_PAGE} target="_blank" rel="noopener noreferrer">
                 GitHub Releases
               </a>
               .

@@ -43,7 +43,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         className="pointer-events-none fixed inset-x-0 top-0 z-[60] flex flex-col items-center gap-2 px-4 pt-[calc(env(safe-area-inset-top)+0.75rem)]"
       >
         {toasts.map((t) => (
-          <ToastItem key={t.id} className={`pointer-events-auto max-w-md rounded-[20px] border bg-ziel-raised px-4 py-3 text-sm shadow-xl ${tone[t.tone]}`}>
+          <ToastItem key={t.id} className={`pointer-events-auto max-w-md rounded-[17px] border bg-ziel-raised px-4 py-3 text-sm shadow-xl ${tone[t.tone]}`}>
             {t.message}
           </ToastItem>
         ))}

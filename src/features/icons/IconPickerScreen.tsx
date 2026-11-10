@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { ArrowLeft, Check, Search, X } from 'lucide-react';
 import { ICON_CATALOG, ICON_CATEGORIES, iconFor, iconLabel, searchIcons } from '../../shared/icons/registry';
 import { gsap, motionOK } from '../../shared/motion';
+import { inertElements, pushBack } from '../../shared/ui/overlayGuard';
 
 type Props = {
   open: boolean;
@@ -38,6 +39,10 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
   const rootRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+  const openRef = useRef(open);
+  openRef.current = open;
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
   const [mounted, setMounted] = useState(open);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<string>('all');
@@ -71,8 +76,12 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
       if (!open) setMounted(false);
       return;
     }
+    gsap.killTweensOf(el);
     if (open) gsap.fromTo(el, { yPercent: 100 }, { yPercent: 0, duration: 0.5, ease: 'power4.out' });
-    else gsap.to(el, { yPercent: 100, duration: 0.32, ease: 'power3.in', onComplete: () => setMounted(false) });
+    else gsap.to(el, { yPercent: 100, duration: 0.32, ease: 'power3.in', onComplete: () => {
+        if (!openRef.current) setMounted(false);
+      },
+    });
   }, [open, mounted]);
 
   // tiles em cascata quando a lista muda (só os primeiros, para manter fluidez)
@@ -96,19 +105,21 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
   useEffect(() => {
     if (!open) return;
     const others = Array.from(document.querySelectorAll('main, nav[aria-label="Navegação principal"], [role="dialog"]')).filter((n) => !rootRef.current?.contains(n));
-    others.forEach((n) => n.setAttribute('inert', ''));
+    const releaseInert = inertElements(others);
+    const releaseBack = pushBack(() => closeRef.current());
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopImmediatePropagation();
-        onClose();
+        closeRef.current();
       }
     };
     window.addEventListener('keydown', onKey, true);
     return () => {
       window.removeEventListener('keydown', onKey, true);
-      others.forEach((n) => n.removeAttribute('inert'));
+      releaseInert();
+      releaseBack();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!mounted) return null;
 
@@ -129,16 +140,16 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
           <button type="button" onClick={onClose} aria-label="Voltar" className="orb">
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <h2 className="flex-1 text-[22px] font-extrabold tracking-tight">Escolher ícone</h2>
+          <h2 className="flex-1 text-[20px] font-extrabold tracking-tight">Escolher ícone</h2>
           <span className="text-xs font-semibold text-ziel-muted">{list.length} de {ICON_CATALOG.length}</span>
         </div>
 
-        <div className="mt-4 flex items-center gap-4 rounded-[26px] border border-white/[0.08] bg-ziel-surface p-3.5" style={{ background: `linear-gradient(135deg, ${color}26, rgba(29,36,51,0.96) 60%)` }}>
-          <div ref={previewRef} className="flex h-[68px] w-[56px] shrink-0 items-center justify-center rounded-[20px]" style={{ backgroundColor: color, color: '#0F1320' }} aria-hidden>
+        <div className="mt-4 flex items-center gap-4 rounded-[22px] border border-white/[0.08] bg-ziel-surface p-3.5" style={{ background: `linear-gradient(135deg, ${color}26, rgba(29,36,51,0.96) 60%)` }}>
+          <div ref={previewRef} className="flex h-[61px] w-[50px] shrink-0 items-center justify-center rounded-[17px]" style={{ backgroundColor: color, color: '#0F1320' }} aria-hidden>
             <Preview className="h-8 w-8" />
           </div>
           <div className="min-w-0 flex-1" aria-live="polite">
-            <p className="truncate text-[17px] font-extrabold">{iconLabel(draft)}</p>
+            <p className="truncate text-[15px] font-extrabold">{iconLabel(draft)}</p>
             <p className="truncate text-xs text-ziel-muted">{draftMeta ? ICON_CATEGORIES[draftMeta.cat] : known ? '' : 'Ícone anterior (mantido)'}</p>
           </div>
         </div>
@@ -169,7 +180,7 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
               role="tab"
               aria-selected={category === id}
               onClick={() => setCategory(id)}
-              className={`min-h-[40px] shrink-0 rounded-full px-4 text-[13px] font-bold transition-colors ${category === id ? 'bg-ziel-accent text-ziel-ink' : 'bg-ziel-raised text-ziel-sub'}`}
+              className={`min-h-[40px] shrink-0 rounded-full px-4 text-[12px] font-bold transition-colors ${category === id ? 'bg-ziel-accent text-ziel-ink' : 'bg-ziel-raised text-ziel-sub'}`}
             >
               {label}
             </button>
@@ -204,11 +215,11 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
                     pushRecent(i.id);
                     onSelect(i.id);
                   }}
-                  className="flex aspect-square min-h-[64px] flex-col items-center justify-center gap-1 rounded-[20px] border px-1 transition-colors [contain-intrinsic-size:72px] [content-visibility:auto]"
+                  className="flex aspect-square min-h-[58px] flex-col items-center justify-center gap-1 rounded-[17px] border px-1 transition-colors [contain-intrinsic-size:72px] [content-visibility:auto]"
                   style={sel ? { borderColor: color, backgroundColor: `${color}22`, color } : { borderColor: 'rgba(255,255,255,0.06)', backgroundColor: 'rgba(255,255,255,0.035)', color: '#C3C8D4' }}
                 >
                   <I className="h-7 w-7" />
-                  <span className="w-full truncate text-center text-[10.5px] font-semibold leading-tight">{i.label}</span>
+                  <span className="w-full truncate text-center text-[10px] font-semibold leading-tight">{i.label}</span>
                 </button>
               );
             })}
@@ -217,7 +228,7 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
       </div>
 
       <footer className="pb-safe shrink-0 border-t border-ziel-line-soft bg-ziel-bg/95 px-5 pb-3 pt-3">
-        <button type="button" className="btn-primary w-full !min-h-[54px] text-base" onClick={confirm}>
+        <button type="button" className="btn-primary w-full !min-h-[49px] text-base" onClick={confirm}>
           <Check className="h-5 w-5" /> Usar “{iconLabel(draft)}”
         </button>
       </footer>

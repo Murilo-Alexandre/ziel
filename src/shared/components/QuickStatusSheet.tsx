@@ -70,7 +70,7 @@ export const QuickStatusSheet: React.FC<Props> = ({
               type="button"
               onClick={() => onSelectStatus(key)}
               aria-pressed={selected}
-              className={`flex min-h-[60px] items-center gap-3 rounded-[26px] px-5 text-left text-ziel-ink ${BLOCK[key]} ${selected ? 'ring-4 ring-white/70' : ''}`}
+              className={`flex min-h-[54px] items-center gap-3 rounded-[22px] px-5 text-left text-ziel-ink ${BLOCK[key]} ${selected ? 'ring-4 ring-white/70' : ''}`}
             >
               <m.Icon className="h-6 w-6 shrink-0 text-ziel-ink" />
               <span className="flex-1 text-base font-semibold">{m.label}</span>

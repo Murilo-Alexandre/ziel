@@ -27,9 +27,9 @@ export const Switch: React.FC<{ checked: boolean; onChange: (v: boolean) => void
       aria-label={label}
       disabled={disabled}
       onClick={() => onChange(!checked)}
-      className="flex min-h-[44px] min-w-[60px] shrink-0 items-center justify-center disabled:opacity-50"
+      className="flex min-h-[40px] min-w-[54px] shrink-0 items-center justify-center disabled:opacity-50"
     >
-      <span ref={track} className="relative block h-[30px] w-[52px] rounded-full p-[3px]">
+      <span ref={track} className="relative block h-[30px] w-[47px] rounded-full p-[3px]">
         <span ref={knob} className="block h-6 w-6 rounded-full bg-white shadow-md" />
       </span>
     </button>

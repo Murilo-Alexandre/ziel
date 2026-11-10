@@ -3,9 +3,16 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import '@fontsource-variable/plus-jakarta-sans';
 import './index.css';
+import { Capacitor } from '@capacitor/core';
 import { installViewportVar } from './shared/viewport';
 
 installViewportVar();
+
+// No app Android o zoom por gesto é desligado (comportamento nativo). No navegador/PWA a ampliação continua livre.
+if (Capacitor.isNativePlatform()) {
+  document.documentElement.classList.add('native-app');
+  document.querySelector('meta[name="viewport"]')?.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content');
+}
 
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { error: Error | null }> {
   state = { error: null as Error | null };

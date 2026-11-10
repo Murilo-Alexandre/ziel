@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 import { createPortal } from 'react-dom';
 import { Check, ChevronDown } from 'lucide-react';
 import { gsap, motionOK } from '../motion';
+import { inertElements, pushBack } from './overlayGuard';
 
 type Opt = { value: string; label: string };
 
@@ -45,6 +46,8 @@ export const Select: React.FC<Props> = ({ id, value, onChange, className = '', d
   const panelRef = useRef<HTMLDivElement>(null);
   const backRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+  const openRef = useRef(open);
+  openRef.current = open;
 
   const openIt = () => {
     if (disabled) return;
@@ -71,6 +74,7 @@ export const Select: React.FC<Props> = ({ id, value, onChange, className = '', d
       if (!open) setMounted(false);
       return;
     }
+    gsap.killTweensOf([backRef.current, panelRef.current]);
     if (open) {
       gsap.fromTo(backRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2 });
       gsap.fromTo(panelRef.current, { yPercent: 100 }, { yPercent: 0, duration: 0.45, ease: 'power4.out' });
@@ -78,7 +82,10 @@ export const Select: React.FC<Props> = ({ id, value, onChange, className = '', d
       if (rows?.length) gsap.from(rows, { y: 16, opacity: 0, duration: 0.35, ease: 'power2.out', stagger: 0.025, delay: 0.1, clearProps: 'transform,opacity' });
     } else {
       gsap.to(backRef.current, { opacity: 0, duration: 0.18 });
-      gsap.to(panelRef.current, { yPercent: 100, duration: 0.26, ease: 'power3.in', onComplete: () => setMounted(false) });
+      gsap.to(panelRef.current, { yPercent: 100, duration: 0.26, ease: 'power3.in', onComplete: () => {
+          if (!openRef.current) setMounted(false);
+        },
+      });
     }
   }, [open, mounted]);
 
@@ -86,7 +93,8 @@ export const Select: React.FC<Props> = ({ id, value, onChange, className = '', d
   useEffect(() => {
     if (!open) return;
     const others = Array.from(document.querySelectorAll('main, nav[aria-label="Navegação principal"], [role="dialog"]')).filter((n) => !panelRef.current?.contains(n));
-    others.forEach((n) => n.setAttribute('inert', ''));
+    const releaseInert = inertElements(others);
+    const releaseBack = pushBack(() => close());
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopImmediatePropagation();
@@ -99,7 +107,8 @@ export const Select: React.FC<Props> = ({ id, value, onChange, className = '', d
     sel?.focus({ preventScroll: true });
     return () => {
       window.removeEventListener('keydown', onKey, true);
-      others.forEach((n) => n.removeAttribute('inert'));
+      releaseInert();
+      releaseBack();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -134,11 +143,11 @@ export const Select: React.FC<Props> = ({ id, value, onChange, className = '', d
       </button>
       {mounted &&
         createPortal(
-          <div className="fixed inset-0 z-[70] flex items-end justify-center" role="presentation">
+          <div className={`fixed inset-0 z-[70] flex items-end justify-center ${open ? '' : 'pointer-events-none'}`} role="presentation">
             <div ref={backRef} className="absolute inset-0 bg-black/60" onClick={() => close()} aria-hidden />
             <div
               ref={panelRef}
-              className="relative flex w-full max-w-lg flex-col rounded-t-[32px] border border-b-0 border-white/[0.08] bg-ziel-surface shadow-2xl"
+              className="relative flex w-full max-w-lg flex-col rounded-t-[27px] border border-b-0 border-white/[0.08] bg-ziel-surface shadow-2xl"
               style={{ maxHeight: 'calc(var(--app-h, 100vh) * 0.75)' }}
             >
               <div className="mx-auto mt-2.5 h-1.5 w-11 shrink-0 rounded-full bg-ziel-line" aria-hidden />
@@ -160,7 +169,7 @@ export const Select: React.FC<Props> = ({ id, value, onChange, className = '', d
                         aria-selected={sel}
                         data-v={o.value}
                         onClick={() => pick(o.value)}
-                        className={`flex min-h-[52px] w-full items-center justify-between gap-3 rounded-[20px] px-4 text-left text-[15px] font-semibold transition-colors ${
+                        className={`flex min-h-[47px] w-full items-center justify-between gap-3 rounded-[17px] px-4 text-left text-[14px] font-semibold transition-colors ${
                           sel ? 'bg-ziel-accent-soft text-ziel-accent' : 'bg-white/[0.04] text-ziel-text active:bg-white/10'
                         }`}
                       >

@@ -10,6 +10,9 @@ import { ToastProvider } from './shared/ui/Toast';
 import { UpdateProvider } from './shared/Update';
 import { ReminderHost } from './shared/ReminderHost';
 import { gsap, installPressFeedback, motionOK } from './shared/motion';
+import { App as CapApp } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
+import { handleBack, installInteractionGuard } from './shared/ui/overlayGuard';
 import { getDB, requestPersistentStorage } from './infrastructure/persistence/indexeddb/database';
 
 type BootState = { status: 'loading' } | { status: 'ready'; persisted: boolean } | { status: 'error'; message: string };
@@ -24,10 +27,26 @@ export const App: React.FC = () => {
       firstTab.current = false;
       return;
     }
-    if (mainRef.current && motionOK()) gsap.fromTo(mainRef.current, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out', clearProps: 'transform,opacity' });
+    if (mainRef.current && motionOK()) gsap.fromTo(mainRef.current, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out', clearProps: 'transform,opacity', overwrite: 'auto' });
   }, [tab]);
 
   useEffect(() => installPressFeedback(), []);
+  useEffect(() => installInteractionGuard(), []);
+
+  // Botão Voltar do Android: fecha a camada do topo; sem camada, volta para "Hoje"; em "Hoje", minimiza o app.
+  const tabRef = useRef<Tab>(tab);
+  tabRef.current = tab;
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    const sub = CapApp.addListener('backButton', () => {
+      if (handleBack()) return;
+      if (tabRef.current !== 'today') setTab('today');
+      else CapApp.minimizeApp().catch(() => undefined);
+    });
+    return () => {
+      sub.then((h) => h.remove()).catch(() => undefined);
+    };
+  }, []);
 
   useEffect(() => {
     let alive = true;

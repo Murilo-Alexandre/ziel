@@ -6,6 +6,11 @@
   :root {
     color-scheme: dark;
   }
+  /* Escala compacta: todo o sistema em rem (texto, espaços, ícones) segue esta base. 14,5px = 90,6% do padrão e
+     respeita a fonte escolhida pelo usuário no sistema. */
+  html {
+    font-size: 90.625%;
+  }
   html,
   body,
   #root {
@@ -21,6 +26,11 @@
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
     overscroll-behavior-y: none;
+  }
+  html.native-app,
+  html.native-app body {
+    touch-action: pan-x pan-y; /* só no app Android: sem pinça/duplo toque para ampliar */
+    -webkit-text-size-adjust: 100%;
   }
   button {
     touch-action: manipulation;
@@ -41,10 +51,10 @@
     @apply rounded-card border border-ziel-line-soft bg-ziel-surface/90;
   }
   .field {
-    @apply min-h-[52px] w-full rounded-[22px] border border-ziel-line bg-ziel-bg px-4 text-ziel-text placeholder:text-ziel-muted focus:border-ziel-accent focus:outline-none;
+    @apply min-h-[42px] w-full rounded-[16px] border border-ziel-line bg-ziel-bg px-4 text-ziel-text placeholder:text-ziel-muted focus:border-ziel-accent focus:outline-none;
   }
   .btn {
-    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-5 text-sm font-bold transition-colors active:opacity-80 disabled:opacity-50;
+    @apply inline-flex min-h-[40px] items-center justify-center gap-2 rounded-full px-5 text-sm font-bold transition-colors active:opacity-80 disabled:opacity-50;
   }
   .btn-primary {
     @apply btn bg-ziel-accent text-ziel-ink shadow-[0_8px_24px_-10px_rgba(242,139,130,0.8)];
@@ -60,7 +70,7 @@
   }
   /* botão circular preto (referência 9) */
   .orb {
-    @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ziel-raised text-ziel-text;
+    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-ziel-raised text-ziel-text;
   }
   .pill {
     @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold;

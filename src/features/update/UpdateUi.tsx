@@ -13,7 +13,7 @@ export const UpdateBanner: React.FC<{ onOpen: () => void }> = ({ onOpen }) => {
     <section
       data-reveal
       aria-label="Atualização disponível"
-      className="mb-4 rounded-[26px] border border-ziel-accent/40 p-4"
+      className="mb-4 rounded-[22px] border border-ziel-accent/40 p-4"
       style={{ background: 'linear-gradient(135deg, rgba(242,139,130,0.24), rgba(40,48,70,0.9) 70%)' }}
     >
       <div className="flex items-start gap-3">
@@ -21,8 +21,8 @@ export const UpdateBanner: React.FC<{ onOpen: () => void }> = ({ onOpen }) => {
           <ArrowUpCircle className="h-6 w-6" aria-hidden />
         </span>
         <div className="min-w-0">
-          <p className="text-[15px] font-extrabold leading-tight">Nova versão {update.versionName}</p>
-          <p className="mt-0.5 text-[13px] text-ziel-sub">Melhorias prontas para instalar. Suas metas ficam como estão.</p>
+          <p className="text-[14px] font-extrabold leading-tight">Nova versão {update.versionName}</p>
+          <p className="mt-0.5 text-[12px] text-ziel-sub">Melhorias prontas para instalar. Suas metas ficam como estão.</p>
         </div>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2">
@@ -65,9 +65,9 @@ export const UpdateSheet: React.FC<{ open: boolean; onClose: () => void }> = ({ 
           </p>
         </div>
       )}
-      {u.status === 'installing' && <p className="rounded-[18px] bg-ziel-success-soft px-4 py-2.5 text-sm text-ziel-success">{PHASE_LABEL.installing}</p>}
+      {u.status === 'installing' && <p className="rounded-[15px] bg-ziel-success-soft px-4 py-2.5 text-sm text-ziel-success">{PHASE_LABEL.installing}</p>}
       {u.status === 'needs-permission' && (
-        <div className="space-y-2 rounded-[18px] border border-ziel-warning/40 bg-ziel-warning-soft p-3.5 text-sm text-ziel-text">
+        <div className="space-y-2 rounded-[15px] border border-ziel-warning/40 bg-ziel-warning-soft p-3.5 text-sm text-ziel-text">
           <p>O Android precisa da sua permissão para o Ziel abrir o instalador. Toque em “Abrir configurações”, ative “Permitir desta fonte” e volte.</p>
           <div className="grid grid-cols-2 gap-2">
             <button type="button" className="btn-ghost" onClick={() => u.openPermissionSettings()}>
@@ -80,16 +80,16 @@ export const UpdateSheet: React.FC<{ open: boolean; onClose: () => void }> = ({ 
         </div>
       )}
       {u.status === 'error' && u.error && (
-        <p role="alert" className="rounded-[18px] border border-ziel-danger/40 bg-ziel-danger-soft px-4 py-2.5 text-sm text-ziel-danger">
+        <p role="alert" className="rounded-[15px] border border-ziel-danger/40 bg-ziel-danger-soft px-4 py-2.5 text-sm text-ziel-danger">
           {u.error}
         </p>
       )}
       {!working && u.status !== 'needs-permission' && u.status !== 'installing' && (
         <div className="grid grid-cols-[1fr_auto] gap-2">
-          <button type="button" className="btn-primary !min-h-[54px] whitespace-nowrap !px-3 text-[15px]" onClick={() => u.install()}>
+          <button type="button" className="btn-primary !min-h-[49px] whitespace-nowrap !px-3 text-[14px]" onClick={() => u.install()}>
             <Download className="h-5 w-5" /> {u.status === 'error' ? 'Tentar de novo' : 'Instalar atualização'}
           </button>
-          <button type="button" className="btn-ghost !min-h-[54px]" onClick={onClose}>
+          <button type="button" className="btn-ghost !min-h-[49px]" onClick={onClose}>
             Depois
           </button>
         </div>
@@ -103,11 +103,11 @@ export const UpdateSheet: React.FC<{ open: boolean; onClose: () => void }> = ({ 
         <p className="py-8 text-center text-sm text-ziel-muted">Nenhuma atualização disponível.</p>
       ) : (
         <div className="space-y-4 pb-2">
-          <div className="rounded-[24px] border border-white/[0.08] p-4" style={{ background: 'linear-gradient(135deg, rgba(242,139,130,0.2), rgba(40,48,70,0.9) 70%)' }}>
+          <div className="rounded-[20px] border border-white/[0.08] p-4" style={{ background: 'linear-gradient(135deg, rgba(242,139,130,0.2), rgba(40,48,70,0.9) 70%)' }}>
             <p className="text-xs font-bold uppercase tracking-wider text-ziel-accent">Novidades · {info.versionName}</p>
-            <p className="mt-2 whitespace-pre-wrap break-words text-[14px] font-medium leading-relaxed text-ziel-text">{info.notes || 'Melhorias e correções. Veja os detalhes na página da versão.'}</p>
+            <p className="mt-2 whitespace-pre-wrap break-words text-[13px] font-medium leading-relaxed text-ziel-text">{info.notes || 'Melhorias e correções. Veja os detalhes na página da versão.'}</p>
           </div>
-          <ul className="space-y-2 text-[13px] text-ziel-sub">
+          <ul className="space-y-2 text-[12px] text-ziel-sub">
             <li className="flex items-start gap-2">
               <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-ziel-success" />
               Conferido por SHA-256 e pela assinatura digital antes de instalar.
@@ -118,7 +118,7 @@ export const UpdateSheet: React.FC<{ open: boolean; onClose: () => void }> = ({ 
             </li>
             {info.size > 0 && <li className="pl-6 text-ziel-muted">Tamanho: {formatBytes(info.size)}</li>}
           </ul>
-          <a href={info.pageUrl || RELEASES_PAGE} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center text-sm font-bold text-ziel-accent underline">
+          <a href={info.pageUrl || RELEASES_PAGE} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[40px] items-center text-sm font-bold text-ziel-accent underline">
             Ver página da versão
           </a>
         </div>

@@ -67,13 +67,13 @@ export const NotificationsSection: React.FC = () => {
       </div>
 
       {!supported && (
-        <p className="rounded-[18px] bg-ziel-raised px-4 py-3 text-sm text-ziel-sub">
+        <p className="rounded-[15px] bg-ziel-raised px-4 py-3 text-sm text-ziel-sub">
           Os avisos funcionam no app Android. Aqui na web você pode configurar os horários, mas eles só disparam no celular.
         </p>
       )}
 
       {supported && settings.enabled && perm !== 'granted' && (
-        <div className="space-y-2 rounded-[18px] border border-ziel-warning/40 bg-ziel-warning-soft p-4 text-sm">
+        <div className="space-y-2 rounded-[15px] border border-ziel-warning/40 bg-ziel-warning-soft p-4 text-sm">
           <p>{perm === 'denied' ? 'As notificações do Ziel estão bloqueadas. Ative em Configurações do Android → Apps → Ziel → Notificações.' : 'O Ziel ainda não tem permissão para notificar.'}</p>
           {perm !== 'denied' && (
             <button type="button" className="btn-primary" onClick={() => apply({ enabled: true })}>
@@ -84,7 +84,7 @@ export const NotificationsSection: React.FC = () => {
       )}
 
       {supported && settings.enabled && perm === 'granted' && !exact && (
-        <div className="space-y-2 rounded-[18px] border border-ziel-warning/40 bg-ziel-warning-soft p-4 text-sm">
+        <div className="space-y-2 rounded-[15px] border border-ziel-warning/40 bg-ziel-warning-soft p-4 text-sm">
           <p>Os alarmes exatos estão desligados: os avisos podem atrasar alguns minutos.</p>
           <button type="button" className="btn-ghost" onClick={() => notificationPort.openExactAlarmSettings()}>
             Abrir configuração
@@ -96,7 +96,7 @@ export const NotificationsSection: React.FC = () => {
         <>
           <div className="flex items-center justify-between gap-3 border-t border-ziel-line-soft pt-4">
             <div className="min-w-0">
-              <p className="text-[15px] font-bold">Silêncio à noite</p>
+              <p className="text-[14px] font-bold">Silêncio à noite</p>
               <p className="text-xs text-ziel-muted">Não avisa dentro deste intervalo</p>
             </div>
             <Switch checked={settings.quietHours.enabled} onChange={(v) => apply({ quietHours: { ...settings.quietHours, enabled: v } })} label="Ativar silêncio à noite" />
@@ -114,7 +114,7 @@ export const NotificationsSection: React.FC = () => {
             </div>
           )}
 
-          <label className="flex items-center justify-between gap-3 text-[15px] font-bold">
+          <label className="flex items-center justify-between gap-3 text-[14px] font-bold">
             <span>
               Máximo por dia
               <span className="block text-xs font-normal text-ziel-muted">Evita excesso de avisos</span>
@@ -135,7 +135,7 @@ export const NotificationsSection: React.FC = () => {
             ) : (
               <ul className="mt-2 space-y-1.5">
                 {upcoming.map((r) => (
-                  <li key={r.id} className="flex items-center justify-between gap-3 rounded-[16px] bg-ziel-raised px-3.5 py-2.5 text-sm">
+                  <li key={r.id} className="flex items-center justify-between gap-3 rounded-[14px] bg-ziel-raised px-3.5 py-2.5 text-sm">
                     <span className="min-w-0 truncate font-semibold">{r.title}</span>
                     <span className="shrink-0 tabular-nums text-ziel-sub">{fmtWhen(r.fireAt)}</span>
                   </li>

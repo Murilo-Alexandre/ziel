@@ -46,7 +46,7 @@ export const AgendaView: React.FC = () => {
     <div className="pb-nav mx-auto w-full max-w-lg px-5 pt-safe">
       <header className="pb-4 pt-5">
         <p className="text-sm text-ziel-muted">Planejamento</p>
-        <h1 className="text-[34px] font-extrabold leading-[1.05] tracking-tight">Agenda</h1>
+        <h1 className="text-[26px] font-extrabold leading-[1.05] tracking-tight">Agenda</h1>
       </header>
 
       <div className="mb-4 flex items-center justify-between gap-2">
@@ -78,7 +78,7 @@ export const AgendaView: React.FC = () => {
       ) : (
         <div ref={listRef} className="space-y-3">
           {days.map((day) => (
-            <section data-day key={day.date} aria-label={fmt(day.date, { weekday: 'long', day: 'numeric', month: 'long' })} className={`overflow-hidden rounded-[28px] ${day.date === today ? 'bg-ziel-accent text-ziel-ink' : 'bg-ziel-surface'}`}>
+            <section data-day key={day.date} aria-label={fmt(day.date, { weekday: 'long', day: 'numeric', month: 'long' })} className={`overflow-hidden rounded-[24px] ${day.date === today ? 'bg-ziel-accent text-ziel-ink' : 'bg-ziel-surface'}`}>
               <h2 className="flex items-baseline justify-between px-4 pb-1 pt-3 text-sm font-semibold">
                 <span>{cap(fmt(day.date, { weekday: 'long' }))}</span>
                 <span className={day.date === today ? 'text-black/60' : 'text-ziel-muted'}>{fmt(day.date, { day: 'numeric', month: 'short' }).replace('.', '')}</span>
@@ -92,11 +92,11 @@ export const AgendaView: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => openDetails({ goalId: it.goalId, date: it.date, occurrenceId: it.occurrenceId })}
-                        className="flex min-h-[52px] w-full items-center gap-3 px-4 py-2 text-left"
+                        className="flex min-h-[47px] w-full items-center gap-3 px-4 py-2 text-left"
                       >
                         <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: toneFor(it.colorToken, it.goalId).bg }} aria-hidden />
                         <span className="min-w-0 flex-1">
-                          <span className="block truncate text-[15px] font-medium">{it.name}</span>
+                          <span className="block truncate text-[14px] font-medium">{it.name}</span>
                           {(it.parentName || it.isQuotaSlot) && <span className="block truncate text-xs text-ziel-muted">{[it.parentName ? `↳ ${it.parentName}` : null, it.isQuotaSlot ? 'frequência flexível' : null].filter(Boolean).join(' · ')}</span>}
                         </span>
                         <span className="rounded-full bg-ziel-ink"><StatusPill status={it.status} compact /></span>

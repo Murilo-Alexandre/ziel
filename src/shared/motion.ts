@@ -37,6 +37,7 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(selector
   const ref = useRef<T>(null);
   useEffect(() => {
     if (!ref.current || !motionOK()) return;
+    let fallback = 0;
     const ctx = gsap.context(() => {
       const items = ref.current!.querySelectorAll(selector);
       if (!items.length) return;
@@ -48,8 +49,17 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(selector
           gsap.to(batch, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', stagger: 0.08, overwrite: true, clearProps: 'transform,opacity' }),
       });
       ScrollTrigger.refresh();
+      // rede de segurança: se o gatilho não disparar, nada fica invisível (e portanto "intocável")
+      fallback = window.setTimeout(() => {
+        items.forEach((el) => {
+          if (Number(getComputedStyle(el).opacity) < 0.05) gsap.to(el, { opacity: 1, y: 0, duration: 0.3, clearProps: 'transform,opacity' });
+        });
+      }, 1800);
     }, ref);
-    return () => ctx.revert();
+    return () => {
+      window.clearTimeout(fallback);
+      ctx.revert();
+    };
   }, [selector, key]);
   return ref;
 }

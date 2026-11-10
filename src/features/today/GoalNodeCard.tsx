@@ -83,7 +83,7 @@ export const GoalNodeCard: React.FC<Props> = ({ node, isExpanded, onToggle, onOp
   })();
 
   const statusRing = occurrence ? (
-    <StatusRing innerRef={ringRef} status={status} hex={hex} size={root ? 46 : 40} label={`Status: ${meta.label}. Alterar`} onClick={() => onSelectStatus(node)} />
+    <StatusRing innerRef={ringRef} status={status} hex={hex} size={root ? 38 : 34} label={`Status: ${meta.label}. Alterar`} onClick={() => onSelectStatus(node)} />
   ) : null;
 
   const chevron = hasKids ? (
@@ -123,7 +123,7 @@ export const GoalNodeCard: React.FC<Props> = ({ node, isExpanded, onToggle, onOp
             const lineLeft = ['left-2', 'left-1.5', 'left-1'][lvl];
             return (
             <div key={c.goal.id} className={`relative ${padCls}`}>
-              <span aria-hidden className={`absolute top-0 h-[32px] rounded-bl-[16px] border-b-2 border-l-2 ${elbowCls}`} style={{ borderColor: `${hex}88` }} />
+              <span aria-hidden className={`absolute top-0 h-[32px] rounded-bl-[14px] border-b-2 border-l-2 ${elbowCls}`} style={{ borderColor: `${hex}88` }} />
               {i < children.length - 1 && <span aria-hidden className={`absolute -bottom-[10px] top-[32px] border-l-2 ${lineLeft}`} style={{ borderColor: `${hex}88` }} />}
               <GoalNodeCard node={c} isExpanded={isExpanded} onToggle={onToggle} onOpenDetails={onOpenDetails} onSelectStatus={onSelectStatus} onOpenEvidence={onOpenEvidence} />
             </div>
@@ -139,17 +139,17 @@ export const GoalNodeCard: React.FC<Props> = ({ node, isExpanded, onToggle, onOp
     return (
       <article
         data-reveal
-        className="rounded-[30px] p-4 shadow-[0_14px_34px_-18px_rgba(0,0,0,0.9)]"
+        className="rounded-[22px] p-3 shadow-[0_14px_34px_-18px_rgba(0,0,0,0.9)]"
         style={{ border: `1px solid ${hex}66`, background: `linear-gradient(140deg, ${hex}26 0%, rgba(29,36,51,0.96) 58%)` }}
       >
         <div className="flex items-start gap-3.5">
           <button type="button" onClick={() => onOpenDetails(node)} className="flex min-w-0 flex-1 items-start gap-3.5 text-left" aria-label={`Abrir ${displayName}`}>
-            <span className="flex h-[68px] w-[52px] shrink-0 items-center justify-center rounded-[20px]" style={{ backgroundColor: hex, color: '#0F1320' }} aria-hidden>
+            <span className="flex h-[50px] w-[40px] shrink-0 items-center justify-center rounded-[14px]" style={{ backgroundColor: hex, color: '#0F1320' }} aria-hidden>
               <Icon className="h-6 w-6" />
             </span>
             <span className="min-w-0 flex-1 pt-0.5">
-              <span className="line-clamp-2 break-words text-[19px] font-extrabold leading-[1.15] tracking-tight text-ziel-text">{displayName}</span>
-              <span className="mt-1.5 block truncate text-[13px] text-ziel-muted">{subtitle}</span>
+              <span className="line-clamp-2 break-words text-[15px] font-extrabold leading-[1.15] tracking-tight text-ziel-text">{displayName}</span>
+              <span className="mt-1.5 block truncate text-[12px] text-ziel-muted">{subtitle}</span>
             </span>
           </button>
           <div className="flex shrink-0 items-center gap-2">
@@ -192,16 +192,16 @@ export const GoalNodeCard: React.FC<Props> = ({ node, isExpanded, onToggle, onOp
   return (
     <div
       data-depth={depth}
-      className={`rounded-[22px] ${depth >= 2 ? 'p-2 pl-2.5' : 'p-2.5 pl-3'}`}
+      className={`rounded-[19px] ${depth >= 2 ? 'p-2 pl-2.5' : 'p-2.5 pl-3'}`}
       style={{ border: `1px solid ${hex}44`, background: `linear-gradient(135deg, ${hex}1F 0%, rgba(255,255,255,${depth > 1 ? 0.07 : 0.045}) 70%)` }}
     >
       <div className="flex items-center gap-3">
-        <button type="button" onClick={() => onOpenDetails(node)} className="flex min-h-[52px] min-w-0 flex-1 items-center gap-3 text-left">
-          <span className="flex h-11 w-9 shrink-0 items-center justify-center rounded-[13px]" style={{ backgroundColor: hex, color: '#0F1320' }} aria-hidden>
+        <button type="button" onClick={() => onOpenDetails(node)} className="flex min-h-[47px] min-w-0 flex-1 items-center gap-3 text-left">
+          <span className="flex h-11 w-9 shrink-0 items-center justify-center rounded-[11px]" style={{ backgroundColor: hex, color: '#0F1320' }} aria-hidden>
             <Icon className="h-[19px] w-[19px]" />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="line-clamp-2 break-words text-[15px] font-bold leading-snug text-ziel-text">{displayName}</span>
+            <span className="line-clamp-2 break-words text-[14px] font-bold leading-snug text-ziel-text">{displayName}</span>
             <span className="mt-0.5 block truncate text-xs text-ziel-muted">{subtitle}</span>
           </span>
         </button>

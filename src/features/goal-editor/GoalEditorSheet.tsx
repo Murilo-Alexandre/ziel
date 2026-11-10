@@ -291,7 +291,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                 role="radio"
                 aria-checked={scope === k}
                 onClick={() => setScope(k)}
-                className={`min-h-touch rounded-[10px] px-2 text-sm font-semibold ${scope === k ? 'bg-ziel-accent-soft text-ziel-accent' : 'text-ziel-muted'}`}
+                className={`min-h-touch rounded-[8px] px-2 text-sm font-semibold ${scope === k ? 'bg-ziel-accent-soft text-ziel-accent' : 'text-ziel-muted'}`}
               >
                 {label}
               </button>
@@ -335,13 +335,13 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                   type="button"
                   onClick={() => setPickerOpen(true)}
                   aria-label={`Ícone: ${iconLabel(form.icon)}. Trocar ícone`}
-                  className="flex min-h-[72px] w-full items-center gap-4 rounded-[24px] border border-ziel-line bg-ziel-bg p-3 text-left"
+                  className="flex min-h-[65px] w-full items-center gap-4 rounded-[20px] border border-ziel-line bg-ziel-bg p-3 text-left"
                 >
-                  <span className="flex h-[52px] w-[42px] shrink-0 items-center justify-center rounded-[16px]" style={{ backgroundColor: form.color, color: '#0F1320' }} aria-hidden>
+                  <span className="flex h-[47px] w-[38px] shrink-0 items-center justify-center rounded-[14px]" style={{ backgroundColor: form.color, color: '#0F1320' }} aria-hidden>
                     <SelectedIcon className="h-6 w-6" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[15px] font-bold">{iconLabel(form.icon)}</span>
+                    <span className="block truncate text-[14px] font-bold">{iconLabel(form.icon)}</span>
                     <span className="block text-xs text-ziel-muted">Toque para escolher entre centenas de ícones</span>
                   </span>
                   <ChevronRight className="h-5 w-5 shrink-0 text-ziel-muted" />
@@ -391,7 +391,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                         aria-pressed={on}
                         aria-label={d.long}
                         onClick={() => toggleDay(d.key)}
-                        className={`min-h-[48px] rounded-chip border text-sm font-bold ${
+                        className={`min-h-[43px] rounded-chip border text-sm font-bold ${
                           on ? 'border-ziel-accent bg-ziel-accent-soft text-ziel-accent' : 'border-ziel-line bg-ziel-raised text-ziel-muted'
                         }`}
                       >
@@ -501,7 +501,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
               ) : (
                 <>
                   <div className="flex items-center justify-between gap-3">
-                    <span className="flex items-center gap-2 text-[15px] font-bold">
+                    <span className="flex items-center gap-2 text-[14px] font-bold">
                       <Bell className="h-4 w-4 text-ziel-accent" /> Avisar neste horário
                     </span>
                     <Switch checked={form.notify.enabled} onChange={(v) => setNotify({ enabled: v })} label="Ativar lembretes desta meta" />
@@ -544,7 +544,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                           </Select>
                         </div>
                       </div>
-                      <div aria-label="Prévia dos lembretes" className="rounded-[20px] border border-ziel-line-soft bg-ziel-surface p-3">
+                      <div aria-label="Prévia dos lembretes" className="rounded-[17px] border border-ziel-line-soft bg-ziel-surface p-3">
                         <p className="mb-2 text-xs font-semibold text-ziel-sub">Vai avisar às</p>
                         {reminderTimes.length ? (
                           <div className="flex flex-wrap gap-1.5">
@@ -633,7 +633,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                         role="radio"
                         aria-checked={form.progressType === k}
                         onClick={() => set('progressType', k)}
-                        className={`min-h-touch rounded-[10px] px-2 text-sm font-semibold ${form.progressType === k ? 'bg-ziel-accent-soft text-ziel-accent' : 'text-ziel-muted'}`}
+                        className={`min-h-touch rounded-[8px] px-2 text-sm font-semibold ${form.progressType === k ? 'bg-ziel-accent-soft text-ziel-accent' : 'text-ziel-muted'}`}
                       >
                         {label}
                       </button>

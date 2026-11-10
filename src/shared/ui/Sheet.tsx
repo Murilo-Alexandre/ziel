@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import { gsap, motionOK } from '../motion';
+import { inertElements, lockScroll, pushBack } from './overlayGuard';
 
 type SheetProps = {
   open: boolean;
@@ -16,16 +17,7 @@ type SheetProps = {
   tone?: string;
 };
 
-let openSheets = 0;
 const sheetStack: symbol[] = [];
-
-/** Torna o conteúdo atrás do sheet inerte (foco/leitor de tela não vazam para a página de fundo). */
-function setBackgroundInert(inert: boolean) {
-  document.querySelectorAll('main, nav[aria-label="Navegação principal"]').forEach((el) => {
-    if (inert) el.setAttribute('inert', '');
-    else el.removeAttribute('inert');
-  });
-}
 
 /**
  * Bottom sheet mobile-first animado com GSAP (entrada e saída), altura limitada ao viewport dinâmico,
@@ -36,6 +28,8 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
   const backdropRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
+  const openRef = useRef(open);
+  openRef.current = open;
   // `mounted` mantém o DOM durante a animação de saída
   const [mounted, setMounted] = useState(open);
 
@@ -47,10 +41,10 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
     if (!open) return;
     const id = Symbol('sheet');
     sheetStack.push(id);
-    openSheets += 1;
-    setBackgroundInert(true);
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    const bg = Array.from(document.querySelectorAll('main, nav[aria-label="Navegação principal"]'));
+    const releaseInert = inertElements(bg);
+    const releaseScroll = lockScroll();
+    const releaseBack = pushBack(() => closeRef.current());
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && sheetStack[sheetStack.length - 1] === id) closeRef.current();
     };
@@ -59,11 +53,9 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
     return () => {
       window.removeEventListener('keydown', onKey);
       sheetStack.splice(sheetStack.indexOf(id), 1);
-      openSheets -= 1;
-      if (openSheets === 0) {
-        document.body.style.overflow = prevOverflow;
-        setBackgroundInert(false);
-      }
+      releaseInert();
+      releaseScroll();
+      releaseBack();
     };
   }, [open]);
 
@@ -76,19 +68,23 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
       if (!open) setMounted(false);
       return;
     }
+    gsap.killTweensOf([panel, back]);
     if (open) {
       gsap.fromTo(back, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: 'power1.out' });
       gsap.fromTo(panel, { yPercent: 12, opacity: 0, scale: 0.98 }, { yPercent: 0, opacity: 1, scale: 1, duration: 0.5, ease: 'power4.out' });
     } else {
       gsap.to(back, { opacity: 0, duration: 0.2 });
-      gsap.to(panel, { yPercent: 10, opacity: 0, duration: 0.24, ease: 'power2.in', onComplete: () => setMounted(false) });
+      gsap.to(panel, { yPercent: 10, opacity: 0, duration: 0.24, ease: 'power2.in', onComplete: () => {
+          if (!openRef.current) setMounted(false);
+        },
+      });
     }
   }, [open, mounted]);
 
   if (!mounted) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="presentation">
+    <div className={`fixed inset-0 z-50 flex items-end justify-center sm:items-center ${open ? '' : 'pointer-events-none'}`} role="presentation">
       <button
         ref={backdropRef}
         type="button"
@@ -111,7 +107,7 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
         <header className="flex shrink-0 items-start justify-between gap-3 px-6 pb-3 pt-4">
           <div className="min-w-0">
             {tone && <span className="mb-2 block h-1.5 w-10 rounded-full" style={{ backgroundColor: tone }} aria-hidden />}
-            <h2 className="truncate text-[22px] font-extrabold leading-tight tracking-tight text-ziel-text">{title}</h2>
+            <h2 className="truncate text-[20px] font-extrabold leading-tight tracking-tight text-ziel-text">{title}</h2>
             {subtitle && <p className="mt-0.5 truncate text-sm text-ziel-muted">{subtitle}</p>}
           </div>
           <button type="button" onClick={onClose} aria-label="Fechar" className="orb !bg-ziel-raised text-ziel-sub">

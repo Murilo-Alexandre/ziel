@@ -134,8 +134,8 @@ export const TodayView: React.FC = () => {
         <div className="flex items-center justify-between">
           <p className="text-sm font-semibold text-ziel-muted">{greeting()}</p>
         </div>
-        <h1 className="mt-6 text-[34px] font-extrabold leading-[1.05] tracking-tight">{selectedDate === todayStr ? 'Suas metas de hoje' : 'Metas do dia'}</h1>
-        <p className="mt-1.5 text-[15px] font-medium text-ziel-muted">{dateLabel}</p>
+        <h1 className="mt-6 text-[26px] font-extrabold leading-[1.08] tracking-tight">{selectedDate === todayStr ? 'Suas metas de hoje' : 'Metas do dia'}</h1>
+        <p className="mt-1.5 text-[14px] font-medium text-ziel-muted">{dateLabel}</p>
       </header>
 
       <UpdateBanner onOpen={() => setUpdateOpen(true)} />
