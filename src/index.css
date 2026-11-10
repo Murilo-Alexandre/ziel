@@ -33,16 +33,19 @@
 
 @layer components {
   .card {
-    @apply rounded-card border border-ziel-line bg-ziel-surface;
+    @apply rounded-card border border-ziel-line-soft bg-ziel-surface;
   }
   .field {
-    @apply min-h-touch w-full rounded-chip border border-ziel-line bg-ziel-bg px-3.5 text-ziel-text placeholder:text-ziel-muted focus:border-ziel-accent focus:outline-none;
+    @apply min-h-[52px] w-full rounded-[22px] border border-ziel-line bg-ziel-bg px-4 text-ziel-text placeholder:text-ziel-muted focus:border-ziel-accent focus:outline-none;
   }
   .btn {
-    @apply inline-flex min-h-touch items-center justify-center gap-2 rounded-chip px-4 text-sm font-semibold transition-colors active:opacity-80 disabled:opacity-50;
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-5 text-sm font-bold transition-colors active:opacity-80 disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-ziel-accent text-ziel-bg;
+    @apply btn bg-ziel-accent text-ziel-ink;
+  }
+  .btn-dark {
+    @apply btn bg-ziel-ink text-ziel-text;
   }
   .btn-ghost {
     @apply btn border border-ziel-line bg-ziel-raised text-ziel-text;
@@ -50,8 +53,15 @@
   .btn-danger {
     @apply btn border border-ziel-danger/40 bg-ziel-danger-soft text-ziel-danger;
   }
+  /* botão circular preto (referência 9) */
+  .orb {
+    @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-ziel-ink text-ziel-text;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold;
+  }
   .pb-nav {
-    padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+    padding-bottom: calc(7rem + env(safe-area-inset-bottom));
   }
   .pt-safe {
     padding-top: env(safe-area-inset-top);

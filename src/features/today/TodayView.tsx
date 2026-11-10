@@ -11,6 +11,8 @@ import { GoalNodeCard } from './GoalNodeCard';
 import { defaultExpanded } from './treeLayout';
 import { QuickStatusSheet } from '../../shared/components/QuickStatusSheet';
 import { useOverlays } from '../../shared/Overlays';
+import { UpdateBanner, UpdateSheet } from '../update/UpdateUi';
+import { useRevealOnKey } from '../../shared/motion';
 import { errorMessage, useAppData } from '../../shared/AppData';
 import { useToast } from '../../shared/ui/Toast';
 
@@ -29,17 +31,19 @@ function greeting(now = new Date()): string {
   return h < 5 ? 'Boa madrugada' : h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
 }
 
-export const TodayView: React.FC<{ onNewGoal: number }> = ({ onNewGoal }) => {
+export const TodayView: React.FC = () => {
   const { version, bump } = useAppData();
   const { notify } = useToast();
   const [selectedDate, setSelectedDate] = useState(() => todayLocal());
   const [tree, setTree] = useState<TodayTree | null>(null);
+  const [treeDate, setTreeDate] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [expandedMap, setExpandedMap] = useState<Record<string, boolean>>(readExpanded);
   const reqId = useRef(0);
 
   const [statusNode, setStatusNode] = useState<TodayGoalNode | null>(null);
   const { openDetails, openEditor, openEvidence } = useOverlays();
+  const [updateOpen, setUpdateOpen] = useState(false);
   const [hasAnyGoal, setHasAnyGoal] = useState(true);
 
   const load = useCallback(async (date: string) => {
@@ -48,6 +52,7 @@ export const TodayView: React.FC<{ onNewGoal: number }> = ({ onNewGoal }) => {
       const t = await occurrenceService.getTodayGoalTree(date);
       if (id !== reqId.current) return; // resposta de uma data anterior: descarta
       setTree(t);
+      setTreeDate((prev) => (prev === date ? prev : date));
       setLoadError(null);
       if (t.nodes.length === 0) {
         const all = await goalRepo.listAllDefinitions();
@@ -61,15 +66,6 @@ export const TodayView: React.FC<{ onNewGoal: number }> = ({ onNewGoal }) => {
   useEffect(() => {
     load(selectedDate);
   }, [selectedDate, version, load]);
-
-  // botão "+" central da navegação
-  const lastNew = useRef(onNewGoal);
-  useEffect(() => {
-    if (onNewGoal !== lastNew.current) {
-      lastNew.current = onNewGoal;
-      openEditor({ kind: 'create', parentId: null });
-    }
-  }, [onNewGoal, openEditor]);
 
   const isExpanded = useCallback((goalId: string, depth: number) => expandedMap[goalId] ?? defaultExpanded(depth), [expandedMap]);
   const onToggle = useCallback((goalId: string, depth: number) => {
@@ -107,6 +103,7 @@ export const TodayView: React.FC<{ onNewGoal: number }> = ({ onNewGoal }) => {
   };
 
   const todayStr = todayLocal();
+  const revealRef = useRevealOnKey(treeDate ?? '', treeDate !== null);
   const dateLabel = useMemo(() => {
     const d = parseLocalDate(selectedDate);
     const s = d.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -120,16 +117,24 @@ export const TodayView: React.FC<{ onNewGoal: number }> = ({ onNewGoal }) => {
 
 
   return (
-    <div className="pb-nav mx-auto w-full max-w-lg px-4 pt-safe">
-      <header className="pb-4 pt-5">
-        <p className="text-sm text-ziel-muted">{greeting()}</p>
-        <h1 className="mt-0.5 text-[28px] font-bold leading-tight tracking-tight">{selectedDate === todayStr ? 'Hoje' : dateLabel}</h1>
-        {selectedDate === todayStr && <p className="text-sm text-ziel-muted">{dateLabel}</p>}
+    <div className="pb-nav mx-auto w-full max-w-lg px-5 pt-safe">
+      <header className="pb-5 pt-5">
+        <div className="flex items-center justify-between">
+          <button type="button" onClick={() => openEditor({ kind: 'create', parentId: null })} className="flex min-h-[48px] items-center gap-2.5 rounded-full bg-ziel-accent py-1.5 pl-1.5 pr-5 text-sm font-extrabold text-ziel-ink active:opacity-80">
+            <span className="orb !h-9 !w-9"><Plus className="h-5 w-5" /></span>
+            Nova meta
+          </button>
+          <p className="text-sm font-semibold text-ziel-muted">{greeting()}</p>
+        </div>
+        <h1 className="mt-6 text-[34px] font-extrabold leading-[1.05] tracking-tight">{selectedDate === todayStr ? 'Suas metas de hoje' : 'Metas do dia'}</h1>
+        <p className="mt-1.5 text-[15px] font-medium text-ziel-muted">{dateLabel}</p>
       </header>
+
+      <UpdateBanner onOpen={() => setUpdateOpen(true)} />
 
       <DateStrip selectedDate={selectedDate} onSelectDate={setSelectedDate} />
 
-      <div className="mt-4 space-y-4">
+      <div ref={revealRef} className="mt-5 space-y-4">
         <DayProgressCard progress={tree?.overallProgress ?? 0} total={tree?.totalActionable ?? 0} completed={tree?.completedActionable ?? 0} isToday={selectedDate === todayStr} />
 
         {selectedDate !== todayStr && (
@@ -138,7 +143,7 @@ export const TodayView: React.FC<{ onNewGoal: number }> = ({ onNewGoal }) => {
           </button>
         )}
 
-        <section aria-label="Metas do dia" className="space-y-3">
+        <section aria-label="Metas do dia" className="space-y-4">
           {loadError ? (
             <div role="alert" className="card space-y-3 p-5 text-center">
               <p className="font-semibold text-ziel-danger">Não foi possível carregar suas metas</p>
@@ -186,6 +191,8 @@ export const TodayView: React.FC<{ onNewGoal: number }> = ({ onNewGoal }) => {
           )}
         </section>
       </div>
+
+      <UpdateSheet open={updateOpen} onClose={() => setUpdateOpen(false)} />
 
       <QuickStatusSheet
         open={Boolean(statusNode)}

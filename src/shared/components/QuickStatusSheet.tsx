@@ -16,6 +16,7 @@ type Props = {
 };
 
 const OPTIONS: OccurrenceStatus[] = ['completed', 'partial', 'not_done'];
+const BLOCK: Record<OccurrenceStatus, string> = { completed: 'bg-block-lime', partial: 'bg-block-amber', not_done: 'bg-block-coral', pending: 'bg-block-sand' };
 
 export const QuickStatusSheet: React.FC<Props> = ({
   open,
@@ -69,13 +70,11 @@ export const QuickStatusSheet: React.FC<Props> = ({
               type="button"
               onClick={() => onSelectStatus(key)}
               aria-pressed={selected}
-              className={`flex min-h-[56px] items-center gap-3 rounded-card border px-4 text-left ${m.bg} ${m.border} ${m.text} ${
-                selected ? 'ring-2 ring-ziel-accent' : ''
-              }`}
+              className={`flex min-h-[60px] items-center gap-3 rounded-[26px] px-5 text-left text-ziel-ink ${BLOCK[key]} ${selected ? 'ring-4 ring-white/70' : ''}`}
             >
-              <m.Icon className="h-6 w-6 shrink-0" />
+              <m.Icon className="h-6 w-6 shrink-0 text-ziel-ink" />
               <span className="flex-1 text-base font-semibold">{m.label}</span>
-              {selected && <span className="text-xs font-semibold text-ziel-sub">Atual</span>}
+              {selected && <span className="rounded-full bg-ziel-ink px-2.5 py-1 text-[11px] font-bold text-ziel-text">Atual</span>}
             </button>
           );
         })}

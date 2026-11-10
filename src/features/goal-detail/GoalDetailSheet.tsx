@@ -5,7 +5,7 @@ import { goalService, queryService } from '../../application/container';
 import { describeCompletion, describeCycle, describeSchedule, formatDateBR } from '../../domain/recurrence/scheduleLabels';
 import { Sheet } from '../../shared/ui/Sheet';
 import { CYCLE_STATUS_META, ProgressBar, StatusPill } from '../../shared/ui/status';
-import { iconFor } from '../../shared/ui/goalIcons';
+import { iconFor, toneFor } from '../../shared/ui/goalIcons';
 import { errorMessage, useAppData } from '../../shared/AppData';
 import { useToast } from '../../shared/ui/Toast';
 
@@ -57,7 +57,7 @@ export const GoalDetailSheet: React.FC<Props> = ({ open, goalId, date, occurrenc
 
   const rev = details?.revision;
   const Icon = iconFor(rev?.icon);
-  const color = rev?.colorToken ?? '#6D9BFF';
+  const color = toneFor(rev?.colorToken, rev?.goalId).bg;
   const cycleMeta = details?.cycle ? CYCLE_STATUS_META[details.cycle.computedStatus] : null;
 
   return (

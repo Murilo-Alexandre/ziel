@@ -36,3 +36,11 @@ e rode `.\gradlew.bat assembleRelease -PzielVersionName=0.1.0-beta.1 -PzielVersi
 Crie `android/local.properties` com `sdk.dir=C:/Users/<você>/AppData/Local/Android/Sdk` se o Gradle não achar o SDK.
 
 > O APK de **debug** e o de **release** têm assinaturas diferentes: não se atualizam entre si. Instale sempre o da Release.
+
+## Atualização pelo app (Android)
+O Ziel consulta `https://api.github.com/repos/Murilo-Alexandre/ziel/releases` (no máximo a cada 12 h ao abrir, e em Ajustes → "Verificar atualizações"),
+compara o `versionCode` da tag com o instalado e, se houver versão maior com `Ziel-<tag>.apk` e `.sha256` anexados, mostra um aviso discreto.
+Em "Instalar atualização": o plugin nativo `ZielUpdater` baixa o APK (apenas hosts do GitHub, HTTPS), confere o SHA-256 do `.sha256` da Release,
+o nome do pacote (`com.ziel.app`), o `versionCode` e a **assinatura** (igual à do app instalado) e só então abre o instalador do Android.
+A primeira vez o Android pede a permissão "Instalar apps desconhecidos" para o Ziel. O repositório precisa ser **público** para o app consultar a API sem login.
+Notas exibidas no app: `docs/release-notes/<tag>.md` (se existir) vira o texto da Release.

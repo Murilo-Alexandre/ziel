@@ -1,8 +1,8 @@
 import React from 'react';
-import { CheckCircle2, Circle, CircleDashed, CircleDot, XCircle } from 'lucide-react';
+import { CheckCircle2, Circle, CircleDot, XCircle } from 'lucide-react';
 import { CycleComputedStatus, OccurrenceStatus } from '../../domain/types';
 
-/** Semântica de status centralizada: concluído=verde, parcial=âmbar, pendente=neutro, não realizado=vermelho. */
+/** Semântica de status centralizada: concluído=lima, parcial=âmbar, pendente=neutro, não realizado=coral. */
 export const STATUS_META: Record<
   OccurrenceStatus,
   { label: string; text: string; bg: string; border: string; Icon: React.FC<{ className?: string }> }
@@ -20,11 +20,12 @@ export const CYCLE_STATUS_META: Record<CycleComputedStatus, { label: string; tex
   not_done: { label: 'Não realizado', text: 'text-ziel-danger', bar: 'bg-ziel-danger' },
 };
 
-export const ProgressBar: React.FC<{ value: number; barClass?: string; className?: string; label?: string }> = ({
+export const ProgressBar: React.FC<{ value: number; barClass?: string; className?: string; label?: string; trackClass?: string }> = ({
   value,
   barClass = 'bg-ziel-accent',
   className = '',
   label,
+  trackClass = 'bg-ziel-line-soft',
 }) => {
   const pct = Math.round(Math.min(1, Math.max(0, value)) * 100);
   return (
@@ -34,9 +35,9 @@ export const ProgressBar: React.FC<{ value: number; barClass?: string; className
       aria-valuemax={100}
       aria-valuenow={pct}
       aria-label={label ?? 'Progresso'}
-      className={`h-1.5 w-full overflow-hidden rounded-full bg-ziel-line-soft ${className}`}
+      className={`h-2 w-full overflow-hidden rounded-full ${trackClass} ${className}`}
     >
-      <div className={`h-full rounded-full transition-[width] duration-300 ${barClass}`} style={{ width: `${pct}%` }} />
+      <div className={`h-full rounded-full transition-[width] duration-500 ease-out ${barClass}`} style={{ width: `${pct}%` }} />
     </div>
   );
 };
@@ -50,5 +51,3 @@ export const StatusPill: React.FC<{ status: OccurrenceStatus; compact?: boolean 
     </span>
   );
 };
-
-export { CircleDashed };

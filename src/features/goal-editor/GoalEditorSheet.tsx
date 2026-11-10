@@ -562,7 +562,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                   )}
                   <label className="flex min-h-touch items-center justify-between gap-3 text-sm text-ziel-sub">
                     <span>Obrigatória (bloqueia a conclusão do pai)</span>
-                    <input type="checkbox" className="h-6 w-6 accent-[#6D9BFF]" checked={form.isRequired} onChange={(e) => set('isRequired', e.target.checked)} />
+                    <input type="checkbox" className="h-6 w-6 accent-[#F6C85F]" checked={form.isRequired} onChange={(e) => set('isRequired', e.target.checked)} />
                   </label>
                 </Section>
 
@@ -618,7 +618,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                         )}
                         <label className="flex min-h-touch items-center justify-between gap-3 text-sm text-ziel-sub">
                           <span>Mostrar agrupada na Home</span>
-                          <input type="checkbox" className="h-6 w-6 accent-[#6D9BFF]" checked={form.showParentOnHome} onChange={(e) => set('showParentOnHome', e.target.checked)} />
+                          <input type="checkbox" className="h-6 w-6 accent-[#F6C85F]" checked={form.showParentOnHome} onChange={(e) => set('showParentOnHome', e.target.checked)} />
                         </label>
                       </>
                     )}

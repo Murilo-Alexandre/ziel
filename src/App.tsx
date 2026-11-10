@@ -7,13 +7,13 @@ import { BottomNav, Tab } from './shared/components/BottomNav';
 import { AppDataProvider } from './shared/AppData';
 import { OverlayProvider } from './shared/Overlays';
 import { ToastProvider } from './shared/ui/Toast';
+import { UpdateProvider } from './shared/Update';
 import { getDB, requestPersistentStorage } from './infrastructure/persistence/indexeddb/database';
 
 type BootState = { status: 'loading' } | { status: 'ready'; persisted: boolean } | { status: 'error'; message: string };
 
 export const App: React.FC = () => {
   const [tab, setTab] = useState<Tab>('today');
-  const [newGoalTick, setNewGoalTick] = useState(0);
   const [boot, setBoot] = useState<BootState>({ status: 'loading' });
 
   useEffect(() => {
@@ -56,25 +56,17 @@ export const App: React.FC = () => {
   return (
     <ToastProvider>
       <AppDataProvider>
+        <UpdateProvider>
         <OverlayProvider>
           <main>
-            {tab === 'today' && <TodayView onNewGoal={newGoalTick} />}
+            {tab === 'today' && <TodayView />}
             {tab === 'agenda' && <AgendaView />}
             {tab === 'goals' && <GoalsLibraryView />}
             {tab === 'settings' && <SettingsView storagePersisted={boot.persisted} />}
           </main>
-          <BottomNav
-            activeTab={tab}
-            onTabChange={setTab}
-            onNew={() => {
-              if (tab === 'today') setNewGoalTick((n) => n + 1);
-              else {
-                setTab('today');
-                setNewGoalTick((n) => n + 1);
-              }
-            }}
-          />
+          <BottomNav activeTab={tab} onTabChange={setTab} />
         </OverlayProvider>
+        </UpdateProvider>
       </AppDataProvider>
     </ToastProvider>
   );

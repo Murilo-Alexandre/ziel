@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
+import { gsap, motionOK } from '../motion';
 
 type SheetProps = {
   open: boolean;
@@ -11,6 +12,8 @@ type SheetProps = {
   footer?: React.ReactNode;
   /** Ocupa quase toda a altura (formulários longos). */
   tall?: boolean;
+  /** Cor de destaque do cabeçalho (bloco colorido, referência 9). */
+  tone?: string;
 };
 
 let openSheets = 0;
@@ -25,13 +28,20 @@ function setBackgroundInert(inert: boolean) {
 }
 
 /**
- * Bottom sheet mobile-first: altura limitada ao viewport dinâmico (teclado/barras do Android),
- * cabeçalho e rodapé fixos, miolo rolável, fecha com Esc/toque no fundo.
+ * Bottom sheet mobile-first animado com GSAP (entrada e saída), altura limitada ao viewport dinâmico,
+ * cabeçalho e rodapé fixos, miolo rolável, fecha com Esc (só a folha do topo) ou toque no fundo.
  */
-export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, children, footer, tall }) => {
+export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, children, footer, tall, tone }) => {
   const panelRef = useRef<HTMLDivElement>(null);
+  const backdropRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
+  // `mounted` mantém o DOM durante a animação de saída
+  const [mounted, setMounted] = useState(open);
+
+  useEffect(() => {
+    if (open) setMounted(true);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -42,7 +52,6 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKey = (e: KeyboardEvent) => {
-      // Só a folha do topo responde ao Esc (folhas empilhadas fecham uma por vez).
       if (e.key === 'Escape' && sheetStack[sheetStack.length - 1] === id) closeRef.current();
     };
     window.addEventListener('keydown', onKey);
@@ -58,16 +67,35 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
     };
   }, [open]);
 
-  if (!open) return null;
+  // entrada / saída
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    const back = backdropRef.current;
+    if (!mounted || !panel || !back) return;
+    if (!motionOK()) {
+      if (!open) setMounted(false);
+      return;
+    }
+    if (open) {
+      gsap.fromTo(back, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: 'power1.out' });
+      gsap.fromTo(panel, { yPercent: 12, opacity: 0, scale: 0.98 }, { yPercent: 0, opacity: 1, scale: 1, duration: 0.5, ease: 'power4.out' });
+    } else {
+      gsap.to(back, { opacity: 0, duration: 0.2 });
+      gsap.to(panel, { yPercent: 10, opacity: 0, duration: 0.24, ease: 'power2.in', onComplete: () => setMounted(false) });
+    }
+  }, [open, mounted]);
+
+  if (!mounted) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center" role="presentation">
       <button
+        ref={backdropRef}
         type="button"
         aria-label="Fechar"
         tabIndex={-1}
         onClick={onClose}
-        className="absolute inset-0 animate-fade cursor-default bg-black/70"
+        className="absolute inset-0 cursor-default bg-black/75 backdrop-blur-[2px]"
       />
       <div
         ref={panelRef}
@@ -75,27 +103,23 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
         aria-modal="true"
         aria-label={title}
         tabIndex={-1}
-        className={`relative flex w-full max-w-lg animate-sheet-up flex-col rounded-t-sheet border border-b-0 border-ziel-line bg-ziel-surface shadow-2xl outline-none sm:rounded-sheet sm:border-b ${
+        className={`relative flex w-full max-w-lg flex-col rounded-t-sheet border border-b-0 border-ziel-line-soft bg-ziel-surface shadow-2xl outline-none sm:rounded-sheet sm:border-b ${
           tall ? 'max-h-[94dvh]' : 'max-h-[88dvh]'
         }`}
       >
-        <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-ziel-line sm:hidden" aria-hidden />
-        <header className="flex shrink-0 items-start justify-between gap-3 px-5 pb-3 pt-3">
+        <div className="mx-auto mt-2.5 h-1.5 w-11 shrink-0 rounded-full bg-ziel-line sm:hidden" aria-hidden />
+        <header className="flex shrink-0 items-start justify-between gap-3 px-6 pb-3 pt-4">
           <div className="min-w-0">
-            <h2 className="truncate text-lg font-bold leading-tight text-ziel-text">{title}</h2>
+            {tone && <span className="mb-2 block h-1.5 w-10 rounded-full" style={{ backgroundColor: tone }} aria-hidden />}
+            <h2 className="truncate text-[22px] font-extrabold leading-tight tracking-tight text-ziel-text">{title}</h2>
             {subtitle && <p className="mt-0.5 truncate text-sm text-ziel-muted">{subtitle}</p>}
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Fechar"
-            className="-mr-2 flex min-h-touch min-w-touch items-center justify-center rounded-chip text-ziel-muted hover:text-ziel-text"
-          >
+          <button type="button" onClick={onClose} aria-label="Fechar" className="orb !bg-ziel-raised text-ziel-sub">
             <X className="h-5 w-5" />
           </button>
         </header>
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-4">{children}</div>
-        {footer && <footer className="pb-safe shrink-0 border-t border-ziel-line-soft px-5 pb-3 pt-3">{footer}</footer>}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-4">{children}</div>
+        {footer && <footer className="pb-safe shrink-0 border-t border-ziel-line-soft px-6 pb-3 pt-3">{footer}</footer>}
         {!footer && <div className="pb-safe shrink-0" />}
       </div>
     </div>

@@ -8,7 +8,7 @@ type Props = {
 
 const SPAN = 15; // dias para cada lado do dia selecionado
 
-/** Faixa horizontal de dias com rolagem e snap; o dia selecionado fica centralizado. */
+/** Faixa de pílulas de data (referência 9): a ativa fica amarela e o dia selecionado centraliza. */
 export const DateStrip: React.FC<Props> = ({ selectedDate, onSelectDate }) => {
   const today = todayLocal();
   const selectedRef = useRef<HTMLButtonElement>(null);
@@ -25,13 +25,13 @@ export const DateStrip: React.FC<Props> = ({ selectedDate, onSelectDate }) => {
     <div
       role="listbox"
       aria-label="Escolher dia"
-      className="-mx-4 flex snap-x snap-proximity gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="-mx-5 flex snap-x snap-proximity gap-2.5 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
     >
       {days.map((d) => {
         const date = parseLocalDate(d);
         const selected = d === selectedDate;
         const isToday = d === today;
-        const wd = date.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '').slice(0, 3);
+        const month = date.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '');
         return (
           <button
             key={d}
@@ -40,15 +40,14 @@ export const DateStrip: React.FC<Props> = ({ selectedDate, onSelectDate }) => {
             aria-selected={selected}
             aria-label={date.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}
             onClick={() => onSelectDate(d)}
-            className={`flex min-h-[64px] w-[52px] shrink-0 snap-center flex-col items-center justify-center rounded-chip border text-center transition-colors ${
-              selected
-                ? 'border-ziel-accent bg-ziel-accent-soft text-ziel-text'
-                : 'border-ziel-line-soft bg-ziel-surface text-ziel-sub'
+            className={`flex min-h-[48px] shrink-0 snap-center flex-col items-center justify-center rounded-full px-4 text-center leading-none transition-all duration-300 ${
+              selected ? 'bg-ziel-accent text-ziel-ink' : 'bg-ziel-raised text-ziel-sub active:bg-ziel-line'
             }`}
           >
-            <span className="text-[11px] font-medium uppercase tracking-wide text-ziel-muted">{wd}</span>
-            <span className="mt-0.5 text-lg font-bold leading-none">{date.getDate()}</span>
-            <span className={`mt-1.5 h-1 w-1 rounded-full ${isToday ? 'bg-ziel-accent' : 'bg-transparent'}`} aria-hidden />
+            <span className="text-[13px] font-bold">
+              {String(date.getDate()).padStart(2, '0')} {month}
+            </span>
+            {(selected || isToday) && <span className={`mt-1 text-[11px] font-extrabold ${selected ? '' : 'text-ziel-accent'}`}>{isToday ? 'Hoje' : date.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '')}</span>}
           </button>
         );
       })}
