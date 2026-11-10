@@ -3,7 +3,20 @@ export { iconFor, iconLabel, ICON_CATALOG, ICON_CATEGORIES, searchIcons, DEFAULT
 export type { IconComp } from '../icons/registry';
 
 /** Paleta de metas (identidade Ziel). O hex escolhido é o que fica salvo na meta. */
-export const GOAL_COLORS = ['#F28B82', '#5B9BE0', '#62C48A', '#F5C542', '#8B7CF6', '#E066D0'];
+export const GOAL_COLOR_LIST: { hex: string; name: string }[] = [
+  // as 6 primeiras são as cores originais do Ziel (metas antigas continuam idênticas)
+  { hex: '#F28B82', name: 'Coral' }, { hex: '#5B9BE0', name: 'Azul' }, { hex: '#62C48A', name: 'Verde' },
+  { hex: '#F5C542', name: 'Amarelo' }, { hex: '#8B7CF6', name: 'Violeta' }, { hex: '#E066D0', name: 'Magenta' },
+  { hex: '#E8665D', name: 'Vermelho' }, { hex: '#F4A261', name: 'Laranja' }, { hex: '#E9C46A', name: 'Areia' },
+  { hex: '#9BD16F', name: 'Lima' }, { hex: '#2EC4B6', name: 'Turquesa' }, { hex: '#56CCF2', name: 'Céu' },
+  { hex: '#7B9CFF', name: 'Pervinca' }, { hex: '#9D7BF0', name: 'Roxo' }, { hex: '#C77DFF', name: 'Orquídea' },
+  { hex: '#FF8FB1', name: 'Rosa' }, { hex: '#FF6F91', name: 'Framboesa' }, { hex: '#FFB4A2', name: 'Pêssego' },
+  { hex: '#4FB286', name: 'Esmeralda' }, { hex: '#7FC8A9', name: 'Sálvia' }, { hex: '#B5C99A', name: 'Oliva' },
+  { hex: '#D4A373', name: 'Argila' }, { hex: '#B08968', name: 'Café' }, { hex: '#CDB4DB', name: 'Lilás' },
+  { hex: '#8FA3BF', name: 'Aço' }, { hex: '#6E7FA3', name: 'Ardósia' }, { hex: '#A8B5C7', name: 'Névoa' },
+  { hex: '#5E81AC', name: 'Jeans' }, { hex: '#D08770', name: 'Terracota' }, { hex: '#EBCB8B', name: 'Mel' },
+];
+export const GOAL_COLORS = GOAL_COLOR_LIST.map((c) => c.hex);
 
 /** Cores salvas em versões anteriores mapeadas para a paleta atual — metas existentes continuam coloridas. */
 const LEGACY: Record<string, string> = {

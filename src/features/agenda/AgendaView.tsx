@@ -50,7 +50,7 @@ export const AgendaView: React.FC = () => {
       </header>
 
       <div className="mb-4 flex items-center justify-between gap-2">
-        <button type="button" aria-label="Semana anterior" className="orb !h-12 !w-12" onClick={() => setWeekStart(addDays(weekStart, -7))}>
+        <button type="button" aria-label="Semana anterior" className="orb" onClick={() => setWeekStart(addDays(weekStart, -7))}>
           <ChevronLeft className="h-5 w-5" />
         </button>
         <div className="text-center">
@@ -61,7 +61,7 @@ export const AgendaView: React.FC = () => {
             </button>
           )}
         </div>
-        <button type="button" aria-label="Próxima semana" className="orb !h-12 !w-12" onClick={() => setWeekStart(addDays(weekStart, 7))}>
+        <button type="button" aria-label="Próxima semana" className="orb" onClick={() => setWeekStart(addDays(weekStart, 7))}>
           <ChevronRight className="h-5 w-5" />
         </button>
       </div>
@@ -78,15 +78,15 @@ export const AgendaView: React.FC = () => {
       ) : (
         <div ref={listRef} className="space-y-3">
           {days.map((day) => (
-            <section data-day key={day.date} aria-label={fmt(day.date, { weekday: 'long', day: 'numeric', month: 'long' })} className={`overflow-hidden rounded-[24px] ${day.date === today ? 'bg-ziel-accent text-ziel-ink' : 'bg-ziel-surface'}`}>
+            <section data-day key={day.date} aria-label={fmt(day.date, { weekday: 'long', day: 'numeric', month: 'long' })} className={`overflow-hidden rounded-[24px] ${day.date === today ? 'border border-ziel-accent/60 bg-ziel-surface shadow-[0_0_0_3px_rgba(242,139,130,0.10)]' : 'border border-ziel-line-soft bg-ziel-surface'}`}>
               <h2 className="flex items-baseline justify-between px-4 pb-1 pt-3 text-sm font-semibold">
-                <span>{cap(fmt(day.date, { weekday: 'long' }))}</span>
-                <span className={day.date === today ? 'text-black/60' : 'text-ziel-muted'}>{fmt(day.date, { day: 'numeric', month: 'short' }).replace('.', '')}</span>
+                <span className={`flex items-center gap-2 ${day.date === today ? 'text-ziel-accent' : 'text-ziel-text'}`}>{cap(fmt(day.date, { weekday: 'long' }))}{day.date === today && <span className="rounded-full bg-ziel-accent px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-ziel-ink">Hoje</span>}</span>
+                <span className="text-ziel-sub">{fmt(day.date, { day: 'numeric', month: 'short' }).replace('.', '')}</span>
               </h2>
               {day.items.length === 0 ? (
-                <p className={`px-4 pb-3 text-sm ${day.date === today ? 'text-black/60' : 'text-ziel-muted'}`}>Livre</p>
+                <p className="px-4 pb-3 text-sm text-ziel-sub">Livre</p>
               ) : (
-                <ul className={`divide-y ${day.date === today ? 'divide-black/10' : 'divide-ziel-line-soft'}`}>
+                <ul className="divide-y divide-ziel-line-soft">
                   {day.items.map((it) => (
                     <li key={`${it.goalId}-${it.isQuotaSlot ? 'q' : 'd'}`}>
                       <button
@@ -97,9 +97,9 @@ export const AgendaView: React.FC = () => {
                         <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: toneFor(it.colorToken, it.goalId).bg }} aria-hidden />
                         <span className="min-w-0 flex-1">
                           <span className="block truncate text-[14px] font-medium">{it.name}</span>
-                          {(it.parentName || it.isQuotaSlot) && <span className="block truncate text-xs text-ziel-muted">{[it.parentName ? `↳ ${it.parentName}` : null, it.isQuotaSlot ? 'frequência flexível' : null].filter(Boolean).join(' · ')}</span>}
+                          {(it.parentName || it.isQuotaSlot) && <span className="block truncate text-xs text-ziel-sub">{[it.parentName ? `↳ ${it.parentName}` : null, it.isQuotaSlot ? 'frequência flexível' : null].filter(Boolean).join(' · ')}</span>}
                         </span>
-                        <span className="rounded-full bg-ziel-ink"><StatusPill status={it.status} compact /></span>
+                        <StatusPill status={it.status} compact />
                       </button>
                     </li>
                   ))}

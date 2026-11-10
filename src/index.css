@@ -6,10 +6,10 @@
   :root {
     color-scheme: dark;
   }
-  /* Escala compacta: todo o sistema em rem (texto, espaços, ícones) segue esta base. 14,5px = 90,6% do padrão e
+  /* Escala compacta: todo o sistema em rem (texto, espaços, ícones) segue esta base. 14px = 87,5% do padrão e
      respeita a fonte escolhida pelo usuário no sistema. */
   html {
-    font-size: 90.625%;
+    font-size: 87.5%;
   }
   html,
   body,
@@ -75,6 +75,43 @@
   .pill {
     @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold;
   }
+  /* Árvore de submetas: o cotovelo termina exatamente no centro da primeira linha do cartão filho
+     (--stub = borda + padding + metade da linha de 40px), em qualquer nível e largura. */
+  .tree-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    --gap: 0.5rem;
+    --stub: calc(1px + 0.5rem + 20px);
+  }
+  .tree-child {
+    position: relative;
+    padding-left: var(--indent, 1.4rem);
+  }
+  .tree-child::before {
+    content: '';
+    position: absolute;
+    left: var(--lx, 0.45rem);
+    top: 0;
+    width: calc(var(--indent, 1.4rem) - var(--lx, 0.45rem));
+    height: var(--stub);
+    border-left: 2px solid var(--tree-c);
+    border-bottom: 2px solid var(--tree-c);
+    border-bottom-left-radius: 0.7rem;
+    pointer-events: none;
+  }
+  .tree-child:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: var(--lx, 0.45rem);
+    top: var(--stub);
+    bottom: calc(-1 * var(--gap));
+    border-left: 2px solid var(--tree-c);
+    pointer-events: none;
+  }
+  .tree-l1 { --indent: 1.4rem; --lx: 0.45rem; }
+  .tree-l2 { --indent: 1.1rem; --lx: 0.4rem; }
+  .tree-l3 { --indent: 0.9rem; --lx: 0.35rem; }
   .pb-nav {
     padding-bottom: calc(7rem + env(safe-area-inset-bottom));
   }

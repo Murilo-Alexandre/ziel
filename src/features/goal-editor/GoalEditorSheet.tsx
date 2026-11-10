@@ -6,7 +6,7 @@ import { listDescendantIds } from '../../domain/goals/goalTree';
 import { formatDateBR } from '../../domain/recurrence/scheduleLabels';
 import { parseLocalDate } from '../../domain/dates';
 import { Sheet } from '../../shared/ui/Sheet';
-import { GOAL_COLORS, iconFor, iconLabel } from '../../shared/ui/goalIcons';
+import { iconFor, iconLabel } from '../../shared/ui/goalIcons';
 import { IconPickerScreen } from '../icons/IconPickerScreen';
 import { Switch } from '../../shared/ui/Switch';
 import { Select } from '../../shared/ui/Select';
@@ -334,7 +334,7 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                 <button
                   type="button"
                   onClick={() => setPickerOpen(true)}
-                  aria-label={`Ícone: ${iconLabel(form.icon)}. Trocar ícone`}
+                  aria-label={`Ícone ${iconLabel(form.icon)} e cor. Personalizar`}
                   className="flex min-h-[65px] w-full items-center gap-4 rounded-[20px] border border-ziel-line bg-ziel-bg p-3 text-left"
                 >
                   <span className="flex h-[47px] w-[38px] shrink-0 items-center justify-center rounded-[14px]" style={{ backgroundColor: form.color, color: '#0F1320' }} aria-hidden>
@@ -342,25 +342,10 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-[14px] font-bold">{iconLabel(form.icon)}</span>
-                    <span className="block text-xs text-ziel-muted">Toque para escolher entre centenas de ícones</span>
+                    <span className="block text-xs text-ziel-muted">Toque para escolher ícone e cor</span>
                   </span>
                   <ChevronRight className="h-5 w-5 shrink-0 text-ziel-muted" />
                 </button>
-                <div className="mt-2 flex gap-1" role="radiogroup" aria-label="Cor">
-                  {GOAL_COLORS.map((c) => (
-                    <button
-                      key={c}
-                      type="button"
-                      role="radio"
-                      aria-checked={form.color === c}
-                      aria-label={`Cor ${c}`}
-                      onClick={() => set('color', c)}
-                      className="flex h-11 w-11 items-center justify-center"
-                    >
-                      <span className={`h-8 w-8 rounded-full border-2 transition-transform ${form.color === c ? 'scale-110 border-ziel-text' : 'border-transparent'}`} style={{ backgroundColor: c }} />
-                    </button>
-                  ))}
-                </div>
               </div>
             </>
           )}
@@ -725,8 +710,9 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
         value={form.icon}
         color={form.color}
         onClose={() => setPickerOpen(false)}
-        onSelect={(id) => {
+        onSelect={(id, c) => {
           set('icon', id);
+          set('color', c);
           setPickerOpen(false);
         }}
       />

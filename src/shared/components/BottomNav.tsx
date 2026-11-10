@@ -70,7 +70,7 @@ export const BottomNav: React.FC<Props> = ({ activeTab, onTabChange }) => {
                 onClick={() => onTabChange(key)}
                 aria-label={label}
                 aria-current={active ? 'page' : undefined}
-                className={`flex min-h-[47px] flex-1 flex-col items-center justify-center gap-1 rounded-2xl transition-colors ${active ? 'text-ziel-accent' : 'text-ziel-muted'}`}
+                className={`flex min-h-[44px] flex-1 flex-col items-center justify-center gap-1 rounded-2xl transition-colors ${active ? 'text-ziel-accent' : 'text-ziel-muted'}`}
               >
                 <Icon className="h-[22px] w-[22px]" />
                 <span className="text-[11px] font-bold leading-none">{label}</span>
@@ -84,7 +84,7 @@ export const BottomNav: React.FC<Props> = ({ activeTab, onTabChange }) => {
           aria-label="Nova meta"
           className="mb-1 flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-ziel-accent text-ziel-ink shadow-[0_14px_30px_-8px_rgba(242,139,130,0.85)]"
         >
-          <Plus className="h-7 w-7" strokeWidth={2.6} />
+          <Plus className="h-6 w-6" strokeWidth={2.6} />
         </button>
       </div>
     </nav>

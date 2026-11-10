@@ -13,8 +13,8 @@ export default {
           'line-soft': '#2B3349',
           ink: '#0F1320', // texto/ícones sobre superfícies coloridas
           text: '#F3F5FA',
-          sub: '#C8CEDD',
-          muted: '#98A1B8',
+          sub: '#D0D6E4',
+          muted: '#A9B2C8',
           accent: '#F28B82',
           'accent-soft': 'rgba(242,139,130,0.16)',
           success: '#62C48A',

@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowLeft, Check, Search, X } from 'lucide-react';
+import { GOAL_COLOR_LIST } from '../../shared/ui/goalIcons';
 import { ICON_CATALOG, ICON_CATEGORIES, iconFor, iconLabel, searchIcons } from '../../shared/icons/registry';
 import { gsap, motionOK } from '../../shared/motion';
 import { inertElements, pushBack } from '../../shared/ui/overlayGuard';
@@ -10,7 +11,7 @@ type Props = {
   value: string;
   /** Cor da meta (prévia). */
   color: string;
-  onSelect: (id: string) => void;
+  onSelect: (id: string, color: string) => void;
   onClose: () => void;
 };
 
@@ -47,17 +48,22 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<string>('all');
   const [draft, setDraft] = useState(value);
+  const [draftColor, setDraftColor] = useState(color);
+  const [mode, setMode] = useState<'icon' | 'color'>('icon');
   const [recent, setRecent] = useState<string[]>([]);
 
   useEffect(() => {
     if (open) {
       setMounted(true);
       setDraft(value);
+      setDraftColor(color);
+      setMode('icon');
       setQuery('');
       setCategory('all');
       setRecent(readRecent());
     }
-  }, [open, value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   const list = useMemo(() => {
     if (category === 'recent') {
@@ -130,30 +136,40 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
 
   const confirm = () => {
     pushRecent(draft);
-    onSelect(draft);
+    onSelect(draft, draftColor);
   };
 
   return createPortal(
-    <div ref={rootRef} role="dialog" aria-modal="true" aria-label="Escolher ícone" className="fixed inset-0 z-[60] flex flex-col bg-ziel-bg">
+    <div ref={rootRef} role="dialog" aria-modal="true" aria-label="Ícone e cor" className="fixed inset-0 z-[60] flex flex-col bg-ziel-bg">
       <header className="pt-safe shrink-0 px-5 pb-3 pt-4">
         <div className="flex items-center gap-3">
           <button type="button" onClick={onClose} aria-label="Voltar" className="orb">
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <h2 className="flex-1 text-[20px] font-extrabold tracking-tight">Escolher ícone</h2>
+          <h2 className="flex-1 text-[20px] font-extrabold tracking-tight">Ícone e cor</h2>
           <span className="text-xs font-semibold text-ziel-muted">{list.length} de {ICON_CATALOG.length}</span>
         </div>
 
-        <div className="mt-4 flex items-center gap-4 rounded-[22px] border border-white/[0.08] bg-ziel-surface p-3.5" style={{ background: `linear-gradient(135deg, ${color}26, rgba(29,36,51,0.96) 60%)` }}>
-          <div ref={previewRef} className="flex h-[61px] w-[50px] shrink-0 items-center justify-center rounded-[17px]" style={{ backgroundColor: color, color: '#0F1320' }} aria-hidden>
+        <div className="mt-4 flex items-center gap-4 rounded-[22px] border border-white/[0.08] bg-ziel-surface p-3.5" style={{ background: `linear-gradient(135deg, ${draftColor}33, rgba(29,36,51,0.96) 60%)` }}>
+          <div ref={previewRef} className="flex h-[61px] w-[50px] shrink-0 items-center justify-center rounded-[17px]" style={{ backgroundColor: draftColor, color: '#0F1320' }} aria-hidden>
             <Preview className="h-8 w-8" />
           </div>
           <div className="min-w-0 flex-1" aria-live="polite">
             <p className="truncate text-[15px] font-extrabold">{iconLabel(draft)}</p>
-            <p className="truncate text-xs text-ziel-muted">{draftMeta ? ICON_CATEGORIES[draftMeta.cat] : known ? '' : 'Ícone anterior (mantido)'}</p>
+            <p className="truncate text-xs text-ziel-muted">{(draftMeta ? ICON_CATEGORIES[draftMeta.cat] : known ? '' : 'Ícone anterior (mantido)') + ' · ' + (GOAL_COLOR_LIST.find((c) => c.hex === draftColor)?.name ?? 'Cor atual')}</p>
           </div>
         </div>
 
+        <div role="tablist" aria-label="O que personalizar" className="mt-3 grid grid-cols-2 gap-1 rounded-full border border-white/[0.08] bg-ziel-surface p-1">
+          {([['icon', 'Ícone'], ['color', 'Cor']] as const).map(([k, l]) => (
+            <button key={k} role="tab" aria-selected={mode === k} onClick={() => setMode(k)} className={`min-h-[36px] rounded-full text-[13px] font-bold transition-colors ${mode === k ? 'bg-ziel-accent text-ziel-ink' : 'text-ziel-sub'}`}>
+              {l}
+            </button>
+          ))}
+        </div>
+
+        {mode === 'icon' && (
+        <>
         <label className="relative mt-3 block">
           <span className="sr-only">Pesquisar ícones</span>
           <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ziel-muted" />
@@ -186,10 +202,34 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
             </button>
           ))}
         </div>
+        </>
+        )}
       </header>
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-4">
-        {list.length === 0 ? (
+        {mode === 'color' ? (
+          <div role="radiogroup" aria-label="Cor" className="grid grid-cols-5 gap-2.5 pt-1 min-[360px]:grid-cols-6">
+            {GOAL_COLOR_LIST.map((c) => {
+              const sel = draftColor.toUpperCase() === c.hex.toUpperCase();
+              return (
+                <button
+                  key={c.hex}
+                  type="button"
+                  role="radio"
+                  aria-checked={sel}
+                  aria-label={c.name}
+                  onClick={() => setDraftColor(c.hex)}
+                  className="flex flex-col items-center gap-1 rounded-[14px] py-1.5"
+                >
+                  <span className={`flex h-9 w-9 items-center justify-center rounded-full transition-transform ${sel ? 'scale-110 ring-2 ring-ziel-text ring-offset-2 ring-offset-ziel-bg' : ''}`} style={{ backgroundColor: c.hex }}>
+                    {sel && <Check className="h-4 w-4 text-ziel-ink" strokeWidth={3.4} />}
+                  </span>
+                  <span className="w-full truncate text-center text-[10px] font-semibold text-ziel-muted">{c.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        ) : list.length === 0 ? (
           <div className="py-16 text-center">
             <p className="text-base font-bold">Nenhum ícone para “{query}”</p>
             <p className="mt-1 text-sm text-ziel-muted">Tente outro nome, como moto, remédio, futebol ou viagem.</p>
@@ -213,10 +253,10 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
                   onDoubleClick={() => {
                     setDraft(i.id);
                     pushRecent(i.id);
-                    onSelect(i.id);
+                    onSelect(i.id, draftColor);
                   }}
                   className="flex aspect-square min-h-[58px] flex-col items-center justify-center gap-1 rounded-[17px] border px-1 transition-colors [contain-intrinsic-size:72px] [content-visibility:auto]"
-                  style={sel ? { borderColor: color, backgroundColor: `${color}22`, color } : { borderColor: 'rgba(255,255,255,0.06)', backgroundColor: 'rgba(255,255,255,0.035)', color: '#C3C8D4' }}
+                  style={sel ? { borderColor: draftColor, backgroundColor: `${draftColor}22`, color: draftColor } : { borderColor: 'rgba(255,255,255,0.06)', backgroundColor: 'rgba(255,255,255,0.035)', color: '#C3C8D4' }}
                 >
                   <I className="h-7 w-7" />
                   <span className="w-full truncate text-center text-[10px] font-semibold leading-tight">{i.label}</span>
@@ -229,7 +269,7 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
 
       <footer className="pb-safe shrink-0 border-t border-ziel-line-soft bg-ziel-bg/95 px-5 pb-3 pt-3">
         <button type="button" className="btn-primary w-full !min-h-[49px] text-base" onClick={confirm}>
-          <Check className="h-5 w-5" /> Usar “{iconLabel(draft)}”
+          <Check className="h-5 w-5" /> Aplicar
         </button>
       </footer>
     </div>,

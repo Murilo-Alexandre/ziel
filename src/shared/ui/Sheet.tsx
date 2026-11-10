@@ -1,4 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { gsap, motionOK } from '../motion';
 import { inertElements, lockScroll, pushBack } from './overlayGuard';
@@ -41,7 +42,8 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
     if (!open) return;
     const id = Symbol('sheet');
     sheetStack.push(id);
-    const bg = Array.from(document.querySelectorAll('main, nav[aria-label="Navegação principal"]'));
+    // o fundo é inerte, mas NUNCA um ancestral da própria folha (senão ela morre junto)
+    const bg = Array.from(document.querySelectorAll('main, nav[aria-label="Navegação principal"]')).filter((el) => !panelRef.current?.contains(el) && !el.contains(panelRef.current));
     const releaseInert = inertElements(bg);
     const releaseScroll = lockScroll();
     const releaseBack = pushBack(() => closeRef.current());
@@ -83,7 +85,7 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
 
   if (!mounted) return null;
 
-  return (
+  return createPortal(
     <div className={`fixed inset-0 z-50 flex items-end justify-center sm:items-center ${open ? '' : 'pointer-events-none'}`} role="presentation">
       <button
         ref={backdropRef}
@@ -114,10 +116,11 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
             <X className="h-5 w-5" />
           </button>
         </header>
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-4 [-webkit-overflow-scrolling:touch] [touch-action:pan-y]" data-sheet-scroll>{children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-4 pt-1 [-webkit-overflow-scrolling:touch] [touch-action:pan-y]" data-sheet-scroll>{children}</div>
         {footer && <footer className="pb-safe shrink-0 border-t border-ziel-line-soft bg-ziel-surface px-6 pb-3 pt-3">{footer}</footer>}
         {!footer && <div className="pb-safe shrink-0" />}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
