@@ -61,6 +61,31 @@ describe('ícone do launcher', () => {
     const { existsSync } = await import('node:fs');
     const res = resolve(__dirname, '../../android/app/src/main/res');
     expect(existsSync(resolve(res, 'drawable-v24'))).toBe(false);
-    expect(read('../../android/app/src/main/res/drawable/ic_launcher_foreground.xml')).toMatch(/2EFF7A59/);
+    expect(read('../../android/app/src/main/res/drawable/ic_launcher_foreground.xml')).toMatch(/33FF7A59/);
+  });
+});
+
+describe('geometria do ícone Matriz (proporção no launcher)', () => {
+  const pathData = (f: string) => /pathData="([^"]+)"/g;
+  const circles = (xml: string) => {
+    const out: { x: number; y: number; r: number }[] = [];
+    for (const m of xml.matchAll(/pathData="([^"]+)"/g)) {
+      for (const seg of m[1].split('z').filter(Boolean)) {
+        const mm = seg.match(/^M([\d.]+),([\d.]+)a([\d.]+),/);
+        if (mm) out.push({ x: Number(mm[1]) + Number(mm[3]), y: Number(mm[2]), r: Number(mm[3]) });
+      }
+    }
+    return out;
+  };
+  it('todos os pontos cabem no círculo seguro de 66dp com folga (nada é cortado por máscaras ou zoom de launcher)', () => {
+    for (const f of ['ic_launcher_foreground.xml', 'ic_launcher_monochrome.xml']) {
+      const cs = circles(read('../../android/app/src/main/res/drawable/' + f));
+      expect(cs.length, f).toBeGreaterThanOrEqual(13);
+      for (const c of cs) expect(Math.hypot(c.x - 54, c.y - 54) + c.r, f).toBeLessThanOrEqual(29.5);
+    }
+    void pathData;
+  });
+  it('o Z tem exatamente 13 pontos acesos e a versão monocromática só leva esses', () => {
+    expect(circles(read('../../android/app/src/main/res/drawable/ic_launcher_monochrome.xml')).length).toBe(13);
   });
 });
