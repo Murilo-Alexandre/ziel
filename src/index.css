@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+  body {
+    @apply bg-ziel-bg font-sans text-ziel-text antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+  }
+  button {
+    touch-action: manipulation;
+  }
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* evita zoom automático ao focar no Android/iOS */
+  }
+  :focus-visible {
+    outline: 2px solid theme('colors.ziel.accent');
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-card border border-ziel-line bg-ziel-surface;
+  }
+  .field {
+    @apply min-h-touch w-full rounded-chip border border-ziel-line bg-ziel-bg px-3.5 text-ziel-text placeholder:text-ziel-muted focus:border-ziel-accent focus:outline-none;
+  }
+  .btn {
+    @apply inline-flex min-h-touch items-center justify-center gap-2 rounded-chip px-4 text-sm font-semibold transition-colors active:opacity-80 disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-ziel-accent text-ziel-bg;
+  }
+  .btn-ghost {
+    @apply btn border border-ziel-line bg-ziel-raised text-ziel-text;
+  }
+  .btn-danger {
+    @apply btn border border-ziel-danger/40 bg-ziel-danger-soft text-ziel-danger;
+  }
+  .pb-nav {
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

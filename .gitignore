@@ -1,0 +1,31 @@
+# Dependências e builds web
+node_modules/
+dist/
+*.log
+
+# Ferramentas locais
+.claude/
+.vscode/
+.idea/
+.DS_Store
+
+# Android: gerados / locais
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/captures/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/capacitor-cordova-android-plugins/build/
+
+# SEGREDOS: nunca versionar chaves de assinatura nem credenciais
+*.jks
+*.keystore
+*.p12
+*.pem
+keystore.properties
+signing/
+.env
+.env.*

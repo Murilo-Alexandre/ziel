@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Ziel</string>
+    <string name="title_activity_main">Ziel</string>
+    <string name="package_name">com.ziel.app</string>
+    <string name="custom_url_scheme">com.ziel.app</string>
+</resources>

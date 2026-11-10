@@ -1,0 +1,3276 @@
+Quero desenvolver um app mobile, a primeira ideia é transformar ele em um APK pra instalar no android, e dps em um PWA pra usar no iphone, talvez eu chegue a publicar ele na play store, mas de inicio, a ideia é um apk simples pra usar no meu android. 
+
+
+
+Qual a intenção do app?
+
+Eu quero um app pra controlar as minhas metas, tarefas, compromissos diarios, semanais, mensais etc...
+
+
+
+Tipo, cadastras lá nele, as minhas metas do dia, beber 4 litros de agua, alimentação correta, ir treinar. Ai eu treinei, eu faço o check no ir treinar, eu matei os 4L eu faço o check nos 4L. Eu consegui seguir a dieta, faço o check no alimentação... E por ai vai. E tipo, dentro de uma meta, eu consiga configurar frações dela sabe, tipo...
+
+Configuro uma meta pra todo dia, com o nome Água, ai eu coloco q essa meta, ela tem etapas, ai eu posso dividir em outras metas sabe, tipo, 1° Litro, 2° Litro, 3° Litro e 4° Litro, enquanto eu não der o check nas 4 metas dentro da meta agua, a meta agua não fica como feita, ela fica com um simbolo que mostra que iniciei, mas não foi concluída. Ai tipo, conclui as 4, ai a meta agua dá como concluida. Ai consigo usar isso de diversas formas, por exemplo, criar uma "Alimentação" que vai controlar minha alimentação sabe, pra eu seguir a dieta certinho, ai dentro dessa meta, eu configuro tipo, café da manhã, almoço, pré treino, jantar, ai a tarefa da alimentação, só fica com o check hora q eu completar todas as metas dentro dessa meta. Ai tipo, as metas, vão ter descrição, Pra eu criar uma meta, eu preencho, nome, descrição, ai a descrição fica do lado do nome, com um simbolo de "!" tipo informação sabe, pq ai eu vou colocar tipo, nome, Alimentação, descrição, Essa meta é pra eu conseguir seguir minha dieta. Ai eu coloco tbm as metas dentro das metas... Coloco tbm se essa meta vai ser diária, semanal, mensal. Pode ficar tipo,um checkbox, Repetir, ai se eu marco abre os campos pra eu configurar, um campo pra eu digitar numeros, e outro pra eu colocar tipo, dia, semana, mes, ano. Ou data né, tipo, se vai ser uma meta que vai ser só de quarta, tenho que conseguir configurar tudo isso. 
+
+Me ajuda a planejar esse app pro meu uso. Tenho até uma referencia visual, mas vamos montar a estrutura do app juntos, as funções, como será apresentado, quais serão as telas que terão, pra eu já mandar tudo pronto pro antigravity pra ele fazer.
+
+Sim — e sua ideia tem potencial para ficar bem melhor do que um simples app de checklist. O ponto central seria tratar tudo como um sistema pessoal de rotina, em que uma meta pode ser simples ou composta por várias etapas.
+
+Eu começaria desenhando o produto antes de mandar qualquer coisa para o Antigravity, porque se a regra de negócio estiver bem fechada agora, ele consegue desenvolver praticamente tudo de uma vez sem ficar remendando depois.
+
+1. Conceito principal do app
+
+Eu separaria o que você controla em 3 tipos:
+
+Metas / Hábitos
+
+Beber 4 L de água
+Seguir alimentação
+Treinar
+Ler
+Dormir 8 horas
+Estudar inglês
+
+Normalmente recorrentes e entram no cálculo do seu desempenho.
+
+Tarefas
+
+Pagar cartão
+Comprar whey
+Trocar óleo do carro
+Enviar documento
+
+Podem ser únicas ou recorrentes.
+
+Compromissos
+
+Dentista às 14h
+CrossFit às 19h
+Reunião
+Consulta
+
+Possuem data e horário e aparecem na agenda.
+
+Por baixo dos panos, dá até para eles compartilharem praticamente a mesma estrutura. A diferença é a forma como aparecem e as regras utilizadas.
+
+2. A sua ideia mais importante: Meta com etapas
+
+Essa seria uma funcionalidade central.
+
+Por exemplo:
+
+💧 Água
+
+Beber 4 litros de água por dia
+
+Progresso: 2 / 4
+
+✅ 1º litro
+✅ 2º litro
+○ 3º litro
+○ 4º litro
+
+Estado da meta:
+
+○ Não iniciada
+
+vira:
+
+◐ Em andamento
+
+e depois:
+
+✓ Concluída
+
+A meta pai não precisa ser marcada manualmente.
+
+Ela é automaticamente concluída quando todas as etapas obrigatórias forem concluídas.
+
+Outro exemplo
+
+🍽 Alimentação
+
+✅ Café da manhã
+✅ Almoço
+○ Pré-treino
+○ Jantar
+
+Resultado:
+
+Alimentação — 50%
+
+Quando fizer as quatro:
+
+Alimentação — Concluída ✓
+
+Isso permite utilizar a mesma estrutura para dezenas de coisas diferentes.
+
+3. Eu faria a hierarquia assim
+
+Não limitaria somente a:
+
+Meta → Submeta
+
+Eu faria:
+
+Meta → Etapas
+
+E cada etapa também poderia opcionalmente possuir etapas.
+
+Exemplo:
+
+Alimentação
+
+Café da manhã
+Proteína
+Fruta
+Carboidrato
+Almoço
+Proteína
+Arroz
+Salada
+Pré-treino
+Jantar
+
+Mas visualmente eu evitaria mostrar tudo de uma vez.
+
+Você veria:
+
+🍽 Alimentação 50%
+
+e toca nela para expandir.
+
+Isso deixa a tela inicial extremamente limpa.
+
+4. Cadastro de uma meta
+
+Quando clicar em + Nova meta, eu colocaria:
+
+Informações
+
+Nome
+
+Alimentação
+
+Descrição
+
+Seguir corretamente minha dieta durante o dia.
+
+Ícone
+
+🍽
+
+Categoria
+
+Saúde
+
+Categorias poderiam ser criadas pelo próprio usuário.
+
+Por exemplo:
+
+Saúde
+Trabalho
+Estudos
+Financeiro
+Pessoal
+Casa
+Estrutura
+
+Uma opção:
+
+Possui etapas?
+
+Sim / Não
+
+Se marcar sim:
+
++ Adicionar etapa
+
+E apareceriam:
+
+Café da manhã
+Almoço
+Pré-treino
+Jantar
+
+Com drag & drop para mudar a ordem.
+
+5. Recorrência
+
+Aqui acho importante não fazer apenas:
+
+1 / dia
+
+porque rapidamente você vai querer regras mais específicas.
+
+Eu faria:
+
+Repetir
+
+☑ Ativado
+
+E então:
+
+Frequência
+Todos os dias
+Dias específicos
+Semanal
+Mensal
+Anual
+Intervalo personalizado
+Todos os dias
+
+Simplesmente:
+
+Todos os dias
+
+Dias específicos
+SEG  TER  QUA  QUI  SEX  SÁB  DOM
+ ●    ●    ●    ●    ●    ○    ○
+
+Ótimo para:
+
+Treinar segunda a sexta.
+
+Intervalo
+
+A cada 2 dias
+
+ou
+
+A cada 3 semanas
+
+Mensal
+
+Poderia ter:
+
+Todo dia 5
+
+ou:
+
+Toda primeira segunda-feira do mês
+
+Isso vale a pena preparar na estrutura, mesmo que algumas opções sejam implementadas depois.
+
+6. Meta única
+
+Também precisa existir:
+
+Repetir: desligado
+
+Data:
+
+28/08/2026
+
+Exemplo:
+
+Fazer exames de sangue
+
+Depois de concluída, ela vai para o histórico e não reaparece.
+
+7. Tela principal — Hoje
+
+A referência visual que você mandou combina muito com esse app.
+
+Eu seguiria uma linha muito próxima dela.
+
+No topo:
+
+Bom dia, Murilo
+
+Segunda-feira, 17 de agosto
+
+Depois uma barra horizontal:
+
+QUI 13 | SEX 14 | SÁB 15 | DOM 16 | SEG 17 | TER 18 | QUA 19
+
+Você pode tocar em outro dia para visualizar o que estava ou estará planejado.
+
+Progresso do dia
+
+Um card grande:
+
+Seu dia
+
+64%
+
+7 de 11 objetivos concluídos
+
+████████████░░░░
+
+E talvez informações pequenas:
+
+Metas
+4/6
+
+Tarefas
+2/3
+
+Compromissos
+1/2
+
+8. Abaixo viriam as metas
+
+Algo assim:
+
+Hoje
+
+💧 Água
+3 de 4 etapas
+
+██████████████░░ 75%
+
+◉ Em andamento
+
+Ao tocar:
+
+1º litro ✅
+2º litro ✅
+3º litro ✅
+4º litro ○
+
+🍽 Alimentação
+
+2 de 4 refeições
+
+████████░░░░░░░░ 50%
+
+🏋️ Treino
+
+CrossFit
+
+○ Pendente
+
+Aqui você simplesmente toca no círculo e conclui.
+
+9. Eu adicionaria uma coisa importante: quantidade
+
+Nem toda meta deveria ser somente check.
+
+Teríamos três tipos de acompanhamento.
+
+Checkbox
+
+Ir treinar
+
+○ → ✓
+
+Etapas
+
+Água
+
+2 / 4 etapas
+
+Contador
+
+Beber água
+
+2,5 / 4 L
+
+[-] 2,5L [+]
+
+Isso abre possibilidades muito maiores.
+
+Exemplo:
+
+Passos
+
+6.843 / 10.000
+
+Leitura
+
+18 / 30 páginas
+
+Estudo
+
+45 / 60 minutos
+
+E você escolheria no cadastro:
+
+Forma de acompanhamento
+
+Concluir / não concluir
+Etapas
+Quantidade
+10. Eu também colocaria metas opcionais
+
+Imagine:
+
+Rotina da manhã
+
+Arrumar cama
+Tomar vitaminas
+Café da manhã
+Passar protetor solar
+
+Mas talvez você não queira que esquecer o protetor faça sua rotina ficar eternamente incompleta.
+
+Cada etapa poderia ser:
+
+Obrigatória ☑
+
+ou
+
+Opcional
+
+A conclusão automática do grupo leva em consideração somente as obrigatórias.
+
+11. Agenda
+
+Segunda aba:
+
+Agenda
+
+Visual:
+
+Dia | Semana | Mês
+
+No dia:
+
+08:00
+Café da manhã
+
+10:00
+Reunião
+
+12:30
+Almoço
+
+19:00
+🏋️ CrossFit
+
+22:00
+💊 Vitamina
+
+Aqui entram compromissos e também metas que possuem horário.
+
+12. Tela de Metas
+
+Terceira aba:
+
+Metas
+
+Filtros:
+
+Todas | Ativas | Pausadas | Concluídas
+
+E categorias:
+
+Saúde
+
+Água
+Alimentação
+CrossFit
+Sono
+
+Pessoal
+
+Leitura
+Organização
+
+Estudos
+
+Inglês
+Programação
+
+Ao clicar em alguma, abre uma tela própria.
+
+13. Tela de detalhes da meta
+
+Exemplo:
+
+Água
+
+Sequência atual
+🔥 12 dias
+
+Essa semana
+6 / 7 dias
+
+Esse mês
+22 / 25 dias
+
+Gráfico simples:
+
+SEG  █████ 100%
+TER  █████ 100%
+QUA  ███░░  75%
+QUI  █████ 100%
+SEX  █████ 100%
+SAB  █████ 100%
+DOM  -----
+
+Depois:
+
+Configuração
+
+Todos os dias
+
+Etapas
+
+4 etapas
+
+Histórico
+
+17/08 — 4/4 ✅
+16/08 — 4/4 ✅
+15/08 — 3/4 ⚠️
+14/08 — 4/4 ✅
+
+Isso começa a transformar o app em algo realmente interessante.
+
+14. Tela de progresso
+
+Essa seria outra parte que eu colocaria desde o começo na estrutura, mesmo que os gráficos venham depois.
+
+Meu progresso
+
+Hoje
+72%
+
+Últimos 7 dias
+81%
+
+Últimos 30 dias
+76%
+
+Consistência
+
+🔥 12 dias
+
+Melhores metas
+
+Água — 94%
+Treino — 91%
+Alimentação — 83%
+
+Metas com maior dificuldade
+
+Sono — 57%
+Leitura — 62%
+
+A ideia não seria só falar:
+
+Você falhou terça.
+
+Mas permitir perceber comportamento.
+
+15. Uma funcionalidade que eu colocaria: "Dia perfeito"
+
+Você escolhe quais metas são consideradas essenciais.
+
+Por exemplo:
+
+⭐ Treino
+⭐ Alimentação
+⭐ Água
+⭐ Sono
+
+Se todas forem feitas:
+
+🏆 Dia perfeito
+
+E você vai criando uma sequência:
+
+🔥 4 dias perfeitos
+
+É simples, mas aumenta muito a motivação para usar o app.
+
+16. Pontuação
+
+Também podemos aproveitar bastante aquela referência visual.
+
+Mas eu evitaria transformar tudo em um jogo exagerado.
+
+Cada meta pode possuir um peso.
+
+Por exemplo:
+
+Meta	Peso
+Água	1
+Alimentação	3
+Treino	3
+Leitura	1
+
+Então não acontece de:
+
+Escovei os dentes ✅
+
+ter o mesmo impacto que:
+
+Segui a dieta inteira ✅
+
+Seu score diário poderia considerar esses pesos.
+
+17. O que acontece quando você não faz uma meta?
+
+Precisamos definir isso agora.
+
+Eu teria quatro estados:
+
+○ Pendente
+
+◐ Em andamento
+
+✓ Concluída
+
+— Ignorada
+
+Ignorada é importante.
+
+Exemplo:
+
+Você machucou o joelho.
+
+Treino estava planejado, mas aquele dia excepcionalmente não deveria contar como falha.
+
+Você seleciona:
+
+Ignorar hoje
+
+Ela deixa de entrar no cálculo daquele dia, mas a configuração original continua intacta.
+
+18. Adiar também seria muito útil
+
+Para tarefas:
+
+Comprar whey
+
+Você não conseguiu hoje.
+
+Segurar o card:
+
+Concluir
+
+Adiar para amanhã
+
+Escolher outra data
+
+Editar
+
+Excluir
+
+Para metas recorrentes, eu evitaria "adiar", porque conceitualmente aquela ocorrência pertence àquele dia.
+
+19. Notificações
+
+Eu colocaria isso como parte importante do projeto.
+
+Uma meta pode ter:
+
+Lembrete
+18:30
+
+Exemplo:
+
+🏋️ Treino em 30 minutos
+
+Água poderia ter vários:
+
+09:00
+11:00
+14:00
+17:00
+
+Ou ainda:
+
+Você está em 2/4 L de água hoje.
+
+Mas isso pode entrar numa segunda etapa.
+
+20. Navegação inferior
+
+Pegando a referência que você mandou, eu faria:
+
+Hoje
+
+🏠
+
+Agenda
+
+📅
+
++
+
+Progresso
+
+📊
+
+Metas
+
+◎
+
+E configurações poderiam ficar no avatar/menu superior.
+
+O + central abre:
+
+Nova meta
+
+Nova tarefa
+
+Novo compromisso
+
+21. Visual
+
+Eu manteria praticamente essa linguagem da sua referência.
+
+Fundo bem escuro.
+
+Cards levemente mais claros.
+
+Cantos arredondados.
+
+Pouca sombra.
+
+Tipografia grande.
+
+Cores usadas principalmente para representar status.
+
+Verde:
+concluído
+
+Azul:
+em andamento / informação
+
+Amarelo:
+atenção
+
+Cinza:
+pendente
+
+Vermelho apenas para exclusão ou algo realmente problemático.
+
+E nada daquele estilo "dashboard corporativo".
+
+Tem que parecer um app pessoal premium.
+
+22. Arquitetura de informação que eu imagino
+APP
+│
+├── Hoje
+│   ├── Progresso do dia
+│   ├── Metas
+│   ├── Tarefas
+│   └── Compromissos
+│
+├── Agenda
+│   ├── Dia
+│   ├── Semana
+│   └── Mês
+│
+├── Criar
+│   ├── Meta
+│   ├── Tarefa
+│   └── Compromisso
+│
+├── Progresso
+│   ├── Score
+│   ├── Histórico
+│   ├── Sequências
+│   └── Estatísticas
+│
+├── Metas
+│   ├── Ativas
+│   ├── Pausadas
+│   ├── Categorias
+│   └── Histórico
+│
+└── Configurações
+    ├── Perfil
+    ├── Aparência
+    ├── Notificações
+    ├── Categorias
+    ├── Backup
+    └── Dados
+23. Estrutura lógica de uma meta
+
+Isso é uma das coisas que eu já passaria para o Antigravity muito bem definida.
+
+Uma meta teria conceitualmente:
+
+Meta
+│
+├── Nome
+├── Descrição
+├── Ícone
+├── Categoria
+├── Tipo de acompanhamento
+│   ├── Checkbox
+│   ├── Etapas
+│   └── Quantidade
+│
+├── Etapas
+│   ├── Etapa
+│   ├── Etapa
+│   └── Etapa
+│
+├── Recorrência
+│   ├── Não repetir
+│   ├── Diariamente
+│   ├── Semanalmente
+│   ├── Mensalmente
+│   └── Personalizada
+│
+├── Dias da semana
+├── Data inicial
+├── Data final opcional
+├── Horário opcional
+├── Lembretes
+├── Peso
+├── Obrigatória/opcional
+└── Status
+24. Uma regra técnica MUITO importante
+
+Eu não salvaria simplesmente:
+
+Água = concluída hoje.
+
+Teríamos a Meta e as Ocorrências da Meta.
+
+Por exemplo:
+
+META
+Água
+Todos os dias
+4 etapas
+
+E depois:
+
+OCORRÊNCIA
+17/08/2026
+Água
+3/4
+75%
+OCORRÊNCIA
+18/08/2026
+Água
+4/4
+100%
+
+Isso é o que permitirá fazer histórico, gráficos, sequências, estatísticas etc.
+
+Se o Antigravity fizer errado essa parte no começo, mais para frente vira uma dor de cabeça enorme.
+
+25. Outra regra importante
+
+Editar uma meta recorrente deve perguntar:
+
+Aplicar alteração em:
+
+Somente hoje
+
+Hoje e próximas ocorrências
+
+Exemplo:
+
+Sua dieta normalmente tem:
+
+4 refeições.
+
+Mas hoje você não vai fazer pré-treino.
+
+Você altera somente o dia de hoje sem destruir o modelo utilizado nos outros dias.
+
+Isso parece detalhe, mas faz muita diferença.
+
+26. Primeira versão que eu faria
+
+Não tentaria colocar cinquenta funcionalidades no primeiro APK.
+
+V1
+
+Eu faria:
+
+Tela Hoje
+Criar meta
+Meta simples
+Meta com etapas
+Meta por quantidade
+Recorrência
+Dias da semana
+Tarefas
+Compromissos
+Calendário
+Histórico
+Score diário
+Sequência
+Tema escuro
+Dados locais
+Backup/exportação
+
+Depois evoluímos.
+
+V2
+Notificações inteligentes
+Widgets Android
+Gráficos avançados
+Templates de metas
+Estatísticas
+Backup na nuvem
+Sincronização
+PWA
+iPhone
+27. E eu acrescentaria uma coisa que acho que você vai gostar
+
+Templates de rotina.
+
+Por exemplo:
+
+Rotina CrossFit
+Alimentação pré-treino
+Creatina
+Treino
+Pós-treino
+Alongamento
+
+Ou:
+
+Rotina manhã
+Arrumar cama
+500 ml água
+Café
+Vitaminas
+Higiene
+Planejar dia
+
+Você cadastra uma vez e consegue reaproveitar.
+
+
+
+
+28. Como eu imagino sua tela inicial
+
+Baseado bastante na imagem que você mandou:
+11:48
+
+Bom dia,
+Murilo
+
+SEGUNDA-FEIRA
+17 de agosto
+
+ SEX    SÁB    DOM   SEG    TER
+ 14     15     16    17     18
+                     ●
+
+┌─────────────────────────────┐
+│ Seu progresso          64% │
+│ █████████████░░░░░░░       │
+│ 7 de 11 concluídos          │
+│ 🔥 sequência: 4 dias       │
+└─────────────────────────────┘
+
+HOJE
+
+┌─────────────────────────────┐
+│ 💧 Água              75%   │
+│ 3 de 4 litros               │
+│ ███████████████░░░          │
+│                    >        │
+└─────────────────────────────┘
+
+┌─────────────────────────────┐
+│ 🍽 Alimentação        50%   │
+│ 2 de 4 refeições            │
+│ █████████░░░░░░░░           │
+└─────────────────────────────┘
+
+┌─────────────────────────────┐
+│ ○ 🏋️ Treino                │
+│ CrossFit                    │
+│ 19:00                       │
+└─────────────────────────────┘
+
+     🏠      📅      ＋      📊      ◎
+    Hoje   Agenda          Progresso Metas
+
+
+
+Exatamente. Nesse caso, eu mudaria o conceito central do Ziel: ele não seria um app de hábitos, treino, dieta ou tarefas. Ele seria um motor de objetivos hierárquicos, onde praticamente qualquer coisa pode ser modelada.
+
+A regra principal seria:
+
+No Ziel, toda meta pode conter outras metas, e cada uma delas pode ter sua própria regra, frequência, prazo, forma de conclusão e importância.
+
+Isso resolve seu exemplo do livro e deixa a estrutura genérica para qualquer outro uso.
+
+O coração do Ziel
+
+Internamente, eu nem criaria entidades diferentes como "meta diária", "meta semanal", "hábito" etc.
+
+Tudo seria uma Meta.
+
+Uma Meta pode:
+
+existir sozinha;
+conter outras metas;
+ter um ou vários níveis abaixo dela;
+possuir calendário próprio;
+possuir prazo próprio;
+repetir ou não;
+ser concluída manualmente ou automaticamente;
+ter conclusão calculada pelas metas filhas;
+aparecer somente em determinados dias;
+possuir quantidade, percentual, checklist ou simplesmente concluído/não concluído.
+
+Então podemos ter:
+
+META
+└── META
+    └── META
+        └── META
+            └── ...
+
+Sem a aplicação precisar saber que uma é "mensal", outra "semanal" e outra "diária".
+
+É a configuração que determina isso.
+
+Seu exemplo do livro
+
+Você poderia criar:
+
+📖 Ler um livro
+Meta: concluir até 31/08
+│
+├── Semana 1
+│   ├── Capítulo 1 — segunda
+│   ├── Capítulo 2 — terça
+│   ├── Capítulo 3 — quarta
+│   ├── Capítulo 4 — quinta
+│   └── Capítulo 5 — sexta
+│
+├── Semana 2
+│   ├── Capítulo 6
+│   ├── Capítulo 7
+│   ├── Capítulo 8
+│   ├── Capítulo 9
+│   └── Capítulo 10
+│
+├── Semana 3
+│
+└── Semana 4
+
+Mas aqui está a parte importante:
+
+você não seria obrigado a montar desse jeito.
+
+Poderia fazer:
+
+Ler livro
+└── Ler 20 capítulos
+
+e colocar:
+
+Meta numérica: 20 capítulos até 31/08.
+
+Ou:
+
+Ler livro
+└── Ler capítulos
+    Recorrência: segunda a sexta
+    Meta: 1 por ocorrência
+
+Ou ainda montar capítulo por capítulo manualmente.
+
+O Ziel não dita a metodologia. Ele oferece as ferramentas.
+
+Cada meta teria seu próprio calendário
+
+Esse é o ponto que estava faltando na ideia anterior.
+
+Uma meta filha não precisa seguir a frequência da meta pai.
+
+Por exemplo:
+
+Projeto pessoal
+Período: 01/08 → 31/08
+
+
+├── Estudar
+│   Segunda, quarta e sexta
+│
+├── Praticar
+│   Terça e quinta
+│
+├── Revisar
+│   Domingo
+│
+└── Fazer avaliação
+    Somente em 31/08
+
+Tudo dentro do mesmo objetivo.
+
+Outro exemplo:
+
+Objetivo X
+
+
+├── Etapa A
+│   Todos os dias
+│
+├── Etapa B
+│   Segunda e terça
+│
+├── Etapa C
+│   A cada 3 dias
+│
+├── Etapa D
+│   Dia 15 de cada mês
+│
+└── Etapa E
+    Data única: 21/09
+
+É isso que vai tornar o Ziel realmente flexível.
+
+Eu separaria "período" de "agenda"
+
+São coisas diferentes e isso é importantíssimo.
+
+Uma meta pode ter:
+
+Período de validade
+
+01/08 até 31/08
+
+e dentro desse período ter uma:
+
+Agenda
+
+segunda a sexta.
+
+Então:
+
+Ler capítulos
+Ativa de 01/08 até 31/08
+Aparece segunda, terça, quarta, quinta e sexta.
+
+Isso permite inúmeras combinações.
+
+Sistema de recorrência
+
+No editor da meta eu colocaria algo como:
+
+Quando essa meta acontece?
+
+Uma vez
+
+Você escolhe uma data.
+
+Todos os dias
+
+Todo dia durante seu período ativo.
+
+Dias da semana
+
+SEG  TER  QUA  QUI  SEX  SÁB  DOM
+ ●    ●    ●    ●    ●    ○    ○
+
+Intervalo
+
+A cada 2 dias.
+
+A cada 3 semanas.
+
+A cada 2 meses.
+
+Semanal
+
+Por exemplo:
+
+5 vezes por semana.
+
+Isso é diferente de segunda a sexta.
+
+Porque você poderia fazer as cinco em quaisquer dias.
+
+Mensal
+
+10 vezes por mês.
+
+ou:
+
+Todo dia 15.
+
+ou:
+
+Primeira segunda-feira.
+
+Personalizada
+
+Combinações mais avançadas.
+
+E tem outra diferença importante
+
+Precisamos separar:
+
+Frequência por calendário
+
+Segunda, quarta e sexta.
+
+de:
+
+Quantidade dentro de um período
+
+Fazer 3 vezes por semana.
+
+São comportamentos totalmente diferentes.
+
+Por exemplo, uma pessoa pode querer:
+
+Academia 3x por semana.
+
+Ela não quer obrigatoriamente:
+
+segunda, quarta e sexta.
+
+Então o Ziel deve suportar ambos.
+
+Essa flexibilidade tem que existir em TODOS os níveis
+
+Imagine:
+
+Aprender inglês
+Objetivo anual
+
+
+└── Completar curso
+    Objetivo trimestral
+
+
+    ├── Estudar módulos
+    │   4 módulos por mês
+    │
+    │   ├── Assistir aulas
+    │   │   3 vezes por semana
+    │   │
+    │   └── Fazer exercícios
+    │       segunda a sexta
+    │
+    └── Simulado
+        1 vez por mês
+
+Nenhum desses níveis depende da frequência do outro.
+
+O pai somente organiza e acompanha o progresso.
+
+Como o pai sabe que foi concluído?
+
+Aqui podemos deixar configurável também.
+
+Imagine que você crie:
+
+Meta pai: Ler livro
+
+Dentro existem quatro metas:
+
+Semana 1
+Semana 2
+Semana 3
+Semana 4
+
+No cadastro da meta pai haveria:
+
+Critério de conclusão
+
+Concluir todas as submetas
+
+4 / 4
+
+Concluir uma quantidade
+
+3 de 4
+
+Atingir determinado percentual
+
+80%
+
+Conclusão manual
+
+Mesmo que as submetas estejam completas, você decide quando a meta geral terminou.
+
+Por quantidade
+
+Por exemplo:
+
+Meta: 300 páginas
+Progresso dos filhos:
+110 + 75 + 45...
+
+O pai recebe o progresso das metas abaixo.
+
+Isso deixa o sistema absurdamente flexível.
+
+E podemos permitir pesos
+
+Outro detalhe interessante.
+
+Imagine:
+
+Finalizar projeto
+
+
+├── Planejamento       10%
+├── Desenvolvimento    50%
+├── Testes             25%
+└── Documentação       15%
+
+Se Planejamento terminar, o projeto fica:
+
+10%
+
+e não:
+
+25%
+
+Então, ao criar uma meta pai, poderia existir:
+
+Distribuição do progresso
+
+Igual entre todas
+
+ou
+
+Peso personalizado
+
+Isso é mais avançado, mas vale estruturar desde o início.
+
+Uma meta poderia ter vários tipos de progresso
+
+Eu faria o motor suportar estes tipos:
+
+Tipo	Exemplo
+Binário	Fazer algo
+Submetas	Completar etapas
+Quantidade	Ler 300 páginas
+Frequência	Fazer 3x por semana
+Percentual	Concluir 70%
+Tempo	Estudar 10 horas
+Manual	Usuário define progresso
+
+E tudo poderia ser combinado hierarquicamente.
+
+Por exemplo:
+
+Ler livro
+300 páginas
+
+
+└── Semana atual
+    75 páginas
+
+
+    └── Leitura diária
+        15 páginas
+        segunda a sexta
+O conceito de "ocorrência"
+
+Esse também será fundamental para o Ziel.
+
+Temos:
+
+A definição da meta
+
+Ler 1 capítulo
+Segunda a sexta
+
+E temos as ocorrências:
+
+17/08 — Ler 1 capítulo
+18/08 — Ler 1 capítulo
+19/08 — Ler 1 capítulo
+20/08 — Ler 1 capítulo
+21/08 — Ler 1 capítulo
+
+A meta é uma regra.
+
+As ocorrências são o que realmente aconteceu.
+
+Isso permite ao usuário posteriormente consultar:
+
+Previsto: 20 capítulos
+Realizado: 17
+Taxa: 85%
+
+Sem alterar a configuração original.
+
+Também precisamos ter herança opcional
+
+Imagine:
+
+Ler livro
+Prazo: agosto
+
+Você cria uma submeta.
+
+O app poderia perguntar:
+
+Utilizar o mesmo período da meta superior?
+
+Sim
+
+Assim você não precisa configurar agosto toda hora.
+
+Mas pode desligar:
+
+Herdar período: NÃO
+
+e configurar:
+
+05/08 → 12/08
+
+Então eu criaria conceitos de:
+
+Herdar período
+
+Herdar lembretes
+
+Herdar categoria
+
+Herdar cor/ícone
+
+Mas nunca obrigatoriamente.
+
+E a agenda do pai não deve limitar automaticamente os filhos
+
+Isso é importante.
+
+Imagine:
+
+Meta pai:
+Preparar apresentação
+Segunda a sexta
+
+
+Filho:
+Revisão final
+Sábado
+
+Tem que funcionar.
+
+O período do pai pode determinar que o projeto existe naquele período, mas as regras dos filhos são independentes.
+
+Como eu mudaria a interface
+
+Eu não colocaria coisas como:
+
+Água
+Alimentação
+Treino
+
+como elementos especiais do aplicativo.
+
+Isso seriam somente exemplos de conteúdo inserido pelo usuário.
+
+A interface do Ziel seria totalmente neutra.
+
+Algo como:
+
+Boa tarde
+
+
+Hoje
+17 de agosto
+
+
+────────────────────
+
+
+Progresso
+63%
+
+
+5 concluídas
+2 em andamento
+3 pendentes
+
+
+────────────────────
+
+
+Hoje
+
+
+○ Objetivo A
+  2 de 5
+
+
+◐ Objetivo B
+  65%
+
+
+✓ Objetivo C
+
+
+○ Objetivo D
+  vence às 18:00
+
+O usuário é quem transforma isso em:
+
+estudo
+
+trabalho
+
+academia
+
+leitura
+
+organização financeira
+
+projeto profissional
+
+desafio pessoal
+
+preparação para concurso
+
+ou qualquer outra coisa.
+
+A tela de uma meta pai ficaria muito legal
+
+Por exemplo:
+
+Ler um livro
+
+68%
+
+Prazo
+
+31 de agosto
+
+Progresso
+
+13 / 20 capítulos
+
+Estrutura
+▼ Semana 1                    ✓
+
+
+   ✓ Capítulo 1
+   ✓ Capítulo 2
+   ✓ Capítulo 3
+   ✓ Capítulo 4
+   ✓ Capítulo 5
+
+
+▼ Semana 2                   80%
+
+
+   ✓ Capítulo 6
+   ✓ Capítulo 7
+   ✓ Capítulo 8
+   ✓ Capítulo 9
+   ○ Capítulo 10
+
+
+▶ Semana 3                    0%
+
+
+▶ Semana 4                    0%
+
+Isso lembra um pouco gerenciamento de projeto, só que extremamente simplificado.
+
+Acho que encontramos a identidade do Ziel
+
+Eu definiria o produto assim:
+
+Ziel é um gerenciador pessoal de objetivos hierárquicos e flexíveis. O usuário transforma qualquer objetivo em metas menores, define quando cada uma deve acontecer e acompanha seu progresso ao longo do tempo.
+
+Não é:
+
+aplicativo de hábitos.
+
+Não é:
+
+aplicativo de tarefas.
+
+Não é:
+
+aplicativo de dieta.
+
+Não é:
+
+aplicativo de produtividade.
+
+Ele pode exercer todas essas funções, porque o mecanismo por baixo é genérico.
+
+E acho que essa é justamente a característica que pode diferenciar o app.
+
+Uma decisão que eu tomaria agora
+
+Eu faria as metas recursivas de verdade desde o banco de dados.
+
+Ou seja, tecnicamente cada meta possuiria algo parecido com:
+
+id
+parentId
+
+Se:
+
+parentId = null
+
+é uma meta raiz.
+
+Se:
+
+parentId = 83
+
+é filha da meta 83.
+
+Isso significa que podemos fazer:
+
+Meta
+ └── Meta
+      └── Meta
+           └── Meta
+                └── Meta
+
+sem precisar alterar o banco posteriormente.
+
+Na interface podemos até limitar a visualização para não ficar uma bagunça, mas a arquitetura não teria limite fixo de níveis.
+
+Esse é provavelmente o primeiro princípio técnico que eu colocaria no prompt do Antigravity.
+
+A partir daqui, eu acho que o próximo passo não é ainda escrever o prompt dele. Agora vale desenharmos o "Criar Meta" do Ziel, porque essa vai ser a tela mais complexa e importante do aplicativo: quais campos existem, como criamos submetas, como configuramos calendário, recorrência, quantidade, conclusão automática, pesos, prazos e dependências. Depois que essa tela estiver fechada, praticamente todas as regras do app estarão definidas.
+
+
+Exemplo, eu jogo bola de segunda e quarta, seria uma meta q apareceria pra mim, só de segunda e quarta, eu treino só de quarta quinta e sexta, essa meta aparececeria pra mim só nesses dias, agora um exemplo melhor ainda. Eu posso criar uma global, semanal "Treinar" dentro dela aparece futebol nos dias q eu configurei a mini meta ser futebol, e academia nos dias q eu configurei academia, e corrida nos dias q eu configurei corrida entendeu? Pq por exemplo, a minha rotina é, de segunda, futebol, de terça, corrida, de quarta corrida, musculação e futebol, de quinta, mosculação e corrida, sexta musculação e corrida, q eu consiga configurar tudo isso na minha meta "treinar" sabe...
+
+
+Agora ficou claríssimo — e esse exemplo fecha uma parte essencial da arquitetura do Ziel.
+
+A meta “Treinar” não seria uma tarefa que acontece em um dia específico. Ela seria uma meta de ciclo semanal que agrupa submetas independentes, e cada submeta possui o próprio calendário.
+
+No seu caso:
+
+TREINAR
+Ciclo: Semanal
+│
+├── Futebol
+│   └── Segunda e Quarta
+│
+├── Corrida
+│   └── Terça, Quarta, Quinta e Sexta
+│
+└── Musculação
+    └── Quarta, Quinta e Sexta
+
+Isso gera automaticamente sua semana:
+
+SEGUNDA
+⚽ Futebol
+
+
+TERÇA
+🏃 Corrida
+
+
+QUARTA
+⚽ Futebol
+🏃 Corrida
+🏋️ Musculação
+
+
+QUINTA
+🏃 Corrida
+🏋️ Musculação
+
+
+SEXTA
+🏃 Corrida
+🏋️ Musculação
+
+E aí está o segredo: você não cadastraria 9 tarefas diferentes.
+
+Você cadastraria somente três submetas:
+
+Futebol → segunda e quarta
+Corrida → terça, quarta, quinta e sexta
+Musculação → quarta, quinta e sexta
+
+O Ziel gera as ocorrências automaticamente.
+
+Como a meta "Treinar" funcionaria
+
+Ela teria seu próprio ciclo:
+
+Treinar
+
+Ciclo de acompanhamento: Semanal
+
+E dentro dela existem 9 execuções esperadas naquela semana:
+
+Futebol: 2
+Corrida: 4
+Musculação: 3
+
+Total:
+
+9 ocorrências
+
+Então poderia aparecer:
+
+Treinar
+
+4 / 9
+
+████████░░░░░░░ 44%
+
+Em andamento
+
+Se completar tudo:
+
+Treinar
+
+9 / 9
+
+████████████████ 100%
+
+✓ Concluída esta semana
+
+Na segunda-feira seguinte começa uma nova ocorrência semanal de "Treinar", zerada.
+
+A configuração continua existindo.
+
+E isso muda um conceito importante
+
+Precisamos separar três coisas no Ziel:
+
+1. Definição
+
+É o que você configurou.
+
+Corrida
+Terça, quarta, quinta e sexta
+
+Isso fica salvo permanentemente.
+
+2. Ciclo
+
+É o período que está sendo avaliado.
+
+Treinar
+Semana de 17/08 até 23/08
+3. Ocorrência
+
+É algo específico que você precisa realizar.
+
+Corrida
+Quarta-feira, 19/08
+
+Quando você dá check, você está concluindo essa ocorrência, e não modificando a definição "Corrida".
+
+Essa separação vai ser fundamental no banco de dados.
+
+E a Home fica muito mais inteligente
+
+Hoje é segunda-feira.
+
+O Ziel não precisa jogar tudo na sua cara.
+
+Mostra:
+
+Hoje
+Treinar
+
+Semana: 0 / 9
+
+Dentro:
+
+○ ⚽ Futebol
+
+Só futebol, porque hoje é segunda.
+
+Na terça:
+
+Treinar
+
+Semana: 1 / 9
+
+○ 🏃 Corrida
+
+Na quarta:
+
+Treinar
+
+Semana: 2 / 9
+
+○ ⚽ Futebol
+
+○ 🏃 Corrida
+
+○ 🏋️ Musculação
+
+Ou seja, a meta pai serve como guarda-chuva, mas a tela diária apresenta somente aquilo que deve ser executado naquele dia.
+
+Isso ficou bem mais próximo do que você está imaginando.
+
+Poderíamos até permitir expandir o card
+
+Na tela Hoje:
+
+┌────────────────────────────┐
+│ Treinar               44% │
+│ Semana · 4 de 9            │
+│ █████████░░░░░░░░          │
+│                            │
+│ Hoje                       │
+│ ✓ Futebol                  │
+│ ○ Corrida                  │
+│ ○ Musculação               │
+│                         ˅  │
+└────────────────────────────┘
+
+Se recolher:
+
+┌────────────────────────────┐
+│ Treinar               44% │
+│ 4 de 9 nesta semana        │
+│ Hoje: 1 de 3               │
+└────────────────────────────┘
+
+Isso evita poluir a Home.
+
+Mas aqui entra uma coisa que eu faria diferente
+
+Eu não faria o período do pai obrigatoriamente determinar o período dos filhos.
+
+Por exemplo:
+
+Treinar
+
+Ciclo semanal
+
+Dentro poderia ter:
+
+Futebol
+
+segunda e quarta
+
+Musculação
+
+quarta, quinta e sexta
+
+Avaliação física
+
+uma vez por mês
+
+Mesmo sendo uma meta semanal, você poderia ter um filho mensal dentro dela.
+
+Por quê?
+
+Porque queremos que a arquitetura seja genérica.
+
+Outra pessoa poderia criar:
+
+Cuidar das finanças
+
+
+├── Conferir gastos
+│   Todos os dias
+│
+├── Revisar orçamento
+│   Todo domingo
+│
+└── Fechar o mês
+    Último dia do mês
+
+O Ziel deve aceitar isso.
+
+Portanto, cada nível tem sua própria agenda
+
+Essa é uma regra que eu colocaria como fundamental:
+
+Toda meta ou submeta pode possuir uma configuração temporal própria, independente da meta superior.
+
+A meta pai só organiza e, opcionalmente, agrega o progresso dos filhos.
+
+E podemos ir mais longe
+
+Imagine que você diga:
+
+Treinar
+
+Quero realizar pelo menos 7 das 9 atividades semanais.
+
+Então a conclusão do pai não precisaria necessariamente exigir 100%.
+
+Teríamos:
+
+Regra de conclusão
+
+Todas as ocorrências
+
+9 de 9
+
+ou
+
+Quantidade mínima
+
+7 de 9
+
+ou
+
+Percentual mínimo
+
+80%
+
+Isso abre um uso muito maior.
+
+Outro exemplo completamente diferente
+
+Para garantir que nossa arquitetura não está ficando presa em exercícios:
+
+Estudar programação
+
+Ciclo: semanal
+
+Estudar programação
+
+
+├── Curso
+│   Segunda, quarta e sexta
+│
+├── Projeto prático
+│   Sábado
+│
+└── Revisão
+    Domingo
+
+Semana:
+
+SEG
+Curso
+
+
+TER
+-
+
+
+QUA
+Curso
+
+
+QUI
+-
+
+
+SEX
+Curso
+
+
+SÁB
+Projeto prático
+
+
+DOM
+Revisão
+
+Exatamente a mesma engine.
+
+E seu exemplo do livro usa exatamente a mesma estrutura
+Ler livro
+Ciclo mensal
+
+
+├── Semana 1
+│   Ciclo semanal
+│
+│   └── Ler capítulo
+│       Segunda a sexta
+│
+├── Semana 2
+│
+├── Semana 3
+│
+└── Semana 4
+
+Ou poderia ser:
+
+Ler livro
+Ciclo mensal
+
+
+└── Leitura
+    Segunda a sexta
+    Meta: 1 capítulo por ocorrência
+
+Depende de quanto controle o usuário quiser.
+
+E isso é importante:
+
+o app não obriga ninguém a criar muitos níveis.
+
+Quem quer simplicidade faz:
+
+Ler
+└── Segunda a sexta
+
+Quem quer organização extrema faz:
+
+Livro
+└── Semana
+    └── Capítulos
+Acho que devemos ter dois modos de configurar uma meta pai
+
+Quando adicionar uma submeta:
+
+Usar como
+
+Etapa
+
+Acontece uma vez e depois acabou.
+
+Exemplo:
+
+Construir site
+├── Criar layout
+├── Desenvolver
+├── Testar
+└── Publicar
+
+Ou:
+
+Recorrente
+
+Gera ocorrências seguindo calendário.
+
+Treinar
+├── Futebol
+│   SEG / QUA
+├── Corrida
+│   TER / QUA / QUI / SEX
+└── Musculação
+    QUA / QUI / SEX
+
+Internamente nem precisam ser entidades diferentes, mas na interface essa separação ajuda muito o usuário a entender o que está configurando.
+
+Também teremos "ciclo da meta"
+
+Eu utilizaria esse termo no sistema.
+
+Quando cadastrar:
+
+Ciclo de acompanhamento
+
+Único
+
+Diário
+
+Semanal
+
+Mensal
+
+Anual
+
+Personalizado
+
+Isso responde:
+
+Em qual período o progresso dessa meta deve ser avaliado e reiniciado?
+
+Não responde quando ela acontece.
+
+Essa diferença é crucial.
+
+Por exemplo:
+
+Treinar
+
+Ciclo: semanal
+
+Futebol
+
+Agenda: segunda e quarta
+
+São duas configurações distintas.
+
+Um exemplo mais completo da configuração
+
+Você cria:
+
+Treinar
+
+Descrição
+
+Minha rotina de atividades físicas.
+
+Ciclo
+
+Semanal
+
+Conclusão
+
+Todas as atividades programadas
+
+Submetas
+
+Futebol
+
+Agenda
+
+SEG ●
+
+TER ○
+
+QUA ●
+
+QUI ○
+
+SEX ○
+
+SÁB ○
+
+DOM ○
+
+Corrida
+
+SEG ○
+
+TER ●
+
+QUA ●
+
+QUI ●
+
+SEX ●
+
+SÁB ○
+
+DOM ○
+
+Musculação
+
+SEG ○
+
+TER ○
+
+QUA ●
+
+QUI ●
+
+SEX ●
+
+SÁB ○
+
+DOM ○
+
+Pronto.
+
+O Ziel entende o resto.
+
+E poderia existir um preview
+
+Essa é uma funcionalidade que eu colocaria na tela de configuração porque vai facilitar demais.
+
+Depois de montar sua meta:
+
+Prévia da rotina
+SEG
+Futebol
+
+
+TER
+Corrida
+
+
+QUA
+Futebol
+Corrida
+Musculação
+
+
+QUI
+Corrida
+Musculação
+
+
+SEX
+Corrida
+Musculação
+
+
+SÁB
+Nenhuma atividade
+
+
+DOM
+Nenhuma atividade
+
+Assim antes de salvar você consegue olhar e pensar:
+
+"É exatamente isso."
+
+Para configurações complexas, isso será excelente.
+
+Outra decisão importante: meta pai no dia
+
+Eu faria existir uma propriedade:
+
+Mostrar meta superior na tela Hoje
+
+Ligado
+
+Assim hoje poderia aparecer:
+
+Treinar
+
+e dentro as atividades.
+
+Em vez de:
+
+Futebol
+
+Corrida
+
+Musculação
+
+completamente separadas.
+
+Mas se o usuário desligar isso, as três aparecem separadamente na Home.
+
+Isso deixa o layout configurável também.
+
+Eu provavelmente deixaria agrupado por padrão.
+
+Visualmente poderia ficar assim
+
+Na quarta-feira:
+
+HOJE
+
+
+┌─────────────────────────────┐
+│ Treinar                    │
+│ Esta semana          22%   │
+│ ████░░░░░░░░░░░░           │
+│                            │
+│ ○ Futebol                  │
+│ ○ Corrida                  │
+│ ○ Musculação               │
+│                            │
+│ 0 de 3 hoje                │
+└─────────────────────────────┘
+
+Você faz futebol:
+
+✓ Futebol
+○ Corrida
+○ Musculação
+
+
+1 de 3 hoje
+Semana: 3 de 9
+
+Faz corrida:
+
+✓ Futebol
+✓ Corrida
+○ Musculação
+
+Faz musculação:
+
+✓ Futebol
+✓ Corrida
+✓ Musculação
+
+
+✓ Tudo de hoje concluído
+
+Mas Treinar ainda não está concluída, porque ela é semanal.
+
+Ela ficaria, por exemplo:
+
+Treinar — 5/9 esta semana.
+
+Essa distinção entre "dia concluído" e "meta semanal concluída" vai ser muito boa.
+
+
+Perfeito. Agora o Ziel começa a ter uma identidade bem interessante: além de dizer o que deveria ser feito, ele registra como aquilo realmente aconteceu.
+
+E isso precisa continuar genérico. A foto do prato é só um caso de uso; outra pessoa pode usar foto de páginas de um livro, andamento de uma obra, comprovante de pagamento, print de um curso, documento de um projeto etc.
+
+Status de execução
+
+Eu evitaria "mais ou menos" e "falhei" na interface. Acho que uma nomenclatura mais limpa e aplicável a qualquer objetivo seria:
+
+Concluído ✓ — realizado conforme planejado.
+Parcial ◐ — realizado, mas não completamente ou fora do planejado.
+Não realizado ✕ — não foi cumprido.
+Pendente ○ — ainda não foi avaliado.
+
+Assim, no seu exemplo:
+
+Alimentação
+└─ Almoço — Parcial
+
+E você registra:
+
+Comi conforme planejado, mas depois comi um bombom.
+
+📷 foto do prato
+📷 foto do bombom
+
+Isso também funciona perfeitamente para:
+
+Estudar capítulo 4 — Parcial
+Li só metade.
+
+ou:
+
+Finalizar relatório — Parcial
+Terminei os dados, falta revisar.
+
+E o status pertence à ocorrência
+
+Isso é muito importante tecnicamente.
+
+Você não está marcando:
+
+"Almoço = Parcial"
+
+Você está marcando:
+
+Ocorrência do Almoço de 17/08/2026 = Parcial
+
+Amanhã o mesmo Almoço nasce novamente como:
+
+Pendente
+
+Portanto teríamos:
+
+META
+Almoço
+Segunda a sexta
+
+
+        ↓ gera
+
+
+OCORRÊNCIA
+17/08/2026
+Status: Parcial
+
+
+OCORRÊNCIA
+18/08/2026
+Status: Pendente
+
+E os comentários/fotos também ficam vinculados àquela ocorrência.
+
+Comentários precisam funcionar como uma timeline
+
+Eu não faria somente um campo chamado "Observação".
+
+Cada ocorrência poderia possuir vários registros.
+
+Exemplo:
+
+Almoço
+
+17 de agosto
+
+🟡 Parcial
+
+12:37
+
+📷 foto-prato.jpg
+
+Almoço seguindo a dieta certinho.
+
+14:10
+
+📷 bombom.jpg
+
+Depois do almoço acabei comendo um bombom.
+
+18:22
+
+Vou compensar mantendo o restante do dia conforme planejado.
+
+Ou seja, aquela meta tem um pequeno diário próprio.
+
+E nenhuma dessas coisas seria obrigatória.
+
+Você poderia:
+
+adicionar só comentário;
+adicionar só foto;
+adicionar comentário + foto;
+adicionar vários comentários;
+adicionar várias fotos;
+concluir sem adicionar nada.
+Eu ampliaria "foto" para "anexos"
+
+A interface pode destacar câmera e imagem porque serão os usos mais comuns, mas a estrutura deveria permitir:
+
+Adicionar registro
+
+📷 Tirar foto
+🖼 Escolher imagem
+📎 Anexar arquivo
+✏️ Comentário
+
+Futuramente isso permite PDF, documento, áudio etc. sem precisar mudar a arquitetura.
+
+No APK Android, ao apertar a câmera:
+
+abre a câmera do celular → tira a foto → confirma → ela já entra naquele registro.
+
+E também teria o botão para escolher uma foto já existente.
+
+Na Home isso precisa continuar extremamente clean
+
+Aqui concordo muito com o que você falou.
+
+Não quero uma árvore enorme ocupando a tela.
+
+Imagine quarta-feira:
+
+HOJE
+
+
+⌄ Treinar                         44%
+  4 de 9 nesta semana
+
+
+    ✓ Futebol
+    ○ Corrida
+    ○ Musculação
+
+
+
+
+› Alimentação                     67%
+  2 de 3 hoje
+
+
+
+
+› Estudos                         50%
+  1 de 2 hoje
+
+A setinha:
+
+›
+
+indica fechado.
+
+Ao tocar:
+
+⌄
+
+abre aquele nível.
+
+E como teremos níveis ilimitados:
+
+⌄ Objetivo principal
+
+
+    ⌄ Submeta A
+
+
+        ✓ Etapa A1
+        ◐ Etapa A2
+
+
+    › Submeta B
+
+
+    ✓ Submeta C
+
+Você expande somente o que quiser.
+
+O restante fica recolhido.
+
+Isso é essencial para uma Home bonita mesmo quando alguém tiver 40 ou 50 metas configuradas.
+
+Eu colocaria ações rápidas na própria meta
+
+Ao tocar no círculo/status da ocorrência, abriria um pequeno menu:
+
+Como foi?
+
+✓ Concluído
+
+◐ Parcial
+
+✕ Não realizado
+
+E abaixo:
+
+Adicionar comentário ou evidência
+
+Não obrigaria a abrir uma tela inteira.
+
+Por exemplo:
+
+○ Almoço
+
+toca no círculo:
+
+Como foi?
+
+
+✓ Concluído
+◐ Parcial
+✕ Não realizado
+
+
++ Adicionar comentário/foto
+
+Escolheu Parcial?
+
+Pronto.
+
+Pode fechar imediatamente.
+
+Ou pode adicionar:
+
+🍫 Comi um bombom depois.
+
+📷
+
+E eu colocaria uma segunda maneira de acessar
+
+Tocar no nome da meta abre os detalhes.
+
+Tocar no status altera o status.
+
+Tocar na setinha expande os filhos.
+
+Então cada interação tem uma função clara:
+
+⌄   Alimentação                ◐
+↑       ↑                       ↑
+|       |                       |
+abre    detalhes               status
+filhos  da meta
+
+Isso deixa o app muito rápido de usar.
+
+Os comentários também deveriam poder existir antes da conclusão
+
+Isso é importante.
+
+Imagine uma meta:
+
+Fazer orçamento
+
+De manhã:
+
+Falei com fornecedor A, aguardando retorno.
+
+À tarde:
+
+📎 orcamento-fornecedor-a.pdf
+
+Recebi a primeira proposta.
+
+Depois:
+
+Concluído.
+
+Então comentário não é simplesmente uma justificativa da avaliação.
+
+É o registro daquela execução.
+
+E teríamos dois históricos diferentes
+
+Dentro de uma meta:
+
+Histórico de ocorrências
+17 AGO       ◐ Parcial
+16 AGO       ✓ Concluído
+15 AGO       ✕ Não realizado
+14 AGO       ✓ Concluído
+
+Ao abrir 17 AGO:
+
+17 de agosto
+
+
+Status
+◐ Parcial
+
+
+Registros
+
+
+12:37
+📷 Foto
+Almoço dentro do planejado.
+
+
+14:10
+📷 Foto
+Comi um bombom depois.
+
+Isso vai ficar excelente para você consultar no futuro.
+
+Isso também ajuda muito nos níveis superiores
+
+Voltando à nossa estrutura:
+
+Treinar
+├── Futebol
+├── Corrida
+└── Musculação
+
+Imagine quarta:
+
+✓ Futebol
+◐ Corrida
+✕ Musculação
+
+O Ziel precisa refletir isso na meta superior.
+
+E aqui acho que encontramos outra regra importante.
+
+Eu faria inicialmente:
+
+Concluído = 100% da ocorrência
+
+Parcial = 50%
+
+Não realizado = 0%
+
+Então:
+
+Futebol       100%
+Corrida        50%
+Musculação      0%
+
+
+Hoje           50%
+
+Mas eu deixaria isso configurável globalmente depois.
+
+Porque talvez alguém queira considerar Parcial como 70%, por exemplo.
+
+A V1 pode usar 50% como padrão.
+
+Mas "Parcial" não conclui automaticamente o pai
+
+Essa distinção é importante.
+
+Imagine:
+
+Alimentação
+├── Café        ✓
+├── Almoço      ◐
+├── Jantar      ✓
+
+A meta pai poderia mostrar:
+
+Alimentação — 83%
+
+mas não:
+
+✓ Concluída
+
+porque existe uma ocorrência parcial.
+
+Se o critério da meta pai for:
+
+Todas precisam estar concluídas
+
+ela continuará como Parcial.
+
+Isso dá significado real aos estados.
+
+Poderíamos utilizar os mesmos estados nos pais
+
+Isso fica elegante porque a linguagem visual é sempre a mesma:
+
+○ Pendente
+
+Nenhum progresso relevante ainda.
+
+◐ Em andamento / Parcial
+
+Possui progresso, mas não atingiu o critério de conclusão.
+
+✓ Concluído
+
+Critério alcançado.
+
+✕ Não realizado
+
+O ciclo acabou e o critério não foi alcançado.
+
+Só existe uma diferença:
+
+Para uma ocorrência manual, você escolhe o status.
+
+Para uma meta pai automática, o Ziel calcula.
+
+Exemplo completo na sua alimentação
+⌄ Alimentação                     83%
+  Hoje · 2 concluídas · 1 parcial
+
+
+    ✓ Café da manhã
+
+
+    ◐ Almoço
+      2 registros
+
+
+    ✓ Jantar
+
+Você toca no Almoço:
+
+Almoço
+
+Hoje, 17 de agosto
+
+Status
+
+◐ Parcial
+
+Registros
+
+12:41
+
+📷 Foto do prato
+
+Fiz o almoço conforme planejado.
+
+13:25
+
+📷 Foto do bombom
+
+Comi um bombom depois do almoço.
+
++ Adicionar registro
+
+E o usuário pode mudar de ideia
+
+Também precisamos permitir:
+
+Parcial → Concluído
+
+ou
+
+Concluído → Parcial
+
+Porque pode acontecer:
+
+Você marcou uma atividade concluída.
+
+Depois percebe:
+
+"Na verdade não cumpri tudo."
+
+Abre e altera.
+
+Não apagamos os comentários anteriores.
+
+E eu manteria internamente data/hora da mudança para histórico, mesmo que isso não precise aparecer na interface inicialmente.
+
+Foto e comentário em qualquer nível
+
+Outro ponto importante:
+
+Não somente a última meta da árvore pode receber registros.
+
+Tudo pode.
+
+Exemplo:
+
+Projeto da casa
+
+
+├── Pintura
+│   └── Quarto
+│
+└── Elétrica
+
+Você poderia adicionar uma foto diretamente em:
+
+Projeto da casa
+
+ou:
+
+Pintura
+
+ou:
+
+Quarto
+
+Cada uma possui sua própria timeline.
+
+Isso mantém a regra:
+
+Tudo no Ziel é uma meta.
+
+Não existe uma classe especial de "meta que aceita foto".
+
+Todas aceitam.
+
+Eu só faria uma distinção visual
+
+Na Home, não mostraria as imagens grandes automaticamente.
+
+Senão vira um Instagram de metas e perde aquela aparência clean.
+
+Mostraria apenas algo como:
+
+◐ Almoço
+  💬 2   📷 2
+
+Ou:
+
+◐ Almoço
+  2 registros
+
+Só ao abrir aparecem as imagens.
+
+Estrutura técnica começa a ficar assim
+
+Agora nossa entidade lógica está ficando muito mais bem definida:
+
+META
+├── id
+├── parentId
+├── nome
+├── descrição
+├── ícone
+├── ciclo
+├── agenda
+├── regra de progresso
+├── regra de conclusão
+└── configurações
+
+Depois:
+
+OCORRÊNCIA
+├── id
+├── metaId
+├── data
+├── períodoInicio
+├── períodoFim
+├── status
+├── progresso
+└── concluídoEm
+
+E:
+
+REGISTRO
+├── id
+├── occurrenceId
+├── comentário opcional
+├── criadoEm
+└── anexos[]
+
+E:
+
+ANEXO
+├── id
+├── registroId
+├── tipo
+│   ├── imagem
+│   └── arquivo
+├── caminho
+├── nome
+└── criadoEm
+
+Isso permite exatamente:
+
+1 meta → várias ocorrências → vários registros → vários anexos.
+
+É uma estrutura que eu manteria.
+
+E acho que apareceu outra parte forte do Ziel
+
+Ele começa a ter duas dimensões:
+
+Planejamento
+
+O que eu pretendia fazer?
+
+e
+
+Registro
+
+O que realmente aconteceu?
+
+Isso é mais interessante do que um simples checklist.
+
+Você consegue daqui a alguns meses abrir uma meta e realmente enxergar sua trajetória, inclusive pelos comentários e pelas imagens.
+
+E, para mim, os estados Pendente → Parcial → Concluído / Não realizado, a árvore expansível na Home e a timeline de registros por ocorrência já deveriam entrar como requisitos centrais da V1, não como coisa para adicionarmos depois.
+
+segunda-feira 16:15
+Markdown(8).md colado
+Arquivo
+Então com tudo isso em mente, crie uma skill e um prompt para eu enviar ao gemini, pra começar o desenvolvimento desse app. A skill deve tratar de toda a estrutura do apk, o que ele deve ser, as fuções que ele deve ter e etc... E o prompt deve pedir pro antigravity usar a skill e dar inicio no desenvolvimento.
+
+Fechei a primeira Skill do Ziel já estruturada como especificação de produto + arquitetura + regras de negócio + guia de implementação. Ela consolida o que definimos na conversa e no material que você anexou.
+
+A base técnica que deixei como padrão é React + TypeScript + Vite + Capacitor, com arquitetura local-first e camada de plataforma separada. A escolha do Capacitor faz sentido especialmente porque o projeto pode compartilhar a base web entre Android e PWA e acessar recursos nativos como câmera, filesystem e notificações.
+
+A Skill contém:
+
+SKILL.md como controle principal do agente;
+especificação completa do produto e regras do Ziel;
+modelo de dados com GoalDefinition, ciclos, ocorrências, registros e anexos;
+engine de recorrência e agregação de progresso;
+arquitetura APK agora + PWA futuramente;
+UI/UX baseada na referência visual que você enviou, sem ficar presa a treino/dieta;
+Home hierárquica expansível;
+status Pendente / Parcial / Concluído / Não realizado;
+comentários múltiplos, câmera, galeria e anexos;
+casos de teste para validar a engine;
+roadmap de desenvolvimento em fases;
+a imagem de referência visual dentro da própria Skill.
+
+Também deixei o arquivo principal acessível separadamente caso queira conferir:
+
+Abrir SKILL.md
+
+Agora, este é o prompt que eu mandaria para o Antigravity junto com a Skill:
+
+Quero que você inicie o desenvolvimento do aplicativo **Ziel**.
+
+Junto deste projeto estou fornecendo a Skill **`ziel-app-builder`**. Ela deve ser tratada como a principal fonte de verdade para o produto.
+
+Antes de escrever código:
+
+1. Carregue e leia integralmente o `SKILL.md`.
+2. Leia os arquivos de referência indicados pela Skill conforme necessário, principalmente:
+
+   * `product-spec.md`
+   * `architecture.md`
+   * `data-model.md`
+   * `ui-ux.md`
+   * `acceptance-tests.md`
+   * `roadmap.md`
+3. Analise também `assets/reference-home.png`. A imagem é uma referência de linguagem visual, não um layout para ser copiado literalmente.
+
+Se a Skill estiver em um ZIP, extraia-a e utilize o diretório `ziel-app-builder` como referência permanente durante o desenvolvimento.
+
+## Regra principal
+
+Não quero apenas um planejamento ou uma descrição de como o aplicativo poderia ser feito.
+
+**Comece efetivamente a desenvolver o projeto.**
+
+Se o workspace estiver vazio, crie a aplicação do zero seguindo a arquitetura definida na Skill.
+
+Se já existir código, primeiro analise a estrutura atual e preserve tudo que estiver correto e compatível com a especificação.
+
+## Sobre o produto
+
+O Ziel NÃO é um aplicativo específico de academia, alimentação, hábitos, leitura ou tarefas.
+
+Ele é um **gerenciador genérico de objetivos hierárquicos e configuráveis**.
+
+Qualquer exemplo de treino, alimentação, leitura, estudos, trabalho etc. serve apenas para validar a flexibilidade da engine.
+
+Não crie regras especiais para esses exemplos.
+
+O fundamento do sistema deve continuar sendo:
+
+**Meta → Submeta → Submeta → Submeta...**
+
+sem limite fixo de níveis na arquitetura.
+
+Cada meta deve poder possuir seu próprio:
+
+* período;
+* ciclo de acompanhamento;
+* agenda;
+* recorrência;
+* regra de progresso;
+* regra de conclusão;
+* filhos;
+* registros;
+* comentários;
+* fotos;
+* anexos.
+
+A agenda de uma submeta deve ser independente da agenda da meta pai.
+
+Exemplo obrigatório para validar a arquitetura:
+
+**Treinar — ciclo semanal**
+
+* Futebol → segunda e quarta
+* Corrida → terça, quarta, quinta e sexta
+* Musculação → quarta, quinta e sexta
+
+Na quarta-feira, a Home deve conseguir representar:
+
+Treinar
+├── Futebol
+├── Corrida
+└── Musculação
+
+Mas na segunda deve aparecer apenas Futebol dentro de Treinar.
+
+Não devem existir nove tarefas cadastradas manualmente. Devem existir três definições recorrentes que geram suas ocorrências automaticamente.
+
+## Experiência da Home
+
+A Home é extremamente importante.
+
+Quero uma experiência mobile muito limpa e premium.
+
+Use a referência visual fornecida para entender:
+
+* fundo escuro;
+* cards discretos;
+* espaçamento;
+* tipografia;
+* barras de progresso;
+* seletor horizontal de datas;
+* navegação inferior;
+* aparência premium e minimalista.
+
+Não copie os elementos relacionados a calorias, passos, alimentação ou saúde da referência.
+
+Adapte a linguagem visual ao Ziel.
+
+As metas devem aparecer hierarquicamente e poder ser abertas e fechadas por meio de chevrons:
+
+`>` fechado
+`v` expandido
+
+O usuário deve conseguir expandir vários níveis da árvore sem transformar a tela em algo visualmente poluído.
+
+## Interações
+
+Na Home:
+
+* tocar na seta expande/recolhe;
+* tocar no nome abre os detalhes;
+* tocar no indicador de status abre uma ação rápida.
+
+Os estados de uma ocorrência são:
+
+* Pendente
+* Parcial
+* Concluído
+* Não realizado
+
+Use nomenclaturas naturais em português brasileiro na interface.
+
+Ao alterar o status, deve existir a opção de adicionar um registro, mas isso nunca deve ser obrigatório.
+
+## Registros e evidências
+
+Cada ocorrência ou ciclo relevante pode possuir vários registros independentes.
+
+Cada registro pode possuir:
+
+* somente comentário;
+* somente imagem;
+* comentário + imagem;
+* várias imagens/anexos;
+* arquivo;
+* data e hora.
+
+O usuário deve conseguir:
+
+* tirar uma foto diretamente pela câmera;
+* selecionar uma imagem existente;
+* selecionar um arquivo;
+* adicionar múltiplos registros ao longo do dia.
+
+Não transforme o registro em um simples campo "observação".
+
+Ele funciona como uma pequena timeline da execução daquela meta.
+
+## Arquitetura
+
+Siga a arquitetura definida na Skill.
+
+Priorize:
+
+* React;
+* TypeScript;
+* Vite;
+* Capacitor;
+* Android APK como primeiro alvo;
+* arquitetura preparada para PWA;
+* funcionamento offline/local-first;
+* banco local;
+* nenhuma necessidade de login ou backend na V1;
+* camada de persistência desacoplada;
+* camada de recursos nativos desacoplada;
+* regras de negócio independentes de React e Capacitor.
+
+Use versões estáveis e compatíveis das dependências disponíveis no momento da implementação.
+
+Não coloque recursos nativos diretamente espalhados pelos componentes.
+
+Crie serviços/adapters para câmera, arquivos, persistência e futuras notificações.
+
+## Persistência
+
+A separação conceitual entre:
+
+**Definição da Meta**
+
+**Ciclo**
+
+**Ocorrência**
+
+é obrigatória.
+
+Uma meta recorrente define a regra.
+
+Uma ocorrência representa aquilo que aconteceu em uma data específica.
+
+Comentários, fotos e status pertencem à ocorrência/ciclo correspondente.
+
+Editar uma meta recorrente não pode destruir ou reescrever silenciosamente o histórico anterior.
+
+A geração de ocorrências deve ser idempotente.
+
+Abrir o mesmo dia dez vezes não pode gerar dez registros iguais.
+
+## Processo de desenvolvimento
+
+Siga o roadmap da Skill sequencialmente.
+
+Comece agora pela fundação do projeto e continue implementando as próximas fases enquanto for possível.
+
+Não pare depois de criar apenas telas estáticas.
+
+Quero chegar rapidamente a um primeiro fluxo vertical funcional:
+
+**Criar meta → criar submetas → configurar dias → salvar → gerar ocorrências → visualizar na Home → expandir árvore → alterar status → persistir**
+
+Depois avance para:
+
+**comentários → câmera → anexos → timeline → histórico**
+
+Implemente regras reais desde cedo.
+
+Mocks podem ser utilizados temporariamente para montar o design, mas não devem se tornar a fonte de dados principal da aplicação.
+
+## Qualidade
+
+Durante o desenvolvimento:
+
+* crie componentes reutilizáveis;
+* mantenha regras de domínio separadas da UI;
+* evite arquivos gigantes;
+* evite duplicação;
+* faça validações;
+* trate permissões da câmera;
+* trate erros;
+* preserve compatibilidade com browser/PWA;
+* escreva testes principalmente para recorrência, ciclos e agregação de progresso;
+* valide os cenários descritos em `acceptance-tests.md`.
+
+Sempre que terminar uma fase:
+
+1. rode typecheck;
+2. rode os testes;
+3. rode o build web;
+4. sincronize o projeto Capacitor quando aplicável;
+5. tente o build Android se o ambiente possuir Android SDK configurado;
+6. corrija os erros encontrados antes de continuar.
+
+## Importante
+
+Não simplifique a arquitetura transformando o Ziel em um CRUD de tarefas com `parentId`.
+
+A hierarquia é apenas uma parte.
+
+O produto depende principalmente da combinação:
+
+**hierarquia + ciclos + agendas independentes + ocorrências + agregação + registro histórico.**
+
+Também não limite a profundidade da árvore porque a interface inicial possui poucos níveis.
+
+O domínio e o banco devem suportar recursividade real.
+
+Caso alguma decisão de implementação não esteja explicitamente descrita, escolha a alternativa que:
+
+1. mantenha o Ziel genérico;
+2. preserve histórico;
+3. preserve compatibilidade Android/PWA;
+4. minimize dívida técnica;
+5. mantenha a experiência do usuário simples.
+
+Não me interrompa com perguntas sobre detalhes pequenos que podem ser resolvidos de forma sensata seguindo esses princípios.
+
+Caso exista uma decisão realmente bloqueante, explique objetivamente qual é a decisão e por que ela impede o desenvolvimento.
+
+Caso contrário, **comece a implementar agora**.
+
+Ao final da execução, apresente:
+
+* o que foi desenvolvido;
+* estrutura criada;
+* principais arquivos;
+* testes executados;
+* resultado dos builds;
+* funcionalidades que já podem ser testadas;
+* próximos passos recomendados.
+
+A Skill `ziel-app-builder` continua sendo a fonte de verdade durante todo o desenvolvimento.
+
+Eu usaria esse prompt + o ZIP da Skill no mesmo contexto do Antigravity. O ponto mais importante é que o prompt manda ele executar o roadmap, enquanto a Skill guarda a especificação detalhada; assim você não precisa repetir as regras do Ziel a cada nova sessão.
+
+ziel-app-builder
+Edição
+Build, extend, refactor, or review Ziel, a local-first mobile goal management app centered on recursively nested goals, independent schedules and tracking cycles, generated occurrences, aggregate progress, evidence logs, attachments, and a clean expandable daily home. Use for any implementation work on the Ziel Android APK, its future PWA version, data model, recurrence engine, UI/UX, tests, architecture, migration, or product behavior. Treat the bundled product specification and acceptance scenarios as the source of truth and preserve the generic nature of the product rather than hard-coding health, fitness, diet, study, or task-specific behavior.
+Salvar alterações
+Experimente no chat
+Fontes
+SKILL(1).md
+Arquivo
+Mas não tem nada na skill.
+
+Você tem razão. O arquivo anterior estava praticamente só como índice/controlador: ele mandava ler references/product-spec.md, architecture.md, data-model.md, ui-ux.md etc., mas esses arquivos não estavam entregues junto da Skill. Foi erro meu.
+
+Refiz a Skill do zero e empacotei de verdade. Agora o ZIP contém:
+
+SKILL.md — regras centrais e instruções para o agente
+references/product-spec.md — especificação completa do Ziel e funcionalidades
+references/data-model.md — banco, metas recursivas, ocorrências, ciclos, comentários, anexos e versionamento
+references/recurrence-engine.md — toda a lógica de recorrência, dias da semana, ciclos, agregação e geração de ocorrências
+references/architecture.md — React + TypeScript + Vite + Capacitor, APK Android, PWA futura, persistência local e arquitetura
+references/ui-ux.md — Home clean, árvore expansível, criação de metas, status, timeline, câmera, telas e interações
+references/acceptance-tests.md — 42 cenários para o Antigravity validar, inclusive o exemplo Futebol/Corrida/Musculação
+references/roadmap.md — ordem completa de desenvolvimento, da fundação até APK
+assets/reference-home.png — a referência visual que você me passou
+agents/openai.yaml — metadados da Skill
+
+Ela tem agora cerca de 77 KB de documentação própria + a imagem de referência. O pacote foi também validado pelo validador oficial de Skills e passou.
+
+Skill corrigida
+
+Se abrir o ZIP, a estrutura estará assim:
+
+ziel-app-builder/
+│
+├── SKILL.md
+│
+├── agents/
+│   └── openai.yaml
+│
+├── assets/
+│   └── reference-home.png
+│
+└── references/
+    ├── product-spec.md
+    ├── data-model.md
+    ├── recurrence-engine.md
+    ├── architecture.md
+    ├── ui-ux.md
+    ├── acceptance-tests.md
+    └── roadmap.md
+
+Agora sim a ideia é mandar esse ZIP para o Gemini/Antigravity junto com o prompt que te passei. A diferença é que, quando ele encontrar algo como read references/data-model.md, o arquivo realmente existe e contém toda a especificação.
+
+Inclusive deixei bem travada uma coisa que considero essencial: o Antigravity não pode simplificar o Ziel para um CRUD de tarefas com parentId. A Skill deixa explícito que o núcleo é:
+
+Hierarquia recursiva + agenda independente + ciclo independente + ocorrências + agregação + histórico/evidências.
+
+Ou seja, agora ele tem material suficiente para começar a desenvolver o app sem ter que inventar a regra de negócio.
+

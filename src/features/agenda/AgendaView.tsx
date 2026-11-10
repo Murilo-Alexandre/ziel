@@ -1,0 +1,109 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { AgendaDay } from '../../application/services/GoalQueryService';
+import { queryService } from '../../application/container';
+import { addDays, parseLocalDate, todayLocal } from '../../domain/dates';
+import { StatusPill } from '../../shared/ui/status';
+import { errorMessage, useAppData } from '../../shared/AppData';
+import { useOverlays } from '../../shared/Overlays';
+
+function mondayOf(date: string): string {
+  const dow = parseLocalDate(date).getDay();
+  return addDays(date, -((dow + 6) % 7));
+}
+
+/** Agenda: projeção SEMANAL das ocorrências (esperadas pela agenda + reais). Não cria dados. */
+export const AgendaView: React.FC = () => {
+  const { version } = useAppData();
+  const { openDetails } = useOverlays();
+  const [weekStart, setWeekStart] = useState(() => mondayOf(todayLocal()));
+  const [days, setDays] = useState<AgendaDay[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const today = todayLocal();
+
+  const load = useCallback(async () => {
+    try {
+      setDays(await queryService.getAgenda(weekStart, addDays(weekStart, 6)));
+      setError(null);
+    } catch (e) {
+      setError(errorMessage(e));
+    }
+  }, [weekStart]);
+  useEffect(() => {
+    setDays(null);
+    load();
+  }, [load, version]);
+
+  const fmt = (d: string, o: Intl.DateTimeFormatOptions) => parseLocalDate(d).toLocaleDateString('pt-BR', o);
+  const rangeLabel = `${fmt(weekStart, { day: 'numeric', month: 'short' }).replace('.', '')} – ${fmt(addDays(weekStart, 6), { day: 'numeric', month: 'short' }).replace('.', '')}`;
+
+  return (
+    <div className="pb-nav mx-auto w-full max-w-lg px-4 pt-safe">
+      <header className="pb-4 pt-5">
+        <p className="text-sm text-ziel-muted">Planejamento</p>
+        <h1 className="text-[28px] font-bold leading-tight tracking-tight">Agenda</h1>
+      </header>
+
+      <div className="mb-4 flex items-center justify-between gap-2">
+        <button type="button" aria-label="Semana anterior" className="btn-ghost !px-3" onClick={() => setWeekStart(addDays(weekStart, -7))}>
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <div className="text-center">
+          <p className="text-base font-semibold capitalize">{rangeLabel}</p>
+          {weekStart !== mondayOf(today) && (
+            <button type="button" className="min-h-touch text-sm font-semibold text-ziel-accent" onClick={() => setWeekStart(mondayOf(today))}>
+              Esta semana
+            </button>
+          )}
+        </div>
+        <button type="button" aria-label="Próxima semana" className="btn-ghost !px-3" onClick={() => setWeekStart(addDays(weekStart, 7))}>
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      </div>
+
+      {error ? (
+        <div role="alert" className="card space-y-3 p-5 text-center">
+          <p className="text-ziel-danger">{error}</p>
+          <button className="btn-primary" onClick={load}>
+            Tentar de novo
+          </button>
+        </div>
+      ) : !days ? (
+        <div className="card h-40 animate-pulse bg-ziel-raised" aria-busy="true" />
+      ) : (
+        <div className="space-y-3">
+          {days.map((day) => (
+            <section key={day.date} aria-label={fmt(day.date, { weekday: 'long', day: 'numeric', month: 'long' })} className={`card overflow-hidden ${day.date === today ? 'border-ziel-accent/50' : ''}`}>
+              <h2 className="flex items-baseline justify-between px-4 pb-1 pt-3 text-sm font-semibold">
+                <span className="capitalize">{fmt(day.date, { weekday: 'long' })}</span>
+                <span className="text-ziel-muted">{fmt(day.date, { day: 'numeric', month: 'short' }).replace('.', '')}</span>
+              </h2>
+              {day.items.length === 0 ? (
+                <p className="px-4 pb-3 text-sm text-ziel-muted">Livre</p>
+              ) : (
+                <ul className="divide-y divide-ziel-line-soft">
+                  {day.items.map((it) => (
+                    <li key={`${it.goalId}-${it.isQuotaSlot ? 'q' : 'd'}`}>
+                      <button
+                        type="button"
+                        onClick={() => openDetails({ goalId: it.goalId, date: it.date, occurrenceId: it.occurrenceId })}
+                        className="flex min-h-[52px] w-full items-center gap-3 px-4 py-2 text-left"
+                      >
+                        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: it.colorToken ?? '#6D9BFF' }} aria-hidden />
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-[15px] font-medium">{it.name}</span>
+                          {(it.parentName || it.isQuotaSlot) && <span className="block truncate text-xs text-ziel-muted">{[it.parentName, it.isQuotaSlot ? 'frequência flexível' : null].filter(Boolean).join(' · ')}</span>}
+                        </span>
+                        <StatusPill status={it.status} compact />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
