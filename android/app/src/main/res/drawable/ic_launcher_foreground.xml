@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Marca do Ziel: um "Z" (caminho) que parte de um ponto violeta e chega à meta amarela -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <path
-        android:fillColor="#00000000"
-        android:pathData="M32,36 L76,36 L32,72 L76,72"
-        android:strokeColor="#F28B82"
-        android:strokeWidth="10"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
-    <path
-        android:fillColor="#8B7CF6"
-        android:pathData="M25.5,36 a6.5,6.5 0 1,0 13,0 a6.5,6.5 0 1,0 -13,0" />
-    <path
-        android:fillColor="#F5C542"
-        android:pathData="M68.5,72 a7.5,7.5 0 1,0 15,0 a7.5,7.5 0 1,0 -15,0" />
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <!-- Z pingado: 13 luzes acesas numa grade 5x5; as demais são só um sopro -->
+    <path android:fillColor="#2EFF7A59" android:pathData="M27.4,42a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0zM39.4,42a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0zM51.4,42a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0zM75.4,42a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0zM27.4,54a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0zM39.4,54a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0zM63.4,54a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0zM75.4,54a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0zM27.4,66a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0zM51.4,66a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0zM63.4,66a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0zM75.4,66a2.6,2.6 0 1,0 5.2,0a2.6,2.6 0 1,0 -5.2,0z" />
+    <path android:fillColor="#FFFF7A59" android:pathData="M25,30a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM37,30a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM49,30a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM61,30a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM73,30a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM61,42a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM49,54a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM37,66a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM25,78a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM37,78a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM49,78a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM61,78a5,5 0 1,0 10,0a5,5 0 1,0 -10,0zM73,78a5,5 0 1,0 10,0a5,5 0 1,0 -10,0z" />
 </vector>
