@@ -59,7 +59,7 @@ export const BottomNav: React.FC<Props> = ({ activeTab, onTabChange }) => {
       style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 12px)' }}
     >
       <div className="pointer-events-auto flex w-full max-w-[26rem] items-end gap-3">
-        <div ref={trackRef} className="relative flex flex-1 items-center rounded-[24px] border border-white/[0.08] bg-ziel-surface/95 px-2 pb-1.5 pt-2.5 shadow-[0_18px_40px_-14px_rgba(0,0,0,0.9)] backdrop-blur">
+        <div ref={trackRef} className="relative flex flex-1 items-center rounded-[24px] border border-white/[0.08] bg-ziel-surface px-2 pb-1.5 pt-2.5 shadow-[0_6px_14px_-8px_rgba(0,0,0,0.7)]">
           <span ref={barRef} aria-hidden className="absolute left-0 top-0 h-1 w-8 rounded-b-full bg-ziel-accent" />
           {TABS.map(({ key, label, Icon }) => {
             const active = activeTab === key;
@@ -82,7 +82,7 @@ export const BottomNav: React.FC<Props> = ({ activeTab, onTabChange }) => {
           type="button"
           onClick={() => openEditor({ kind: 'create', parentId: null })}
           aria-label="Nova meta"
-          className="mb-1 flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-ziel-accent text-ziel-ink shadow-[0_14px_30px_-8px_rgba(242,139,130,0.85)]"
+          className="mb-1 flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-ziel-accent text-ziel-ink shadow-[0_3px_8px_rgba(0,0,0,0.35)]"
         >
           <Plus className="h-6 w-6" strokeWidth={2.6} />
         </button>

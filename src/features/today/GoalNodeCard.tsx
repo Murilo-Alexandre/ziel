@@ -130,7 +130,7 @@ export const GoalNodeCard: React.FC<Props> = ({ node, isExpanded, onToggle, onOp
     return (
       <article
         data-reveal
-        className="rounded-[22px] p-3 shadow-[0_14px_34px_-18px_rgba(0,0,0,0.9)]"
+        className="rounded-[22px] p-3"
         style={{ border: `1px solid ${hex}66`, background: `linear-gradient(140deg, ${hex}26 0%, rgba(29,36,51,0.96) 58%)` }}
       >
         <div className="flex items-start gap-3.5">

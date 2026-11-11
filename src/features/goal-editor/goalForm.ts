@@ -10,7 +10,7 @@ import {
   Weekday,
 } from '../../domain/types';
 import { addDays, todayLocal } from '../../domain/dates';
-import { DEFAULT_NOTIFY } from '../../domain/notifications/reminderPlanner';
+import { DEFAULT_NOTIFY, legacyToWindows, usesWindows } from '../../domain/notifications/reminderPlanner';
 import { DEFAULT_ICON } from '../../shared/icons/registry';
 import { GoalValidationError, validateGoalDraft } from '../../domain/goals/goalValidation';
 import { isQuotaAvailableOn, scheduleMatchesDate } from '../../domain/recurrence/scheduleEvaluator';
@@ -78,7 +78,7 @@ export function emptyForm(parentId: string | null, today = todayLocal()): GoalFo
     showParentOnHome: true,
     aggregationType: 'scheduledOccurrences',
     childWeights: {},
-    notify: { ...DEFAULT_NOTIFY },
+    notify: { ...DEFAULT_NOTIFY, windows: [] },
   };
 }
 
@@ -113,7 +113,11 @@ export function formFromRevision(rev: GoalRevision, base = emptyForm(rev.parentI
       ? (rev.trackingCycle.type as GoalFormState['cycleType'])
       : 'weekly',
     weekStartsOn: rev.trackingCycle.type === 'weekly' ? rev.trackingCycle.weekStartsOn : 1,
-    notify: rev.notify ? { ...rev.notify } : { ...DEFAULT_NOTIFY },
+    notify: rev.notify
+      ? usesWindows(rev.notify)
+        ? { ...rev.notify, windows: rev.notify.windows!.map((w) => ({ ...w })) }
+        : { ...rev.notify, windows: legacyToWindows(rev.notify), plannedStart: rev.notify.plannedStart ?? rev.notify.time, plannedEnd: rev.notify.plannedEnd ?? null }
+      : { ...DEFAULT_NOTIFY, windows: [] },
   };
   const s = rev.schedule;
   switch (s.type) {
@@ -256,7 +260,7 @@ export function toDraft(f: GoalFormState): GoalDraftValues {
     aggregationRule,
     isRequired: f.isRequired,
     showParentOnHome: f.showParentOnHome,
-    notify: f.notify.enabled ? { ...f.notify, enabled: true } : null,
+    notify: f.notify.enabled ? { ...f.notify, enabled: true, time: f.notify.plannedStart ?? f.notify.windows?.[0]?.start ?? f.notify.time } : null,
   };
 }
 

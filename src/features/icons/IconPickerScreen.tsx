@@ -156,7 +156,7 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
           </div>
           <div className="min-w-0 flex-1" aria-live="polite">
             <p className="truncate text-[15px] font-extrabold">{iconLabel(draft)}</p>
-            <p className="truncate text-xs text-ziel-muted">{(draftMeta ? ICON_CATEGORIES[draftMeta.cat] : known ? '' : 'Ícone anterior (mantido)') + ' · ' + (GOAL_COLOR_LIST.find((c) => c.hex === draftColor)?.name ?? 'Cor atual')}</p>
+            <p className="truncate text-xs text-ziel-muted">{(draftMeta ? ICON_CATEGORIES[draftMeta.cat] : known ? '' : 'Ícone anterior (mantido)') + ' · ' + (GOAL_COLOR_LIST.find((c) => c.hex.toUpperCase() === draftColor.toUpperCase())?.name ?? 'Cor atual')}</p>
           </div>
         </div>
 
@@ -208,23 +208,14 @@ export const IconPickerScreen: React.FC<Props> = ({ open, value, color, onSelect
 
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-4">
         {mode === 'color' ? (
-          <div role="radiogroup" aria-label="Cor" className="grid grid-cols-5 gap-2.5 pt-1 min-[360px]:grid-cols-6">
+          <div role="radiogroup" aria-label="Cor" className="grid grid-cols-6 gap-x-2 gap-y-2.5 pt-1">
             {GOAL_COLOR_LIST.map((c) => {
               const sel = draftColor.toUpperCase() === c.hex.toUpperCase();
               return (
-                <button
-                  key={c.hex}
-                  type="button"
-                  role="radio"
-                  aria-checked={sel}
-                  aria-label={c.name}
-                  onClick={() => setDraftColor(c.hex)}
-                  className="flex flex-col items-center gap-1 rounded-[14px] py-1.5"
-                >
-                  <span className={`flex h-9 w-9 items-center justify-center rounded-full transition-transform ${sel ? 'scale-110 ring-2 ring-ziel-text ring-offset-2 ring-offset-ziel-bg' : ''}`} style={{ backgroundColor: c.hex }}>
+                <button key={c.hex} type="button" role="radio" aria-checked={sel} aria-label={c.name} onClick={() => setDraftColor(c.hex)} className="flex items-center justify-center rounded-full py-0.5">
+                  <span className={`flex h-9 w-9 items-center justify-center rounded-full transition-transform duration-150 ${sel ? 'scale-110 ring-2 ring-ziel-text ring-offset-2 ring-offset-ziel-bg' : ''}`} style={{ backgroundColor: c.hex }}>
                     {sel && <Check className="h-4 w-4 text-ziel-ink" strokeWidth={3.4} />}
                   </span>
-                  <span className="w-full truncate text-center text-[10px] font-semibold text-ziel-muted">{c.name}</span>
                 </button>
               );
             })}

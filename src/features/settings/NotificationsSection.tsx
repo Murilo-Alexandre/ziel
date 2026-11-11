@@ -8,7 +8,7 @@ import { Select } from '../../shared/ui/Select';
 import { useAppData } from '../../shared/AppData';
 import { useToast } from '../../shared/ui/Toast';
 
-const LIMITS = [3, 6, 10, 12, 20, 30];
+const LIMITS = [6, 12, 20, 30, 40, 60, 100];
 
 /** Configurações globais de notificação (o controle fino de cada meta fica no editor da meta). */
 export const NotificationsSection: React.FC = () => {

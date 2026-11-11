@@ -21,6 +21,9 @@ import { PHOSPHOR_PATHS } from './phosphor.generated';
 export type IconComp = React.FC<{ className?: string }>;
 
 export type IconEntry = { id: string; label: string; cat: string; kw: string };
+const CUSTOM_SVG: Record<string, string> = Object.fromEntries(
+  (catalog.icons as { id: string; svg?: string }[]).filter((i) => i.svg).map((i) => [i.id, i.svg as string])
+);
 export const ICON_CATEGORIES: Record<string, string> = catalog.categories;
 export const ICON_CATALOG: IconEntry[] = catalog.icons.map((i) => ({ id: i.id, label: i.label, cat: i.cat, kw: i.kw }));
 
@@ -69,8 +72,8 @@ export function iconFor(id: string | null | undefined): IconComp {
   const hit = cache.get(key);
   if (hit) return hit;
   let comp: IconComp;
-  if (key.startsWith('ph:') && PHOSPHOR_PATHS[key.slice(3)]) {
-    const inner = PHOSPHOR_PATHS[key.slice(3)];
+  const inner = key.startsWith('zl:') ? CUSTOM_SVG[key] : key.startsWith('ph:') ? PHOSPHOR_PATHS[key.slice(3)] : undefined;
+  if (inner) {
     comp = ({ className }) => (
       <svg
         viewBox="0 0 256 256"

@@ -4,15 +4,18 @@ import { resolve } from 'node:path';
 import { ICON_CATALOG, ICON_CATEGORIES, iconFor, iconLabel, searchIcons, DEFAULT_ICON } from '../shared/icons/registry';
 import { PHOSPHOR_PATHS } from '../shared/icons/phosphor.generated';
 import { GOAL_COLORS, toneFor } from '../shared/ui/goalIcons';
+import catalogJson from '../shared/icons/catalog.json';
+const iconSvg = (id: string) => (catalogJson.icons as { id: string; svg?: string }[]).find((i) => i.id === id)?.svg ?? '';
 
 describe('catálogo de ícones', () => {
   it('é grande, sem ids repetidos e todo ícone tem o desenho gerado', () => {
-    expect(ICON_CATALOG.length).toBeGreaterThanOrEqual(300);
+    expect(ICON_CATALOG.length).toBeGreaterThanOrEqual(430);
     const ids = ICON_CATALOG.map((i) => i.id);
     expect(new Set(ids).size).toBe(ids.length);
     for (const i of ICON_CATALOG) {
-      expect(i.id.startsWith('ph:')).toBe(true);
-      expect(PHOSPHOR_PATHS[i.id.slice(3)], i.id).toMatch(/<(path|circle|rect|line|polyline|g)/);
+      expect(/^(ph|zl):/.test(i.id)).toBe(true);
+      const inner = i.id.startsWith('ph:') ? PHOSPHOR_PATHS[i.id.slice(3)] : iconSvg(i.id);
+      expect(inner, i.id).toMatch(/<(path|circle|rect|line|polyline|g)/);
     }
   });
 
@@ -34,12 +37,16 @@ describe('catálogo de ícones', () => {
       medico: 'Médico',
       futebol: 'Futebol',
       musculacao: 'Musculação',
-      motocross: 'Moto / Motocross',
-      moto: 'Moto / Motocross',
+      motocross: 'Moto de trilha',
+      moto: 'Moto',
+      tesoura: 'Tesoura',
+      prato: 'Prato',
+      talher: 'Prato com talheres',
+      'cortar cabelo': 'Tesoura',
       carro: 'Carro',
       corrida: 'Corrida',
       tenis: 'Tênis esportivo',
-      almoco: 'Refeição',
+      almoco: 'Prato com talheres',
       trabalho: 'Trabalho',
       estudo: 'Estudante',
       viagem: 'Viagem de avião',
@@ -68,7 +75,7 @@ describe('pesquisa', () => {
 
   it('casa por início de palavra ("moto" não traz "remoto") e filtra por categoria', () => {
     const labels = searchIcons('moto', null).map((i) => i.label);
-    expect(labels).toContain('Moto / Motocross');
+    expect(labels).toContain('Moto');
     expect(labels).not.toContain('Notebook');
     expect(searchIcons('', 'veiculos').every((i) => i.cat === 'veiculos')).toBe(true);
     expect(searchIcons('carro', 'saude')).toEqual([]);
@@ -99,6 +106,6 @@ describe('compatibilidade com ícones já salvos', () => {
 describe('o gerador reproduz o arquivo versionado', () => {
   it('todo nome do catálogo existe no arquivo gerado (sem ícone "fantasma")', () => {
     const cat = JSON.parse(readFileSync(resolve(__dirname, '../shared/icons/catalog.json'), 'utf-8'));
-    for (const i of cat.icons) expect(Object.keys(PHOSPHOR_PATHS)).toContain(i.ph);
+    for (const i of cat.icons.filter((x: { ph: string | null }) => x.ph)) expect(Object.keys(PHOSPHOR_PATHS)).toContain(i.ph);
   });
 });

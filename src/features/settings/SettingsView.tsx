@@ -103,7 +103,7 @@ export const SettingsView: React.FC<{ storagePersisted: boolean | null }> = ({ s
                     Ver novidades e instalar
                   </button>
                 )}
-                <button type="button" className="btn-ghost" disabled={up.status === 'checking'} onClick={() => up.check()}>
+                <button type="button" className="btn-ghost" disabled={up.status === 'checking'} onClick={() => { setUpdateOpen(true); up.check(); }}>
                   Verificar atualizações
                 </button>
               </div>

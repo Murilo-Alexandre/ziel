@@ -3,19 +3,45 @@ export { iconFor, iconLabel, ICON_CATALOG, ICON_CATEGORIES, searchIcons, DEFAULT
 export type { IconComp } from '../icons/registry';
 
 /** Paleta de metas (identidade Ziel). O hex escolhido é o que fica salvo na meta. */
-export const GOAL_COLOR_LIST: { hex: string; name: string }[] = [
-  // as 6 primeiras são as cores originais do Ziel (metas antigas continuam idênticas)
-  { hex: '#F28B82', name: 'Coral' }, { hex: '#5B9BE0', name: 'Azul' }, { hex: '#62C48A', name: 'Verde' },
-  { hex: '#F5C542', name: 'Amarelo' }, { hex: '#8B7CF6', name: 'Violeta' }, { hex: '#E066D0', name: 'Magenta' },
-  { hex: '#E8665D', name: 'Vermelho' }, { hex: '#F4A261', name: 'Laranja' }, { hex: '#E9C46A', name: 'Areia' },
-  { hex: '#9BD16F', name: 'Lima' }, { hex: '#2EC4B6', name: 'Turquesa' }, { hex: '#56CCF2', name: 'Céu' },
-  { hex: '#7B9CFF', name: 'Pervinca' }, { hex: '#9D7BF0', name: 'Roxo' }, { hex: '#C77DFF', name: 'Orquídea' },
-  { hex: '#FF8FB1', name: 'Rosa' }, { hex: '#FF6F91', name: 'Framboesa' }, { hex: '#FFB4A2', name: 'Pêssego' },
-  { hex: '#4FB286', name: 'Esmeralda' }, { hex: '#7FC8A9', name: 'Sálvia' }, { hex: '#B5C99A', name: 'Oliva' },
-  { hex: '#D4A373', name: 'Argila' }, { hex: '#B08968', name: 'Café' }, { hex: '#CDB4DB', name: 'Lilás' },
-  { hex: '#8FA3BF', name: 'Aço' }, { hex: '#6E7FA3', name: 'Ardósia' }, { hex: '#A8B5C7', name: 'Névoa' },
-  { hex: '#5E81AC', name: 'Jeans' }, { hex: '#D08770', name: 'Terracota' }, { hex: '#EBCB8B', name: 'Mel' },
+/** Famílias de cor em ordem de matiz (escala cromática contínua) — cada uma tem 6 tons, do claro ao intenso. */
+const FAMILIES: [string, number][] = [
+  ['Vermelho', 358], ['Laranja', 22], ['Âmbar', 40], ['Amarelo', 50], ['Lima', 85], ['Verde', 140], ['Turquesa', 172],
+  ['Ciano', 195], ['Azul', 218], ['Índigo', 248], ['Violeta', 275], ['Magenta', 312], ['Rosa', 336],
 ];
+/** [luminosidade, saturação]: todos legíveis com o ícone escuro e como texto colorido sobre o fundo grafite. */
+const TONES: [number, number][] = [[81, 76], [74, 74], [67, 72], [61, 70], [55, 68], [50, 64]];
+const NEUTRALS = ['#E7EBF3', '#C9D0DE', '#AAB3C7', '#8D98B0', '#727E99', '#5C6882'];
+/** As 6 cores originais do Ziel continuam exatas: entram no lugar do tom mais próximo da escala. */
+const ORIGINALS = ['#F28B82', '#5B9BE0', '#62C48A', '#F5C542', '#8B7CF6', '#E066D0'];
+
+function hslToHex(h: number, sPct: number, lPct: number): string {
+  const s = sPct / 100;
+  const l = lPct / 100;
+  const k = (n: number) => (n + h / 30) % 12;
+  const a = s * Math.min(l, 1 - l);
+  const f = (n: number) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+  const x = (v: number) => Math.round(v * 255).toString(16).padStart(2, '0');
+  return `#${x(f(0))}${x(f(8))}${x(f(4))}`.toUpperCase();
+}
+const dist = (a: string, b: string) => {
+  const c = (h: string, i: number) => parseInt(h.slice(1 + i * 2, 3 + i * 2), 16);
+  return [0, 1, 2].reduce((t, i) => t + (c(a, i) - c(b, i)) ** 2, 0);
+};
+
+function buildPalette(): { hex: string; name: string }[] {
+  const out: { hex: string; name: string }[] = [];
+  for (const [fam, hue] of FAMILIES) TONES.forEach(([l, sat], i) => out.push({ hex: hslToHex(hue, sat, l), name: `${fam} ${i + 1}` }));
+  NEUTRALS.forEach((hex, i) => out.push({ hex, name: `Grafite ${i + 1}` }));
+  for (const o of ORIGINALS) {
+    let best = 0;
+    for (let i = 1; i < out.length; i++) if (dist(out[i].hex, o) < dist(out[best].hex, o)) best = i;
+    out[best] = { hex: o, name: out[best].name };
+  }
+  return out;
+}
+
+/** Paleta ordenada: cada linha de 6 é uma família (claro → intenso); famílias vizinhas têm matizes vizinhos. */
+export const GOAL_COLOR_LIST: { hex: string; name: string }[] = buildPalette();
 export const GOAL_COLORS = GOAL_COLOR_LIST.map((c) => c.hex);
 
 /** Cores salvas em versões anteriores mapeadas para a paleta atual — metas existentes continuam coloridas. */
@@ -45,7 +71,7 @@ export type Tone = { bg: string; hex: string; light: boolean };
 /** Cor de uma meta (sempre da paleta; fallback estável por id). */
 export function toneFor(colorToken: string | null | undefined, goalId = ''): Tone {
   const up = (colorToken ?? '').toUpperCase();
-  let hex = GOAL_COLORS.find((c) => c.toUpperCase() === up) ?? LEGACY[up];
+  let hex: string | undefined = LEGACY[up] ?? (/^#[0-9A-F]{6}$/.test(up) ? up : undefined);
   if (!hex) {
     let h = 0;
     for (const ch of goalId) h = (h * 31 + ch.charCodeAt(0)) >>> 0;

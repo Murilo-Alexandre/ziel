@@ -7,6 +7,7 @@ const dir = 'node_modules/@phosphor-icons/core/assets/regular';
 const out = {};
 const missing = [];
 for (const i of cat.icons) {
+  if (!i.ph) continue; // ícone desenhado à mão (svg embutido no catálogo)
   const f = `${dir}/${i.ph}.svg`;
   if (!existsSync(f)) {
     missing.push(i.ph);

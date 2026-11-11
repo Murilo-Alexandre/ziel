@@ -197,7 +197,12 @@ R = [
  ('path','Caminho','geral','jornada trilha'),('crosshair','Foco','geral','mira'),
  ('lightning','Raio','geral','energia'),
 ]
+exec(open('scripts/icon-extra.py', encoding='utf-8').read())
+R = [(ph, *OVERRIDES.get(ph, (label, cat, kw))) for ph, label, cat, kw in R] + EXTRA
 seen = set(); out = []
+# ícones desenhados à mão primeiro dentro da categoria (aparecem no topo das buscas)
+for cid, label, cat, kw, svg in CUSTOM:
+    out.append({'id': cid, 'ph': None, 'label': label, 'cat': cat, 'kw': kw, 'svg': svg})
 for ph, label, cat, kw in R:
     if ph in seen:
         continue

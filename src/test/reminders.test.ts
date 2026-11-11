@@ -371,3 +371,105 @@ describe('validação no cadastro da meta', () => {
     expect((await w.goalRepo.getRevisionForDate(g.id, '2026-08-19'))?.notify).toEqual(LUNCH);
   });
 });
+
+/* ---------------- janelas independentes de lembretes (rotina real) ---------------- */
+import { legacyToWindows, windowMinutes } from '../domain/notifications/reminderPlanner';
+
+const W = (start: string, end: string, everyMin: number, id = start) => ({ id, start, end, everyMin });
+const TREINAR: NotifyConfig = {
+  enabled: true, time: '05:00', beforeMin: 0, afterMin: 0, everyMin: 30,
+  plannedStart: '05:00', plannedEnd: '06:00',
+  windows: [W('06:30', '09:00', 30), W('17:00', '23:00', 60)],
+};
+
+describe('janelas de lembretes: horário previsto é independente dos avisos', () => {
+  it('Treinar: treina 05h–06h, avisa 06h30–09h e 17h–23h, nada entre 09h e 17h', async () => {
+    const { w, os, svc } = setup(new Date(2026, 7, 19, 4, 0));
+    await w.goals.createGoal({ name: 'Treinar', schedule: { type: 'daily' }, activePeriod: PERIOD, notify: TREINAR });
+    await svc.sync();
+    const today = [...os.pending.values()].filter((p) => p.date === '2026-08-19').sort((a, b) => a.fireAt - b.fireAt).map((p) => hhmm(p.fireAt));
+    expect(today).toEqual(['06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00']);
+    expect(today.some((t) => t > '09:00' && t < '17:00')).toBe(false);
+    const first = [...os.pending.values()].find((p) => hhmm(p.fireAt) === '06:30' && p.date === '2026-08-19')!;
+    expect(first.body).toMatch(/Ainda pendente · era para 05:00/);
+  });
+
+  it('registrar o treino de manhã cancela as duas janelas do dia; voltar a pendente recalcula só o que falta', async () => {
+    const { w, os, svc, at } = setup(new Date(2026, 7, 19, 4, 0));
+    await w.goals.createGoal({ name: 'Treinar', schedule: { type: 'daily' }, activePeriod: PERIOD, notify: TREINAR });
+    await svc.sync();
+    at(5, 50);
+    const [occ] = await w.occ.getOrGenerateOccurrencesForDate('2026-08-19');
+    await w.occ.updateStatus(occ.id, 'completed');
+    await svc.sync();
+    expect([...os.pending.values()].some((p) => p.date === '2026-08-19')).toBe(false);
+    expect([...os.pending.values()].filter((p) => p.date === '2026-08-20')).toHaveLength(13);
+    at(10, 0);
+    await w.occ.updateStatus(occ.id, 'pending');
+    await svc.sync();
+    expect([...os.pending.values()].filter((p) => p.date === '2026-08-19').map((p) => hhmm(p.fireAt)).sort()).toEqual(['17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00']);
+  });
+
+  it('Tratamento capilar: 05h–07h e 17h–23h, sem aviso no expediente', () => {
+    const cfg: NotifyConfig = { enabled: true, time: '06:00', beforeMin: 0, afterMin: 0, everyMin: 30, plannedStart: '06:00', windows: [W('05:00', '07:00', 30), W('17:00', '23:00', 60)] };
+    const t = describeReminderTimes(cfg);
+    expect(t.slice(0, 5)).toEqual(['05:00', '05:30', '06:00', '06:30', '07:00']);
+    expect(t.filter((x) => x > '07:00' && x < '17:00')).toEqual([]);
+    expect(validateNotify(cfg)).toEqual([]);
+  });
+
+  it('Cortar cabelo (data única 17h30): três janelas, sem aviso duplicado onde duas se encontram (18h)', async () => {
+    const cfg: NotifyConfig = {
+      enabled: true, time: '17:30', beforeMin: 0, afterMin: 0, everyMin: 30, plannedStart: '17:30',
+      windows: [W('07:00', '16:00', 120, 'a'), W('16:30', '18:00', 15, 'b'), W('18:00', '22:00', 60, 'c')],
+    };
+    const { w, os, svc } = setup(new Date(2026, 7, 19, 6, 0));
+    await w.goals.createGoal({ name: 'Cortar cabelo', schedule: { type: 'once', date: '2026-08-20' }, activePeriod: PERIOD, notify: cfg });
+    await svc.sync();
+    const times = [...os.pending.values()].sort((a, b) => a.fireAt - b.fireAt).map((p) => hhmm(p.fireAt));
+    expect(times).toEqual(['07:00', '09:00', '11:00', '13:00', '15:00', '16:30', '16:45', '17:00', '17:15', '17:30', '17:45', '18:00', '19:00', '20:00', '21:00', '22:00']);
+    expect(new Set(times).size).toBe(times.length);
+    expect(new Set([...os.pending.keys()]).size).toBe(times.length);
+    expect([...os.pending.values()].every((p) => p.date === '2026-08-20')).toBe(true);
+    const at1730 = [...os.pending.values()].find((p) => hhmm(p.fireAt) === '17:30')!;
+    expect(at1730.body).toMatch(/Está na hora/);
+  });
+
+  it('lembretes sem horário previsto (só janelas) e "dia inteiro" com frequência configurável', () => {
+    const cfg: NotifyConfig = { enabled: true, time: '09:00', beforeMin: 0, afterMin: 0, everyMin: 30, plannedStart: null, windows: [W('08:00', '20:00', 180)] };
+    expect(describeReminderTimes(cfg)).toEqual(['08:00', '11:00', '14:00', '17:00', '20:00']);
+    expect(windowMinutes([W('00:00', '23:59', 240)])).toEqual([0, 240, 480, 720, 960, 1200]);
+  });
+
+  it('janelas que se sobrepõem não duplicam e a ordem das janelas não importa', () => {
+    const a = windowMinutes([W('09:00', '10:00', 30), W('09:30', '11:00', 30, 'x')]);
+    const b = windowMinutes([W('09:30', '11:00', 30, 'x'), W('09:00', '10:00', 30)]);
+    expect(a).toEqual([540, 570, 600, 630, 660]);
+    expect(b).toEqual(a);
+  });
+
+  it('validação das janelas: fim antes do início, frequência fora do limite, excesso de avisos, janela de um instante só', () => {
+    const base: NotifyConfig = { enabled: true, time: '09:00', beforeMin: 0, afterMin: 0, everyMin: 30 };
+    expect(validateNotify({ ...base, windows: [W('10:00', '09:00', 30)] }).join(' ')).toMatch(/depois do início/);
+    expect(validateNotify({ ...base, windows: [W('09:00', '10:00', 2)] }).join(' ')).toMatch(/frequência/);
+    expect(validateNotify({ ...base, windows: [W('00:00', '23:59', 5)] }).join(' ')).toMatch(/Muitos avisos/);
+    expect(validateNotify({ ...base, windows: [W('09:00', '09:00', 30)] })).toEqual([]);
+    expect(validateNotify({ ...base, windows: [W('09:00', '10:00', 30)], plannedStart: '08:00', plannedEnd: '07:00' }).join(' ')).toMatch(/fim do horário previsto/);
+  });
+
+  it('metas no formato antigo continuam iguais e podem ser convertidas em janelas', () => {
+    expect(describeReminderTimes(LUNCH)).toEqual(['11:00', '11:30', '12:00', '12:30', '13:00']);
+    const ws = legacyToWindows(LUNCH);
+    expect(ws).toHaveLength(1);
+    expect(windowMinutes(ws)).toEqual([660, 690, 720, 750, 780]);
+  });
+
+  it('o silêncio noturno global e o teto por dia continuam valendo sobre as janelas', async () => {
+    const { w, os, svc } = setup(new Date(2026, 7, 19, 4, 0), { quietHours: { enabled: true, start: '22:00', end: '07:00' }, maxPerDay: 5 });
+    await w.goals.createGoal({ name: 'Treinar', schedule: { type: 'daily' }, activePeriod: PERIOD, notify: TREINAR });
+    await svc.sync();
+    const today = [...os.pending.values()].filter((p) => p.date === '2026-08-19');
+    expect(today.length).toBeLessThanOrEqual(5);
+    expect(today.every((p) => hhmm(p.fireAt) >= '07:00' && hhmm(p.fireAt) < '22:00')).toBe(true);
+  });
+});

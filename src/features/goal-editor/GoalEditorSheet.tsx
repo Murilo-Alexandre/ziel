@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Bell, ChevronDown, ChevronRight, ChevronUp, CalendarDays } from 'lucide-react';
+import { ChevronDown, ChevronRight, ChevronUp, CalendarDays } from 'lucide-react';
 import { Weekday } from '../../domain/types';
 import { goalService, occurrenceService, queryService, goalRepo, reminderService, notificationPort } from '../../application/container';
 import { listDescendantIds } from '../../domain/goals/goalTree';
@@ -10,7 +10,7 @@ import { iconFor, iconLabel } from '../../shared/ui/goalIcons';
 import { IconPickerScreen } from '../icons/IconPickerScreen';
 import { Switch } from '../../shared/ui/Switch';
 import { Select } from '../../shared/ui/Select';
-import { describeReminderTimes, validateNotify } from '../../domain/notifications/reminderPlanner';
+import { ReminderWindowsEditor } from './ReminderWindowsEditor';
 import { errorMessage, useAppData } from '../../shared/AppData';
 import { useToast } from '../../shared/ui/Toast';
 import {
@@ -145,7 +145,6 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
   const errors = useMemo(() => validateForm(form), [form]);
   const SelectedIcon = iconFor(form.icon);
   const canRemind = form.scheduleKind !== 'quota' && form.scheduleKind !== 'container';
-  const reminderTimes = useMemo(() => (form.notify.enabled && validateNotify(form.notify).length === 0 ? describeReminderTimes(form.notify) : []), [form.notify]);
   const setNotify = (patch: Partial<typeof form.notify>) => setForm((f) => ({ ...f, notify: { ...f.notify, ...patch } }));
   const preview = useMemo(() => previewDates(form), [form]);
   const isRecurring = form.scheduleKind !== 'once';
@@ -480,73 +479,11 @@ export const GoalEditorSheet: React.FC<Props> = ({ open, mode, onClose, onSaved 
               </div>
             </Section>
 
-            <Section title="Lembretes" hint="Avisos no horário estimado, antes e depois dele. Se você registrar a meta, os avisos pendentes daquele dia são cancelados.">
+            <Section title="Lembretes" hint="Escolha em que horários avisar, separados do horário em que você costuma fazer. Registrou a meta? Os avisos do dia param.">
               {!canRemind ? (
                 <p className="text-sm text-ziel-muted">Lembretes precisam de dias definidos (dias da semana, todo dia, data única, intervalo ou dia do mês).</p>
               ) : (
-                <>
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="flex items-center gap-2 text-[14px] font-bold">
-                      <Bell className="h-4 w-4 text-ziel-accent" /> Avisar neste horário
-                    </span>
-                    <Switch checked={form.notify.enabled} onChange={(v) => setNotify({ enabled: v })} label="Ativar lembretes desta meta" />
-                  </div>
-                  {form.notify.enabled && (
-                    <div className="space-y-3">
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <Label htmlFor="n-time">Horário estimado</Label>
-                          <input id="n-time" type="time" className="field" value={form.notify.time} onChange={(e) => setNotify({ time: e.target.value })} />
-                        </div>
-                        <div>
-                          <Label htmlFor="n-every">Repetir a cada</Label>
-                          <Select id="n-every" className="field" value={form.notify.everyMin} onChange={(e) => setNotify({ everyMin: Number(e.target.value) })}>
-                            {[5, 10, 15, 20, 30, 45, 60, 90, 120].map((m) => (
-                              <option key={m} value={m}>
-                                {m < 60 ? `${m} min` : `${m / 60} h${m % 60 ? ' 30' : ''}`}
-                              </option>
-                            ))}
-                          </Select>
-                        </div>
-                        <div>
-                          <Label htmlFor="n-before">Começar antes</Label>
-                          <Select id="n-before" className="field" value={form.notify.beforeMin} onChange={(e) => setNotify({ beforeMin: Number(e.target.value) })}>
-                            {[0, 5, 10, 15, 30, 45, 60, 90, 120, 180].map((m) => (
-                              <option key={m} value={m}>
-                                {m === 0 ? 'No horário' : m < 60 ? `${m} min antes` : `${m / 60} h antes`.replace('.5', ' h 30')}
-                              </option>
-                            ))}
-                          </Select>
-                        </div>
-                        <div>
-                          <Label htmlFor="n-after">Terminar depois</Label>
-                          <Select id="n-after" className="field" value={form.notify.afterMin} onChange={(e) => setNotify({ afterMin: Number(e.target.value) })}>
-                            {[0, 5, 10, 15, 30, 45, 60, 90, 120, 180].map((m) => (
-                              <option key={m} value={m}>
-                                {m === 0 ? 'No horário' : m < 60 ? `${m} min depois` : `${m / 60} h depois`.replace('.5', ' h 30')}
-                              </option>
-                            ))}
-                          </Select>
-                        </div>
-                      </div>
-                      <div aria-label="Prévia dos lembretes" className="rounded-[17px] border border-ziel-line-soft bg-ziel-surface p-3">
-                        <p className="mb-2 text-xs font-semibold text-ziel-sub">Vai avisar às</p>
-                        {reminderTimes.length ? (
-                          <div className="flex flex-wrap gap-1.5">
-                            {reminderTimes.map((t, i) => (
-                              <span key={`${t}-${i}`} className="rounded-full bg-ziel-accent-soft px-3 py-1.5 text-sm font-bold tabular-nums text-ziel-accent">
-                                {t}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-sm text-ziel-danger">{validateNotify(form.notify)[0]}</p>
-                        )}
-                        <p className="mt-2 text-[11px] text-ziel-muted">Só dispara com o app fechado no Android. Quanto menos avisos, melhor: o padrão é um aviso só, no horário.</p>
-                      </div>
-                    </div>
-                  )}
-                </>
+                <ReminderWindowsEditor value={form.notify} onChange={setNotify} />
               )}
             </Section>
 

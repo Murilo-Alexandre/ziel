@@ -51,7 +51,7 @@ export const DateStrip: React.FC<Props> = ({ selectedDate, onSelectDate }) => {
             <span
               data-circle
               className={`flex h-9 w-9 items-center justify-center rounded-full text-[14px] font-extrabold transition-colors duration-300 group-focus-visible:ring-2 group-focus-visible:ring-ziel-text group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-ziel-bg ${
-                selected ? 'bg-ziel-accent text-ziel-ink shadow-[0_8px_20px_-8px_rgba(242,139,130,0.9)]' : isToday ? 'border border-ziel-accent/70 text-ziel-accent' : 'text-ziel-sub'
+                selected ? 'bg-ziel-accent text-ziel-ink' : isToday ? 'border border-ziel-accent/70 text-ziel-accent' : 'text-ziel-sub'
               }`}
             >
               {date.getDate()}

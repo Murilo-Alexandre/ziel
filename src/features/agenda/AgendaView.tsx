@@ -78,7 +78,7 @@ export const AgendaView: React.FC = () => {
       ) : (
         <div ref={listRef} className="space-y-3">
           {days.map((day) => (
-            <section data-day key={day.date} aria-label={fmt(day.date, { weekday: 'long', day: 'numeric', month: 'long' })} className={`overflow-hidden rounded-[24px] ${day.date === today ? 'border border-ziel-accent/60 bg-ziel-surface shadow-[0_0_0_3px_rgba(242,139,130,0.10)]' : 'border border-ziel-line-soft bg-ziel-surface'}`}>
+            <section data-day key={day.date} aria-label={fmt(day.date, { weekday: 'long', day: 'numeric', month: 'long' })} className={`overflow-hidden rounded-[24px] ${day.date === today ? 'border border-ziel-accent/60 bg-ziel-surface' : 'border border-ziel-line-soft bg-ziel-surface'}`}>
               <h2 className="flex items-baseline justify-between px-4 pb-1 pt-3 text-sm font-semibold">
                 <span className={`flex items-center gap-2 ${day.date === today ? 'text-ziel-accent' : 'text-ziel-text'}`}>{cap(fmt(day.date, { weekday: 'long' }))}{day.date === today && <span className="rounded-full bg-ziel-accent px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-ziel-ink">Hoje</span>}</span>
                 <span className="text-ziel-sub">{fmt(day.date, { day: 'numeric', month: 'short' }).replace('.', '')}</span>

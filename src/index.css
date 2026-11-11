@@ -17,11 +17,7 @@
     min-height: 100%;
   }
   body {
-    background:
-      radial-gradient(120% 55% at 50% -12%, rgba(139, 124, 246, 0.26), transparent 62%),
-      radial-gradient(90% 45% at 105% 100%, rgba(91, 155, 224, 0.20), transparent 60%),
-      radial-gradient(70% 35% at -10% 65%, rgba(242, 139, 130, 0.10), transparent 60%),
-      #141926 fixed;
+    background: #141926;
     @apply font-sans text-ziel-text antialiased;
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
@@ -31,6 +27,19 @@
   html.native-app body {
     touch-action: pan-x pan-y; /* só no app Android: sem pinça/duplo toque para ampliar */
     -webkit-text-size-adjust: 100%;
+  }
+  /* Fundo atmosférico numa camada fixa e isolada: não repinta durante a rolagem. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(120% 55% at 50% -12%, rgba(139, 124, 246, 0.22), transparent 62%),
+      radial-gradient(90% 45% at 105% 100%, rgba(91, 155, 224, 0.16), transparent 60%),
+      radial-gradient(70% 35% at -10% 65%, rgba(242, 139, 130, 0.08), transparent 60%);
+    transform: translateZ(0);
   }
   button {
     touch-action: manipulation;
@@ -57,7 +66,7 @@
     @apply inline-flex min-h-[40px] items-center justify-center gap-2 rounded-full px-5 text-sm font-bold transition-colors active:opacity-80 disabled:opacity-50;
   }
   .btn-primary {
-    @apply btn bg-ziel-accent text-ziel-ink shadow-[0_8px_24px_-10px_rgba(242,139,130,0.8)];
+    @apply btn bg-ziel-accent text-ziel-ink;
   }
   .btn-dark {
     @apply btn bg-ziel-ink text-ziel-text;

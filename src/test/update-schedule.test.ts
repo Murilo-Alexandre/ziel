@@ -48,7 +48,7 @@ describe('modal de atualização não pode prender o usuário', () => {
   it('o botão de instalar fica no rodapé fixo do modal (fora da área rolável) e respeita a safe area', () => {
     expect(ui).toMatch(/footer=\{footer\}/);
     expect(ui).toMatch(/Instalar atualização/);
-    expect(sheet).toMatch(/pb-safe/);
+    expect(sheet).toMatch(/safe-area-inset-bottom/); // folga fixa + área de gestos, sem pb-3 sobrescrevendo
   });
 
   it('há aviso com "Atualizar" e "Depois"', () => {

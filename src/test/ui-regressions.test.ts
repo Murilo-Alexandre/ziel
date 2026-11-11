@@ -18,14 +18,28 @@ describe('regressões de interface (beta.7)', () => {
     expect(read('../shared/ui/Sheet.tsx')).toMatch(/pt-1 \[-webkit/);
   });
 
-  it('paleta de 24–32 cores, únicas, preservando as 6 originais e metas antigas', () => {
-    expect(GOAL_COLORS.length).toBeGreaterThanOrEqual(24);
-    expect(GOAL_COLORS.length).toBeLessThanOrEqual(32);
+  it('paleta rica e ordenada por matiz (linhas de 6 tons por família), preservando as originais e qualquer cor já salva', () => {
+    expect(GOAL_COLORS.length).toBeGreaterThanOrEqual(60);
+    expect(GOAL_COLORS.length % 6).toBe(0); // linhas completas = escala cromática contínua, sem títulos de grupo
     expect(new Set(GOAL_COLORS.map((c) => c.toUpperCase())).size).toBe(GOAL_COLORS.length);
-    expect(GOAL_COLORS.slice(0, 6)).toEqual(['#F28B82', '#5B9BE0', '#62C48A', '#F5C542', '#8B7CF6', '#E066D0']);
+    for (const o of ['#F28B82', '#5B9BE0', '#62C48A', '#F5C542', '#8B7CF6', '#E066D0']) expect(GOAL_COLORS).toContain(o);
     expect(GOAL_COLOR_LIST.every((c) => c.name.length > 0)).toBe(true);
-    expect(toneFor('#9BD16F').hex).toBe('#9BD16F'); // cor nova é respeitada
+    expect(toneFor('#9BD16F').hex).toBe('#9BD16F'); // cor salva em versão anterior (24 cores) continua idêntica
+    expect(toneFor('#56CCF2').hex).toBe('#56CCF2');
     expect(toneFor('#3B82F6').hex).toBe('#5B9BE0'); // cor legada continua mapeada
+    expect(toneFor('lixo').hex).toMatch(/^#[0-9A-F]{6}$/); // inválida: fallback estável
+  });
+
+  it('as famílias seguem a ordem do arco-íris (matiz crescente) e os tons vão do claro ao intenso', () => {
+    const hue = (hex: string) => {
+      const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+      const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+      if (!d) return -1;
+      const h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+      return ((h * 60) + 360) % 360;
+    };
+    const fam = Array.from({ length: 13 }, (_, i) => hue(GOAL_COLORS[i * 6 + 3]));
+    for (let i = 2; i < fam.length; i++) expect(fam[i]).toBeGreaterThan(fam[i - 1] - 1);
   });
 
   it('ícone e cor numa só tela cheia; o editor não tem mais a fileira de cores solta', () => {
@@ -87,5 +101,45 @@ describe('geometria do ícone Matriz (proporção no launcher)', () => {
   });
   it('o Z tem exatamente 13 pontos acesos e a versão monocromática só leva esses', () => {
     expect(circles(read('../../android/app/src/main/res/drawable/ic_launcher_monochrome.xml')).length).toBe(13);
+  });
+});
+
+describe('acabamento, desempenho e atualização (beta.10)', () => {
+  it('sem brilhos/sombras coloridas nem blur nos botões e controles principais', () => {
+    const css = read('../index.css');
+    expect(css).not.toMatch(/shadow-\[[^\]]*rgba\(242,139,130/);
+    expect(read('../shared/components/BottomNav.tsx')).not.toMatch(/rgba\(242,139,130|backdrop-blur/);
+    expect(read('../features/today/DateStrip.tsx')).not.toMatch(/rgba\(242,139,130/);
+    expect(read('../shared/ui/Sheet.tsx')).not.toMatch(/backdrop-blur/);
+  });
+
+  it('fundo atmosférico em camada fixa própria (sem background-attachment: fixed, que repinta a cada rolagem)', () => {
+    const css = read('../index.css');
+    expect(css).toMatch(/body::before/);
+    expect(css).not.toMatch(/#141926 fixed/);
+  });
+
+  it('rodapé do modal respeita a área de gestos com folga (a classe pb-3 não pode sobrescrever a safe area)', () => {
+    const sheet = read('../shared/ui/Sheet.tsx');
+    expect(sheet).toMatch(/calc\(env\(safe-area-inset-bottom, 0px\) \+ 1\.1rem\)/);
+    expect(sheet).not.toMatch(/pb-safe shrink-0 border-t/);
+  });
+
+  it('o modal de atualização cobre todos os estados e o botão Verificar abre o modal já em "verificando"', () => {
+    const hero = read('../features/update/UpdateHero.tsx');
+    for (const st of ['checking', 'uptodate', 'available', 'downloading', 'verifying', 'installing', 'error']) expect(hero, st).toContain(st);
+    const ui = read('../features/update/UpdateUi.tsx');
+    expect(ui).toMatch(/Você está na versão mais recente!/);
+    expect(ui).toMatch(/Procurando atualizações/);
+    expect(ui).toMatch(/Preparando a instalação/);
+    expect(ui).toMatch(/Tentar de novo/);
+    expect(read('../features/settings/SettingsView.tsx')).toMatch(/setUpdateOpen\(true\); up\.check\(\)/);
+    expect(hero).toMatch(/pointer-events-none/); // a animação nunca captura toques
+  });
+
+  it('animação de entrada da folha só usa transform/opacidade (leve) e cancela tweens anteriores', () => {
+    const sheet = read('../shared/ui/Sheet.tsx');
+    expect(sheet).not.toMatch(/scale: 0\.98/);
+    expect(sheet).toMatch(/force3D/);
   });
 });

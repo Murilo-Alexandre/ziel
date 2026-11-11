@@ -72,13 +72,29 @@ export type ReminderRule = {
   daysOfWeek?: Weekday[];
 };
 
-/** Lembretes locais de uma meta: horário estimado + janela de avisos antes/depois, repetidos a cada N minutos. */
+/** Janela independente de avisos no mesmo dia: de `start` a `end` (HH:mm), repetindo a cada `everyMin`. */
+export type ReminderWindow = {
+  id: string;
+  start: string;
+  end: string;
+  everyMin: number;
+};
+
+/**
+ * Lembretes locais de uma meta.
+ * - Formato novo (`windows`): o horário PREVISTO da atividade (`plannedStart`/`plannedEnd`, opcional, só informativo)
+ *   é um conceito separado das JANELAS de aviso (várias por dia, cada uma com sua frequência).
+ * - Formato antigo (sem `windows`): horário estimado + antes/depois a cada N min. Continua funcionando igual.
+ */
 export type NotifyConfig = {
   enabled: boolean;
-  time: string; // HH:mm - horário estimado da execução
-  beforeMin: number; // começa a avisar X min antes
-  afterMin: number; // para de avisar Y min depois
-  everyMin: number; // intervalo entre avisos
+  time: string; // HH:mm - formato antigo: horário estimado; no novo, espelha o início do horário previsto
+  beforeMin: number; // formato antigo
+  afterMin: number; // formato antigo
+  everyMin: number; // formato antigo
+  windows?: ReminderWindow[];
+  plannedStart?: string | null;
+  plannedEnd?: string | null;
 };
 
 export type GoalRevision = {

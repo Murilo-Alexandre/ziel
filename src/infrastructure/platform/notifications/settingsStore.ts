@@ -18,7 +18,8 @@ export class LocalStorageSettingsStore implements NotificationSettingsStore {
           ...DEFAULT_NOTIFICATION_SETTINGS,
           ...raw,
           quietHours: q,
-          maxPerDay: clamp(Number(raw.maxPerDay), 1, 30, DEFAULT_NOTIFICATION_SETTINGS.maxPerDay),
+          maxPerDay: Number(raw.maxPerDay) === 12 ? DEFAULT_NOTIFICATION_SETTINGS.maxPerDay : clamp(Number(raw.maxPerDay), 1, 100, DEFAULT_NOTIFICATION_SETTINGS.maxPerDay),
+          maxTotal: Number(raw.maxTotal) === 120 ? DEFAULT_NOTIFICATION_SETTINGS.maxTotal : clamp(Number(raw.maxTotal), 10, 400, DEFAULT_NOTIFICATION_SETTINGS.maxTotal),
         };
       }
     } catch {

@@ -84,15 +84,35 @@
   ok('botão ícone+cor recebe toque', hit(picker)); picker.click(); await sleep(800);
   const pk = q('[role=dialog][aria-label="Ícone e cor"]'); ok('seletor de tela cheia abre', !!pk);
   qa('[role=tab]', pk).find((t) => t.textContent === 'Cor').click(); await sleep(300);
-  const sw = qa('[role=radio]', pk); ok('paleta tem 24–32 cores', sw.length >= 24 && sw.length <= 32, 'n=' + sw.length);
+  const sw = qa('[role=radio]', pk); ok('paleta rica (60+ cores, linhas de 6)', sw.length >= 60 && sw.length % 6 === 0, 'n=' + sw.length);
   ok('todas as cores recebem toque', sw.every((s) => { s.scrollIntoView({ block: 'nearest' }); return hit(s); }));
-  sw[9].click(); await sleep(200);
+  sw[40].click(); await sleep(200);
   qa('[role=tab]', pk).find((t) => t.textContent === 'Ícone').click(); await sleep(300);
   const search = q('input[type=search]', pk); search.focus();
   const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set; setter.call(search, 'moto'); search.dispatchEvent(new Event('input', { bubbles: true })); await sleep(300);
   const tile = qa('[role=option]', pk)[0]; ok('pesquisa de ícone retorna resultados', !!tile); tile?.click(); await sleep(200);
   qa('button', pk).find((b) => /Aplicar/.test(b.textContent)).click(); await sleep(800);
   ok('seletor fecha e editor segue ativo', !q('[role=dialog][aria-label="Ícone e cor"]') && !!q('[role=dialog][aria-label="Nova meta"]'));
+  // --- lembretes: janelas independentes e prévia
+  {
+    const dlg = q('[role=dialog][aria-label="Nova meta"]');
+    const sw = qa('button[role=switch]', dlg).find((b) => /lembretes/i.test(b.getAttribute('aria-label') || ''));
+    ok('interruptor de lembretes existe', !!sw);
+    if (sw) {
+      sw.scrollIntoView({ block: 'center' }); await sleep(200); sw.click(); await sleep(500);
+      ok('lista de janelas aparece', !!q('[aria-label="Janelas de lembrete"]', dlg));
+      const addBtn = qa('button', dlg).find((b) => /Nova janela/.test(b.textContent));
+      addBtn.scrollIntoView({ block: 'center' }); await sleep(250); ok('Nova janela recebe toque', hit(addBtn)); addBtn.click(); await sleep(300); addBtn.click(); await sleep(300);
+      ok('3 janelas após adicionar 2', qa('[role=listitem]', dlg).length === 3, 'n=' + qa('[role=listitem]', dlg).length);
+      const rm = qa('button', dlg).filter((b) => /Remover janela/.test(b.getAttribute('aria-label') || ''));
+      rm[2]?.scrollIntoView({ block: 'center' }); await sleep(250); ok('remover recebe toque', rm.length === 3 && hit(rm[2])); rm[2].click(); await sleep(300);
+      ok('2 janelas após remover', qa('[role=listitem]', dlg).length === 2);
+      const down = qa('button', dlg).find((b) => /Descer janela 1/.test(b.getAttribute('aria-label') || '')); down?.click(); await sleep(200);
+      const prev = q('[aria-label="Prévia dos lembretes"]', dlg); ok('prévia dos horários', !!prev && /\d\d:\d\d/.test(prev.textContent));
+      const dia = qa('button', dlg).find((b) => /dia inteiro/i.test(b.getAttribute('aria-label') || '')); dia?.click(); await sleep(300);
+      ok('dia inteiro gera janela única', qa('[role=listitem]', dlg).length === 1);
+    }
+  }
   const sel = q('[role=dialog][aria-label="Nova meta"] [aria-haspopup=listbox]'); sel.click(); await sleep(600);
   const lbOpt = q('[role=listbox][aria-label="Faz parte de"] [role=option]');
   ok('seletor de opções abre e recebe toque', !!lbOpt && hit(lbOpt));

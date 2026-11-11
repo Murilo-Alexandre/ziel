@@ -73,10 +73,10 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
     gsap.killTweensOf([panel, back]);
     if (open) {
       gsap.fromTo(back, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: 'power1.out' });
-      gsap.fromTo(panel, { yPercent: 12, opacity: 0, scale: 0.98 }, { yPercent: 0, opacity: 1, scale: 1, duration: 0.5, ease: 'power4.out' });
+      gsap.fromTo(panel, { yPercent: 8, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.38, ease: 'power3.out', force3D: true });
     } else {
       gsap.to(back, { opacity: 0, duration: 0.2 });
-      gsap.to(panel, { yPercent: 10, opacity: 0, duration: 0.24, ease: 'power2.in', onComplete: () => {
+      gsap.to(panel, { yPercent: 8, opacity: 0, duration: 0.2, ease: 'power2.in', force3D: true, onComplete: () => {
           if (!openRef.current) setMounted(false);
         },
       });
@@ -93,7 +93,7 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
         aria-label="Fechar"
         tabIndex={-1}
         onClick={onClose}
-        className="absolute inset-0 cursor-default bg-black/75 backdrop-blur-[2px]"
+        className="absolute inset-0 cursor-default bg-black/75"
       />
       <div
         ref={panelRef}
@@ -117,8 +117,12 @@ export const Sheet: React.FC<SheetProps> = ({ open, title, subtitle, onClose, ch
           </button>
         </header>
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-4 pt-1 [-webkit-overflow-scrolling:touch] [touch-action:pan-y]" data-sheet-scroll>{children}</div>
-        {footer && <footer className="pb-safe shrink-0 border-t border-ziel-line-soft bg-ziel-surface px-6 pb-3 pt-3">{footer}</footer>}
-        {!footer && <div className="pb-safe shrink-0" />}
+        {footer && (
+          <footer className="shrink-0 border-t border-ziel-line-soft bg-ziel-surface px-6 pt-3" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 1.1rem)' }}>
+            {footer}
+          </footer>
+        )}
+        {!footer && <div className="shrink-0" style={{ height: 'calc(env(safe-area-inset-bottom, 0px) + 0.75rem)' }} />}
       </div>
     </div>,
     document.body

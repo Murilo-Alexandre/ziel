@@ -1,4 +1,4 @@
-import { GoalDefinition, GoalRevision, NotifyConfig, Occurrence } from '../types';
+import { GoalDefinition, GoalRevision, NotifyConfig, Occurrence, ReminderWindow } from '../types';
 import { addDays, formatLocalDate } from '../dates';
 import { pickRevisionForDate } from '../goals/revisions';
 import { scheduleMatchesDate } from '../recurrence/scheduleEvaluator';
@@ -19,13 +19,41 @@ export type NotificationSettings = {
 export const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
   enabled: true,
   quietHours: { enabled: false, start: '22:00', end: '07:00' },
-  maxPerDay: 12,
+  maxPerDay: 40,
   horizonDays: 7,
-  maxTotal: 120,
+  maxTotal: 240,
 };
 
-export const MAX_REMINDERS_PER_OCCURRENCE = 12;
-export const DEFAULT_NOTIFY: NotifyConfig = { enabled: false, time: '09:00', beforeMin: 0, afterMin: 0, everyMin: 30 };
+export const MAX_REMINDERS_PER_OCCURRENCE = 48;
+export const DEFAULT_NOTIFY: NotifyConfig = { enabled: false, time: '09:00', beforeMin: 0, afterMin: 0, everyMin: 30, windows: [], plannedStart: null, plannedEnd: null };
+export const MIN_EVERY = 5;
+export const MAX_EVERY = 720;
+
+export const newWindowId = (): string => `w${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+
+/** Converte a configuração do formato antigo (horário + antes/depois) em janelas editáveis. */
+export function legacyToWindows(cfg: NotifyConfig): ReminderWindow[] {
+  const base = timeToMinutes(cfg.time);
+  if (!Number.isFinite(base)) return [];
+  if (cfg.beforeMin === 0 && cfg.afterMin === 0) return [{ id: newWindowId(), start: cfg.time, end: cfg.time, everyMin: cfg.everyMin || 30 }];
+  return [{ id: newWindowId(), start: minutesToTime(Math.max(0, base - cfg.beforeMin)), end: minutesToTime(Math.min(1439, base + cfg.afterMin)), everyMin: cfg.everyMin || 30 }];
+}
+
+export const usesWindows = (cfg: NotifyConfig | null | undefined): boolean => Boolean(cfg && Array.isArray(cfg.windows) && cfg.windows.length > 0);
+
+/** Minutos do dia (0..1439), únicos e ordenados, em que as janelas disparam. Janelas que se encontram não duplicam avisos. */
+export function windowMinutes(windows: ReminderWindow[]): number[] {
+  const set = new Set<number>();
+  for (const w of windows) {
+    const s = timeToMinutes(w.start);
+    const e = timeToMinutes(w.end);
+    if (!Number.isFinite(s) || !Number.isFinite(e) || e < s) continue;
+    const step = Math.max(MIN_EVERY, Math.floor(w.everyMin) || MIN_EVERY);
+    for (let m = s; m <= e; m += step) set.add(m);
+    if (s === e) set.add(s);
+  }
+  return [...set].sort((a, b) => a - b);
+}
 
 const TIME_RE = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
@@ -55,12 +83,30 @@ export function reminderOffsets(cfg: Pick<NotifyConfig, 'beforeMin' | 'afterMin'
 
 /** Horários "HH:mm" em que a meta avisa (para prévia no editor). */
 export function describeReminderTimes(cfg: NotifyConfig): string[] {
+  if (usesWindows(cfg)) return windowMinutes(cfg.windows!).map(minutesToTime);
   const base = timeToMinutes(cfg.time);
   if (!Number.isFinite(base)) return [];
   return reminderOffsets(cfg).map((o) => minutesToTime(base + o));
 }
 
+function validateWindows(cfg: NotifyConfig): string[] {
+  const e: string[] = [];
+  const ws = cfg.windows ?? [];
+  if (cfg.plannedStart && !TIME_RE.test(cfg.plannedStart)) e.push('O horário previsto é inválido.');
+  if (cfg.plannedEnd && !TIME_RE.test(cfg.plannedEnd)) e.push('O fim do horário previsto é inválido.');
+  if (cfg.plannedStart && cfg.plannedEnd && TIME_RE.test(cfg.plannedStart) && TIME_RE.test(cfg.plannedEnd) && cfg.plannedEnd < cfg.plannedStart) e.push('O fim do horário previsto deve ser depois do início.');
+  ws.forEach((w, i) => {
+    const n = ws.length > 1 ? `Janela ${i + 1}: ` : '';
+    if (!TIME_RE.test(w.start) || !TIME_RE.test(w.end)) e.push(`${n}informe início e fim (HH:mm).`);
+    else if (w.end < w.start) e.push(`${n}o fim deve ser depois do início (as janelas não atravessam a meia-noite).`);
+    else if (w.end > w.start && (!Number.isInteger(w.everyMin) || w.everyMin < MIN_EVERY || w.everyMin > MAX_EVERY)) e.push(`${n}a frequência deve ficar entre ${MIN_EVERY} min e 12 h.`);
+  });
+  if (e.length === 0 && windowMinutes(ws).length > MAX_REMINDERS_PER_OCCURRENCE) e.push(`Muitos avisos por dia (máximo ${MAX_REMINDERS_PER_OCCURRENCE}). Aumente o intervalo ou reduza as janelas.`);
+  return e;
+}
+
 export function validateNotify(cfg: NotifyConfig): string[] {
+  if (usesWindows(cfg)) return validateWindows(cfg);
   const e: string[] = [];
   if (!TIME_RE.test(cfg.time)) e.push('Informe o horário estimado do lembrete (HH:mm).');
   const ints = [cfg.beforeMin, cfg.afterMin, cfg.everyMin].every((n) => Number.isInteger(n));
@@ -155,6 +201,23 @@ export function planReminders(input: PlanInput): PlannedReminder[] {
       const key = computeOccurrenceKey(g.id, date, 'default');
       const occ = occByKey.get(key);
       if (occ && (occ.status !== 'pending' || occ.overrideData?.isRemovedFromDate)) continue;
+
+      if (usesWindows(cfg)) {
+        const name = occ?.overrideData?.name ?? rev.name;
+        const plannedMin = cfg.plannedStart && TIME_RE.test(cfg.plannedStart) ? timeToMinutes(cfg.plannedStart) : null;
+        for (const m of windowMinutes(cfg.windows!)) {
+          const at = localDateTime(date, minutesToTime(m));
+          if (at.getTime() <= now.getTime() + 2_000) continue;
+          if (inQuietHours(at, settings.quietHours)) continue;
+          const body =
+            plannedMin === null ? 'Ainda pendente hoje' : m < plannedMin ? `Previsto para ${cfg.plannedStart}` : m === plannedMin ? `Está na hora · ${cfg.plannedStart}` : `Ainda pendente · era para ${cfg.plannedStart}`;
+          let id = reminderId(`${key}|w|${at.getTime()}|${name}|${body}`);
+          while (usedIds.has(id)) id = ((id + 1) & 0x7fffffff) || 1;
+          usedIds.add(id);
+          perDay.push({ id, fireAt: at.getTime(), title: name, body, goalId: g.id, occurrenceKey: key, date, offsetMin: 0 });
+        }
+        continue;
+      }
 
       const time = occ?.overrideData?.scheduledTime && TIME_RE.test(occ.overrideData.scheduledTime) ? occ.overrideData.scheduledTime : cfg.time;
       const base = localDateTime(date, time);
