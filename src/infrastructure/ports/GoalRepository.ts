@@ -16,4 +16,6 @@ export interface GoalRepository {
   addRevision(revision: GoalRevision, closePreviousRevisionId?: string): Promise<void>;
   /** Arquiva (não apaga histórico). */
   deleteGoal(id: string): Promise<void>;
+  /** EXCLUI de verdade (irreversível): metas, revisões, ocorrências, ciclos, registros, anexos e trocas de status, numa transação. */
+  purgeGoals(ids: string[]): Promise<void>;
 }

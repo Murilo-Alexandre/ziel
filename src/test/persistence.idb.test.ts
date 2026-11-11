@@ -319,3 +319,50 @@ describe('A53 / A54 — backup versionado e importação segura', () => {
     expect(await w.journalRepo.countRecordsByOccurrence((await w.occRepo.findByDate('2026-08-19')).map((o) => o.id))).toBeInstanceOf(Map);
   });
 });
+
+describe('exclusão definitiva de metas', () => {
+  it('apaga a meta, as submetas e todo o histórico ligado (ocorrências, ciclos, registros, anexos, trocas de status) e preserva o resto', async () => {
+    const w = realWorld();
+    const t = await createTreinar(w as unknown as World);
+    const other = (await w.goals.createGoal({ name: 'Ler', schedule: { type: 'daily' }, activePeriod: PERIOD })).definition;
+    const [occFut] = await w.occ.getOrGenerateOccurrencesForDate('2026-08-19');
+    for (const o of await w.occ.getOrGenerateOccurrencesForDate('2026-08-19')) await w.occ.updateStatus(o.id, 'completed');
+    const keep = (await w.occ.getOrGenerateOccurrencesForDate('2026-08-19')).find((o) => o.goalId === other.id)!;
+    await w.journal.addRecord({ type: 'occurrence', occurrenceId: occFut.id }, 'anotação da meta que será excluída');
+    await w.journal.addRecord({ type: 'occurrence', occurrenceId: keep.id }, 'anotação que deve ficar');
+
+    const ids = await w.goals.deleteGoalPermanently(t.parent.id);
+    expect(ids.length).toBe(4); // pai + 3 submetas
+
+    const db = await getDB();
+    for (const store of ['goals', 'revisions', 'occurrences', 'cycleInstances', 'statusChanges'] as const) {
+      const rows = (await db.getAll(store)) as { goalId?: string; id?: string }[];
+      for (const r of rows) {
+        const gid = store === 'goals' ? r.id : r.goalId;
+        if (gid) expect(ids, `${store} ainda tem dados de meta excluída`).not.toContain(gid);
+      }
+    }
+    expect((await db.getAll('journalRecords')).map((r) => r.comment)).toEqual(['anotação que deve ficar']);
+    expect((await db.getAll('goals')).map((g) => g.id)).toEqual([other.id]);
+    expect((await db.getAll('occurrences')).every((o) => o.goalId === other.id)).toBe(true);
+    expect((await db.getAll('statusChanges')).length).toBeGreaterThan(0); // a meta restante mantém o próprio histórico
+  });
+
+  it('excluir uma submeta não apaga a meta mãe nem as irmãs; contagem da subárvore confere', async () => {
+    const w = realWorld();
+    const t = await createTreinar(w as unknown as World);
+    expect(await w.goals.countSubtree(t.parent.id)).toBe(4);
+    const ids = await w.goals.deleteGoalPermanently(t.futebol.id);
+    expect(ids).toEqual([t.futebol.id]);
+    const left = (await (await getDB()).getAll('goals')).map((g) => g.id).sort();
+    expect(left).toEqual([t.parent.id, t.corrida.id, t.musculacao.id].sort());
+  });
+
+  it('funciona também para metas arquivadas', async () => {
+    const w = realWorld();
+    const g = (await w.goals.createGoal({ name: 'Velha', schedule: { type: 'daily' }, activePeriod: PERIOD })).definition;
+    await w.goals.archiveGoal(g.id);
+    await w.goals.deleteGoalPermanently(g.id);
+    expect(await (await getDB()).getAll('goals')).toEqual([]);
+  });
+});

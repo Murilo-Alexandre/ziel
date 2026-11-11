@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Archive, MessageSquarePlus, Pencil, Plus } from 'lucide-react';
+import { Archive, MessageSquarePlus, Pencil, Plus, Trash2 } from 'lucide-react';
 import { GoalDetails } from '../../application/services/GoalQueryService';
 import { goalService, queryService } from '../../application/container';
 import { describeCompletion, describeCycle, describeSchedule, formatDateBR } from '../../domain/recurrence/scheduleLabels';
@@ -25,6 +25,8 @@ export const GoalDetailSheet: React.FC<Props> = ({ open, goalId, date, occurrenc
   const { notify } = useToast();
   const [details, setDetails] = useState<GoalDetails | null>(null);
   const [confirmArchive, setConfirmArchive] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     if (!goalId) return;
@@ -39,6 +41,7 @@ export const GoalDetailSheet: React.FC<Props> = ({ open, goalId, date, occurrenc
   useEffect(() => {
     if (open) {
       setConfirmArchive(false);
+      setConfirmDelete(false);
       load();
     } else setDetails(null);
   }, [open, load, version]);
@@ -52,6 +55,21 @@ export const GoalDetailSheet: React.FC<Props> = ({ open, goalId, date, occurrenc
       onClose();
     } catch (e) {
       notify(errorMessage(e), 'error');
+    }
+  };
+
+  const remove = async () => {
+    if (!goalId || deleting) return;
+    setDeleting(true);
+    try {
+      const ids = await goalService.deleteGoalPermanently(goalId);
+      notify(ids.length > 1 ? `Meta e ${ids.length - 1} submeta(s) excluídas.` : 'Meta excluída.', 'success');
+      bump();
+      onClose();
+    } catch (e) {
+      notify(errorMessage(e), 'error');
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -175,10 +193,37 @@ export const GoalDetailSheet: React.FC<Props> = ({ open, goalId, date, occurrenc
                 </div>
               </div>
             ) : (
-              <button type="button" className="btn-danger w-full" onClick={() => setConfirmArchive(true)}>
-                <Archive className="h-4 w-4" /> Arquivar meta
-              </button>
+              !confirmDelete && (
+                <button type="button" className="btn-ghost w-full" onClick={() => setConfirmArchive(true)}>
+                  <Archive className="h-4 w-4" /> Arquivar meta
+                </button>
+              )
             ))}
+
+          {confirmDelete ? (
+            <div role="alertdialog" aria-label="Confirmar exclusão" className="rounded-card border border-ziel-danger/50 bg-ziel-danger-soft p-4 text-sm text-ziel-text">
+              <p>
+                Excluir <strong>{rev.name}</strong>
+                {details.children.length > 0 ? (details.children.length > 1 ? ` e as ${details.children.length} submetas dela` : ' e a submeta dela') : ''} <strong>para sempre</strong>? Todo o histórico, os registros e os anexos ligados a
+                {details.children.length > 0 ? ' elas' : ' ela'} também serão apagados e isso não pode ser desfeito.
+              </p>
+              {!details.definition.archivedAt && <p className="mt-2 text-xs text-ziel-sub">Quer só tirar da Home e guardar o histórico? Use “Arquivar meta”.</p>}
+              <div className="mt-3 flex gap-2">
+                <button type="button" className="btn-ghost flex-1" onClick={() => setConfirmDelete(false)} disabled={deleting}>
+                  Cancelar
+                </button>
+                <button type="button" className="btn-danger flex-1" onClick={remove} disabled={deleting}>
+                  <Trash2 className="h-4 w-4" /> {deleting ? 'Excluindo…' : 'Excluir'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            !confirmArchive && (
+              <button type="button" className="btn-danger w-full" onClick={() => setConfirmDelete(true)}>
+                <Trash2 className="h-4 w-4" /> Excluir meta
+              </button>
+            )
+          )}
         </div>
       )}
     </Sheet>

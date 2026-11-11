@@ -55,6 +55,13 @@ export class InMemoryGoalRepository implements GoalRepository {
       });
     }
   }
+  async purgeGoals(ids: string[]) {
+    for (const id of ids) {
+      this.goals.delete(id);
+      for (const [k, r] of [...this.revisions]) if (r.goalId === id) this.revisions.delete(k);
+    }
+  }
+
   async deleteGoal(id: string) {
     const def = this.goals.get(id);
     if (def) this.goals.set(id, { ...def, archivedAt: new Date().toISOString() });

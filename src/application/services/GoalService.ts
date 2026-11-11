@@ -209,6 +209,20 @@ export class GoalService {
     }
   }
 
+  /** Quantas metas (a própria + submetas) uma exclusão apagaria. */
+  async countSubtree(goalId: string): Promise<number> {
+    const all = await this.goalRepo.listAllDefinitions();
+    return 1 + listDescendantIds(goalId, all).length;
+  }
+
+  /** EXCLUI definitivamente a meta, a subárvore e TODO o histórico ligado a elas. Irreversível. */
+  async deleteGoalPermanently(goalId: string): Promise<string[]> {
+    const all = await this.goalRepo.listAllDefinitions();
+    const ids = [goalId, ...listDescendantIds(goalId, all)];
+    await this.goalRepo.purgeGoals(ids);
+    return ids;
+  }
+
   /** Arquiva a meta e toda a sua subárvore. Histórico (ocorrências, registros) é preservado. */
   async archiveGoal(goalId: string): Promise<string[]> {
     const all = await this.goalRepo.listAllDefinitions();

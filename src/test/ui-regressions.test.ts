@@ -143,3 +143,14 @@ describe('acabamento, desempenho e atualização (beta.10)', () => {
     expect(sheet).toMatch(/force3D/);
   });
 });
+
+describe('exclusão de metas', () => {
+  it('a tela da meta oferece Excluir (com confirmação clara, separada de Arquivar) e usa a exclusão definitiva', () => {
+    const src = read('../features/goal-detail/GoalDetailSheet.tsx');
+    expect(src).toMatch(/Excluir meta/);
+    expect(src).toMatch(/role="alertdialog"/);
+    expect(src).toMatch(/deleteGoalPermanently/);
+    expect(src).toMatch(/não pode ser desfeito/);
+    expect(src).toMatch(/Arquivar meta/); // a opção segura continua disponível
+  });
+});

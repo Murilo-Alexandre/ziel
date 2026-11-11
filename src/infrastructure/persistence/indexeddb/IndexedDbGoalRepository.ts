@@ -80,6 +80,32 @@ export class IndexedDbGoalRepository implements GoalRepository {
     await tx.done;
   }
 
+  async purgeGoals(ids: string[]): Promise<void> {
+    if (!ids.length) return;
+    const db = await getDB();
+    const tx = db.transaction(['goals', 'revisions', 'occurrences', 'cycleInstances', 'journalRecords', 'attachments', 'statusChanges'], 'readwrite');
+    const dropRecords = async (targetKey: string) => {
+      for (const rec of await tx.objectStore('journalRecords').index('by-targetKey').getAll(targetKey)) {
+        for (const key of await tx.objectStore('attachments').index('by-recordId').getAllKeys(rec.id)) await tx.objectStore('attachments').delete(key);
+        await tx.objectStore('journalRecords').delete(rec.id);
+      }
+    };
+    for (const id of ids) {
+      for (const occ of await tx.objectStore('occurrences').index('by-goalId').getAll(id)) {
+        for (const key of await tx.objectStore('statusChanges').index('by-occurrenceId').getAllKeys(occ.id)) await tx.objectStore('statusChanges').delete(key);
+        await dropRecords(`occ:${occ.id}`);
+        await tx.objectStore('occurrences').delete(occ.id);
+      }
+      for (const cyc of await tx.objectStore('cycleInstances').index('by-goalId').getAll(id)) {
+        await dropRecords(`cycle:${cyc.id}`);
+        await tx.objectStore('cycleInstances').delete(cyc.id);
+      }
+      for (const key of await tx.objectStore('revisions').index('by-goalId').getAllKeys(id)) await tx.objectStore('revisions').delete(key);
+      await tx.objectStore('goals').delete(id);
+    }
+    await tx.done;
+  }
+
   async deleteGoal(id: string): Promise<void> {
     const db = await getDB();
     const tx = db.transaction('goals', 'readwrite');
