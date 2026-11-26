@@ -4,4 +4,8 @@
     <string name="title_activity_main">Ziel</string>
     <string name="package_name">com.ziel.app</string>
     <string name="custom_url_scheme">com.ziel.app</string>
+    <string name="widget_goal_label">Ziel · Meta</string>
+    <string name="widget_goal_description">Acompanhe uma meta e marque como concluída direto da tela inicial.</string>
+    <string name="widget_day_label">Ziel · Metas do dia</string>
+    <string name="widget_day_description">Metas de hoje, progresso do dia e marcação sem abrir o app.</string>
 </resources>

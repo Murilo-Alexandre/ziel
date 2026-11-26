@@ -154,3 +154,43 @@ describe('exclusão de metas', () => {
     expect(src).toMatch(/Arquivar meta/); // a opção segura continua disponível
   });
 });
+
+describe('widgets do Android (integração)', () => {
+  const manifest = read('../../android/app/src/main/AndroidManifest.xml');
+
+  it('manifesto declara os dois widgets, a lista, as telas e os receptores da virada do dia', () => {
+    for (const name of ['GoalWidgetProvider', 'DayWidgetProvider', 'DayWidgetService', 'WidgetActionReceiver', 'WidgetRefreshReceiver', 'WidgetActionActivity', 'GoalWidgetConfigActivity']) {
+      expect(manifest, name).toContain(`.widget.${name}`);
+    }
+    expect(manifest).toContain('android.appwidget.action.APPWIDGET_CONFIGURE');
+    expect(manifest).toContain('android.intent.action.DATE_CHANGED');
+    expect(manifest).toContain('android.intent.action.TIME_SET');
+    expect(manifest).toContain('android.intent.action.BOOT_COMPLETED');
+  });
+
+  it('o plugin está registrado e o app só publica no widget depois de aplicar e confirmar as marcações', () => {
+    expect(read('../../android/app/src/main/java/com/ziel/app/MainActivity.java')).toMatch(/registerPlugin\(ZielWidgetsPlugin\.class\)/);
+    expect(read('../App.tsx')).toMatch(/<WidgetHost \/>/);
+    const host = read('../shared/WidgetHost.tsx');
+    const apply = host.indexOf('applyActions');
+    const ack = host.indexOf('ackPending');
+    expect(apply).toBeGreaterThan(-1);
+    expect(ack).toBeGreaterThan(apply); // confirmar só depois de aplicar (nada se perde)
+    expect(host.indexOf('drainAndApply()')).toBeLessThan(host.indexOf('buildSnapshot')); // aplica antes de gerar o retrato
+  });
+
+  it('widgets não usam View comum (RemoteViews não aceita) nem bitmaps para o círculo de status', () => {
+    for (const f of ['widget_goal.xml', 'widget_day.xml', 'widget_day_row.xml', 'widget_day_group.xml']) {
+      expect(read('../../android/app/src/main/res/layout/' + f), f).not.toMatch(/<View[\s>]/);
+    }
+    const list = read('../../android/app/src/main/java/com/ziel/app/widget/DayWidgetService.java');
+    expect(list).toMatch(/setImageViewResource\(R\.id\.row_circle/);
+    expect(read('../../android/app/src/main/java/com/ziel/app/widget/DayWidgetProvider.java')).toMatch(/partiallyUpdateAppWidget/);
+  });
+
+  it('o dia do widget vem do relógio do aparelho (vira sozinho) e os cliques usam o dia do toque, não o do desenho', () => {
+    expect(read('../../android/app/src/main/java/com/ziel/app/widget/WidgetActionReceiver.java')).toMatch(/WidgetActions\.today\(\)/);
+    expect(read('../../android/app/src/main/java/com/ziel/app/widget/WidgetActionActivity.java')).toMatch(/WidgetActions\.today\(\)/);
+    expect(read('../../android/app/src/main/java/com/ziel/app/widget/WidgetUpdater.java')).toMatch(/scheduleMidnight/);
+  });
+});

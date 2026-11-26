@@ -92,6 +92,20 @@ export function iconFor(id: string | null | undefined): IconComp {
   return comp;
 }
 
+/** Ícones antigos (lucide) → equivalente do catálogo, para os desenhos que o widget do Android precisa. */
+const LEGACY_TO_PH: Record<string, string> = {
+  Target: 'target', Dumbbell: 'barbell', Trophy: 'trophy', Footprints: 'footprints', BookOpen: 'book-open', Heart: 'heart', Droplets: 'drop',
+  Utensils: 'fork-knife', Wallet: 'wallet', Brain: 'brain', Briefcase: 'briefcase', Star: 'star', Zap: 'lightning', Layers: 'stack',
+};
+
+/** Miolo SVG (grade 256) do ícone, ou null se não houver desenho. Usado para gerar as imagens dos widgets. */
+export function iconMarkup(id: string | null | undefined): string | null {
+  const key = id ?? '';
+  if (key.startsWith('zl:')) return CUSTOM_SVG[key] ?? null;
+  const ph = key.startsWith('ph:') ? key.slice(3) : LEGACY_TO_PH[key];
+  return (ph && PHOSPHOR_PATHS[ph]) || null;
+}
+
 export function iconLabel(id: string | null | undefined): string {
   if (!id) return 'Camadas';
   return ICON_CATALOG.find((i) => i.id === id)?.label ?? LEGACY_LABEL[id] ?? 'Ícone';

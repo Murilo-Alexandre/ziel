@@ -9,6 +9,7 @@ import { OverlayProvider } from './shared/Overlays';
 import { ToastProvider } from './shared/ui/Toast';
 import { UpdateProvider } from './shared/Update';
 import { ReminderHost } from './shared/ReminderHost';
+import { WidgetHost } from './shared/WidgetHost';
 import { gsap, installPressFeedback, motionOK } from './shared/motion';
 import { App as CapApp } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
@@ -91,6 +92,7 @@ export const App: React.FC = () => {
         <UpdateProvider>
         <OverlayProvider>
           <ReminderHost />
+          <WidgetHost />
           <main ref={mainRef}>
             {tab === 'today' && <TodayView />}
             {tab === 'agenda' && <AgendaView />}
