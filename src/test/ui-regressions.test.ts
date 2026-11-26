@@ -194,3 +194,36 @@ describe('widgets do Android (integração)', () => {
     expect(read('../../android/app/src/main/java/com/ziel/app/widget/WidgetUpdater.java')).toMatch(/scheduleMidnight/);
   });
 });
+
+describe('widgets: prévias e acabamento (beta.13)', () => {
+  const res = (p: string) => read('../../android/app/src/main/res/' + p);
+
+  it('o seletor do Android usa prévias próprias com conteúdo fictício, que nunca entram nos widgets reais', () => {
+    expect(res('xml/widget_goal_info.xml')).toMatch(/previewLayout="@layout\/widget_goal_preview"/);
+    expect(res('xml/widget_day_info.xml')).toMatch(/previewLayout="@layout\/widget_day_preview"/);
+    const goal = res('layout/widget_goal_preview.xml');
+    expect(goal).toMatch(/Ler 20 minutos/);
+    expect(goal).toMatch(/Pendente/);
+    const day = res('layout/widget_day_preview.xml');
+    for (const t of ['Treinar', 'Beber água', 'Ler 20 minutos', '2 de 4 concluídas', 'android:progress="50"']) expect(day, t).toContain(t);
+    for (const f of ['widget_goal.xml', 'widget_goal_compact.xml', 'widget_day.xml', 'widget_day_row.xml']) {
+      expect(res('layout/' + f), f).not.toMatch(/Ler 20 minutos|Treinar|2 de 4 concluídas/);
+    }
+    for (const f of ['widget_goal_preview.xml', 'widget_day_preview.xml']) expect(res('layout/' + f), f).not.toMatch(/<View[\s>]|<ListView/);
+  });
+
+  it('widget individual: margens laterais iguais e layout compacto para widgets estreitos', () => {
+    const l = res('layout/widget_goal.xml');
+    expect(l).toMatch(/paddingStart="14dp"/);
+    expect(l).toMatch(/paddingEnd="14dp"/);
+    expect(res('layout/widget_goal_compact.xml')).toMatch(/paddingStart="10dp"[\s\S]*paddingEnd="10dp"/);
+    const j = read('../../android/app/src/main/java/com/ziel/app/widget/GoalWidgetProvider.java');
+    expect(j).toMatch(/widget_goal_compact/);
+    expect(j).toMatch(/OPTION_APPWIDGET_MIN_WIDTH/);
+  });
+
+  it('círculos de status preenchem o desenho (sem folga que descentraliza) e a lista não tem margem direita extra', () => {
+    expect(res('drawable/ic_status_pending.xml')).toMatch(/a10\.6,10\.6/);
+    expect(read('../../android/app/src/main/java/com/ziel/app/widget/DayWidgetService.java')).toMatch(/setViewPadding\(R\.id\.row_root, Math\.round\(\(2 \+ depth \* 12\) \* dens\), 0, 0, 0\)/);
+  });
+});

@@ -51,8 +51,8 @@
 
     <ImageView
         android:id="@+id/row_circle"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:contentDescription="Alterar status"
         android:padding="4dp"
         android:scaleType="fitCenter" />

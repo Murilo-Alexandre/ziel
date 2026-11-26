@@ -7,7 +7,7 @@
     android:minHeight="56dp"
     android:minResizeWidth="110dp"
     android:minResizeHeight="56dp"
-    android:previewLayout="@layout/widget_goal"
+    android:previewLayout="@layout/widget_goal_preview"
     android:resizeMode="horizontal|vertical"
     android:targetCellWidth="3"
     android:targetCellHeight="1"

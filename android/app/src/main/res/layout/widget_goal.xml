@@ -6,12 +6,15 @@
     android:background="@drawable/widget_bg"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:paddingStart="14dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="14dp"
+    android:paddingBottom="8dp">
 
     <ImageView
         android:id="@+id/tile"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:contentDescription="@null"
         android:scaleType="fitCenter" />
 
@@ -19,9 +22,10 @@
         android:id="@+id/body"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="9dp"
-        android:layout_marginEnd="4dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="10dp"
         android:layout_weight="1"
+        android:gravity="center_vertical"
         android:orientation="vertical">
 
         <TextView
@@ -47,10 +51,8 @@
 
     <ImageView
         android:id="@+id/circle"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:padding="2dp"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:contentDescription="Alterar status"
         android:scaleType="fitCenter" />
-
 </LinearLayout>

@@ -58,7 +58,10 @@ public class GoalWidgetProvider extends AppWidgetProvider {
     }
 
     static RemoteViews build(Context c, int widgetId) {
-        RemoteViews rv = new RemoteViews(c.getPackageName(), R.layout.widget_goal);
+        // widgets estreitos (menos de ~230 dp, 2 células) usam o layout compacto: nada de palavra cortada no meio
+        int minW = AppWidgetManager.getInstance(c).getAppWidgetOptions(widgetId).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0);
+        boolean compact = minW > 0 && minW < 230;
+        RemoteViews rv = new RemoteViews(c.getPackageName(), compact ? R.layout.widget_goal_compact : R.layout.widget_goal);
         WidgetStore store = WidgetStore.get(c);
         String goalId = store.getWidgetGoal(widgetId);
         JSONObject snap = store.loadSnapshot();
@@ -71,7 +74,7 @@ public class GoalWidgetProvider extends AppWidgetProvider {
         PendingIntent configPi = PendingIntent.getActivity(c, widgetId, config, flags());
         PendingIntent openPi = PendingIntent.getActivity(c, 1, openApp(c), flags());
 
-        int size = Math.round(44 * c.getResources().getDisplayMetrics().density);
+        int size = Math.round((compact ? 32 : 38) * c.getResources().getDisplayMetrics().density);
 
         if (goalId == null) {
             text(rv, "Escolha uma meta", "Toque para configurar", COLOR_TEXT, COLOR_MUTED);

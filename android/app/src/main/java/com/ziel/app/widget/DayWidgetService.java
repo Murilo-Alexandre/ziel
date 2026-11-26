@@ -64,7 +64,7 @@ public class DayWidgetService extends RemoteViewsService {
             WidgetStore store = WidgetStore.get(ctx);
 
             RemoteViews row = new RemoteViews(ctx.getPackageName(), markable ? R.layout.widget_day_row : R.layout.widget_day_group);
-            row.setViewPadding(R.id.row_root, Math.round((4 + depth * 12) * dens), 0, Math.round(4 * dens), 0);
+            row.setViewPadding(R.id.row_root, Math.round((2 + depth * 12) * dens), 0, 0, 0);
             row.setTextViewText(R.id.row_name, it.optString("n"));
 
             Intent openFill = new Intent().putExtra("goalId", it.optString("id")).putExtra("mode", markable ? "choose" : "open");
