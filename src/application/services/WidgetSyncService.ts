@@ -13,6 +13,8 @@ export const WIDGET_DAYS = 7;
 
 export type WidgetItem = {
   id: string; // goalId
+  /** Id da meta mãe (null na raiz): permite montar a hierarquia no widget. */
+  pid: string | null;
   n: string; // nome
   c: string; // cor #RRGGBB
   ic: string; // chave do ícone (imagem gerada)
@@ -33,10 +35,11 @@ export type WidgetItem = {
 };
 
 export type WidgetDay = { progress: number; total: number; completed: number; items: WidgetItem[] };
-export type WidgetGoal = { id: string; n: string; c: string; ic: string; pn: string | null };
+export type WidgetGoal = { id: string; n: string; c: string; ic: string; pn: string | null; pid: string | null; dp: number };
 export type WidgetSnapshot = { v: 1; generatedAt: number; today: string; days: Record<string, WidgetDay>; goals: WidgetGoal[] };
 
-export type WidgetAction = { goalId: string; date: string; status: OccurrenceStatus; ts?: number };
+/** Marcação feita no widget: status, quantidade realizada ou comentário (um por ação). `id` evita aplicar o mesmo comentário duas vezes. */
+export type WidgetAction = { goalId: string; date: string; status?: OccurrenceStatus; qty?: number; comment?: string; ts?: number; id?: string };
 
 const STATUSES: OccurrenceStatus[] = ['pending', 'partial', 'completed', 'not_done'];
 
@@ -53,7 +56,8 @@ export class WidgetSyncService {
     private occ: OccurrenceService,
     private goalRepo: GoalRepository,
     private plan: () => Promise<PlannedReminder[]> = async () => [],
-    private now: () => string = () => todayLocal()
+    private now: () => string = () => todayLocal(),
+    private journal: { addRecord: (t: { type: 'occurrence'; occurrenceId: string }, c: string | null) => Promise<unknown> } | null = null
   ) {}
 
   async buildSnapshot(days: number = WIDGET_DAYS): Promise<WidgetSnapshot> {
@@ -82,6 +86,7 @@ export class WidgetSyncService {
           if (occ || n.children.length > 0 || n.hasChildrenDueToday) {
             items.push({
               id: n.goal.id,
+              pid: n.goal.parentId ?? null,
               n: occ?.overrideData?.name ?? rev.name,
               c: color,
               ic: iconKey(rev.icon, color),
@@ -123,19 +128,28 @@ export class WidgetSyncService {
 
   private async listGoals(): Promise<WidgetGoal[]> {
     const defs = visibleGoals(await this.goalRepo.listAllDefinitions());
-    const byId = new Map<string, string>();
-    const list: WidgetGoal[] = [];
+    const byId = new Map(defs.map((d) => [d.id, d]));
+    const kids = new Map<string | null, typeof defs>();
     for (const d of defs) {
-      const rev = await this.goalRepo.getRevision(d.currentRevisionId);
-      if (!rev) continue;
-      byId.set(d.id, rev.name);
-      const color = toneFor(rev.colorToken, d.id).hex;
-      list.push({ id: d.id, n: rev.name, c: color, ic: iconKey(rev.icon, color), pn: null });
+      const parent = d.parentId && byId.has(d.parentId) ? d.parentId : null;
+      kids.set(parent, [...(kids.get(parent) ?? []), d]);
     }
-    return list.map((g) => {
-      const parentId = defs.find((d) => d.id === g.id)?.parentId ?? null;
-      return { ...g, pn: parentId ? (byId.get(parentId) ?? null) : null };
-    });
+    const out: WidgetGoal[] = [];
+    const names = new Map<string, string>();
+    const walk = async (parent: string | null, depth: number) => {
+      const list = [...(kids.get(parent) ?? [])].sort((a, b) => a.sortOrder - b.sortOrder || a.createdAt.localeCompare(b.createdAt));
+      for (const d of list) {
+        const rev = await this.goalRepo.getRevision(d.currentRevisionId);
+        if (rev) {
+          names.set(d.id, rev.name);
+          const color = toneFor(rev.colorToken, d.id).hex;
+          out.push({ id: d.id, n: rev.name, c: color, ic: iconKey(rev.icon, color), pn: parent ? (names.get(parent) ?? null) : null, pid: parent, dp: depth });
+        }
+        await walk(d.id, depth + 1);
+      }
+    };
+    await walk(null, 0);
+    return out;
   }
 
   /**
@@ -144,21 +158,59 @@ export class WidgetSyncService {
    */
   async applyActions(actions: WidgetAction[]): Promise<number> {
     let applied = 0;
+    const done = this.loadApplied();
     const sorted = [...actions].sort((a, b) => (a.ts ?? 0) - (b.ts ?? 0));
     for (const a of sorted) {
-      if (!STATUSES.includes(a.status) || !/^\d{4}-\d{2}-\d{2}$/.test(a.date)) continue;
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(a.date)) continue;
+      if (a.status !== undefined && !STATUSES.includes(a.status)) continue;
+      if (a.comment !== undefined && a.id && done.has(a.id)) continue; // comentário já gravado (reentrega da fila)
       try {
         const def = await this.goalRepo.getDefinition(a.goalId);
         if (!def || def.archivedAt) continue;
         const occs = await this.occ.getOrGenerateOccurrencesForDate(a.date);
         const o = occs.find((x) => x.goalId === a.goalId && x.slotKey === 'default');
-        if (!o || o.status === a.status) continue;
-        await this.occ.updateStatus(o.id, a.status);
-        applied++;
+        if (!o) continue;
+        if (a.qty !== undefined) {
+          if (!Number.isFinite(a.qty) || a.qty < 0) continue;
+          if (o.quantityValue === a.qty) continue;
+          await this.occ.recordQuantity(o.id, a.qty);
+          applied++;
+        } else if (a.comment !== undefined) {
+          const text = a.comment.trim();
+          if (!text || !this.journal) continue;
+          await this.journal.addRecord({ type: 'occurrence', occurrenceId: o.id }, text);
+          if (a.id) done.add(a.id);
+          applied++;
+        } else if (a.status !== undefined) {
+          if (o.status === a.status) continue;
+          await this.occ.updateStatus(o.id, a.status);
+          applied++;
+        }
       } catch {
         /* uma ação inválida não impede as demais */
       }
     }
+    this.saveApplied(done);
     return applied;
+  }
+
+  /** Ids de comentários já gravados: em memória e, quando possível, no aparelho (sobrevive a reinício do app). */
+  private appliedMem = new Set<string>();
+
+  private loadApplied(): Set<string> {
+    try {
+      return new Set<string>([...this.appliedMem, ...JSON.parse(localStorage.getItem('ziel.widget.applied') ?? '[]')]);
+    } catch {
+      return new Set(this.appliedMem);
+    }
+  }
+
+  private saveApplied(s: Set<string>) {
+    this.appliedMem = new Set([...s].slice(-300));
+    try {
+      localStorage.setItem('ziel.widget.applied', JSON.stringify([...s].slice(-300)));
+    } catch {
+      /* sem armazenamento: só não deduplica reentregas */
+    }
   }
 }

@@ -67,12 +67,13 @@ public class DayWidgetService extends RemoteViewsService {
             row.setViewPadding(R.id.row_root, Math.round((2 + depth * 12) * dens), 0, 0, 0);
             row.setTextViewText(R.id.row_name, it.optString("n"));
 
-            Intent openFill = new Intent().putExtra("goalId", it.optString("id")).putExtra("mode", markable ? "choose" : "open");
+            Intent openFill = new Intent().putExtra("goalId", it.optString("id")).putExtra("mode", "choose"); // a tela decide: status/quantidade/comentário ou navegador de submetas
             row.setOnClickFillInIntent(R.id.row_body, openFill);
 
             if (!markable) {
-                int pct = (int) Math.round(it.optDouble("p", 0) * 100);
-                row.setTextViewText(R.id.row_sub, pct + "%");
+                double[] gp = WidgetModel.groupProgress(WidgetModel.day(store.loadSnapshot(), WidgetActions.today()), it.optString("id"));
+                int pct = (int) Math.round((gp[2] > 0 ? gp[0] : it.optDouble("p", 0)) * 100);
+                row.setTextViewText(R.id.row_sub, pct + "% ›");
                 row.setTextColor(R.id.row_name, COLOR_MUTED);
                 row.setTextColor(R.id.row_sub, StatusBitmaps.parse(it.optString("c"), COLOR_MUTED));
                 return row;
@@ -88,7 +89,7 @@ public class DayWidgetService extends RemoteViewsService {
             String sub = WidgetModel.PENDING.equals(status) ? "" : WidgetModel.label(status);
             if (q != null) {
                 double v = q.isNull("v") ? 0 : q.optDouble("v", 0);
-                String qs = (v == Math.rint(v) ? String.valueOf((long) v) : String.valueOf(v)) + "/" + (long) q.optDouble("t", 0) + " " + q.optString("u", "");
+                String qs = WidgetModel.fmt(v) + "/" + WidgetModel.fmt(q.optDouble("t", 0)) + " " + q.optString("u", "");
                 sub = sub.isEmpty() ? qs : qs + " · " + sub;
             }
             row.setTextViewText(R.id.row_sub, sub);

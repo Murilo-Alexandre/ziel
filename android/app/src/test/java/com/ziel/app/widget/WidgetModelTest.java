@@ -127,4 +127,83 @@ public class WidgetModelTest {
         assertNull(WidgetModel.day(null, "2026-11-26"));
         assertEquals(5, WidgetModel.itemCount(WidgetModel.day(snap, "2026-11-26")));
     }
+
+    private static JSONObject tree() throws Exception {
+        // Semana top (g) > Água (g) > 3 garrafas ; Semana top > Cross (o) ; Semana top > Alimentação (g) > Café (o)
+        JSONArray items = new JSONArray()
+                .put(it("semana", null, "g", "pending", 0))
+                .put(it("agua", "semana", "g", "pending", 1))
+                .put(it("g1", "agua", "o", "pending", 2))
+                .put(it("g2", "agua", "o", "pending", 2))
+                .put(it("g3", "agua", "o", "pending", 2))
+                .put(it("cross", "semana", "o", "pending", 1))
+                .put(it("alim", "semana", "g", "pending", 1))
+                .put(it("cafe", "alim", "o", "pending", 2))
+                .put(it("agual", "semana", "o", "pending", 1).put("q", new JSONObject().put("t", 3.0).put("u", "L").put("v", JSONObject.NULL)));
+        JSONObject day = new JSONObject().put("progress", 0).put("total", 5).put("completed", 0).put("items", items);
+        return new JSONObject().put("days", new JSONObject().put("2026-11-26", day)).put("goals", new JSONArray());
+    }
+
+    private static JSONObject it(String id, String pid, String k, String s, int d) throws Exception {
+        JSONObject o = new JSONObject().put("id", id).put("n", id).put("c", "#5B9BE0").put("ic", "x").put("d", d).put("k", k).put("s", s).put("p", 0.0).put("w", 1).put("pw", 0.5).put("r", new JSONArray());
+        o.put("pid", pid == null ? JSONObject.NULL : pid);
+        return o;
+    }
+
+    @Test
+    public void filhosDiretosEHierarquiaProfunda() throws Exception {
+        JSONObject day = WidgetModel.day(tree(), "2026-11-26");
+        assertEquals(1, WidgetModel.childrenOf(day, null).size());
+        assertEquals(4, WidgetModel.childrenOf(day, "semana").size());
+        assertEquals(3, WidgetModel.childrenOf(day, "agua").size());
+        assertEquals(0, WidgetModel.childrenOf(day, "g1").size());
+    }
+
+    @Test
+    public void progressoDoGrupoAcompanhaSubmetasEmQualquerNivel() throws Exception {
+        JSONObject snap = tree();
+        JSONObject day = WidgetModel.day(snap, "2026-11-26");
+        // Água: 3 garrafas; Semana top: 3 garrafas + cross + café + água(L) = 6 marcáveis
+        double[] a0 = WidgetModel.groupProgress(day, "agua");
+        assertEquals(3, (int) a0[2]);
+        assertTrue(WidgetModel.setStatus(snap, "2026-11-26", "g1", "completed"));
+        double[] a1 = WidgetModel.groupProgress(day, "agua");
+        assertEquals(1.0 / 3, a1[0], 1e-9);
+        assertEquals(1, (int) a1[1]);
+        double[] s1 = WidgetModel.groupProgress(day, "semana");
+        assertEquals(6, (int) s1[2]);
+        assertEquals(1.0 / 6, s1[0], 1e-9);
+        // marcar o grupo não altera as submetas
+        assertFalse(WidgetModel.setStatus(snap, "2026-11-26", "agua", "completed"));
+        assertEquals("pending", WidgetModel.findItem(day, "g2").getString("s"));
+        // parcial conta o peso do app
+        WidgetModel.setStatus(snap, "2026-11-26", "g2", "partial");
+        assertEquals((1 + 0.5) / 3, WidgetModel.groupProgress(day, "agua")[0], 1e-9);
+    }
+
+    @Test
+    public void quantidadeSegueARegraDoApp() throws Exception {
+        JSONObject snap = tree();
+        assertTrue(WidgetModel.setQuantity(snap, "2026-11-26", "agual", 1.5));
+        JSONObject it = WidgetModel.findItem(WidgetModel.day(snap, "2026-11-26"), "agual");
+        assertEquals("partial", it.getString("s"));
+        assertEquals(1.5, it.getJSONObject("q").getDouble("v"), 1e-9);
+        WidgetModel.setQuantity(snap, "2026-11-26", "agual", 3);
+        assertEquals("completed", WidgetModel.findItem(WidgetModel.day(snap, "2026-11-26"), "agual").getString("s"));
+        WidgetModel.setQuantity(snap, "2026-11-26", "agual", 0);
+        assertEquals("pending", WidgetModel.findItem(WidgetModel.day(snap, "2026-11-26"), "agual").getString("s"));
+        assertFalse(WidgetModel.setQuantity(snap, "2026-11-26", "agual", -1));
+        assertFalse(WidgetModel.setQuantity(snap, "2026-11-26", "cross", 2)); // meta sem quantidade
+    }
+
+    @Test
+    public void pendentesComQuantidadeSaoReaplicados() throws Exception {
+        JSONObject snap = tree();
+        JSONArray pending = new JSONArray()
+                .put(new JSONObject().put("goalId", "agual").put("date", "2026-11-26").put("qty", 2.0).put("ts", 1))
+                .put(new JSONObject().put("goalId", "cross").put("date", "2026-11-26").put("comment", "oi").put("id", "c1").put("ts", 2));
+        WidgetModel.applyPending(snap, pending);
+        assertEquals("partial", WidgetModel.findItem(WidgetModel.day(snap, "2026-11-26"), "agual").getString("s"));
+        assertEquals("pending", WidgetModel.findItem(WidgetModel.day(snap, "2026-11-26"), "cross").getString("s")); // comentário não muda status
+    }
 }

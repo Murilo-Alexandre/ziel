@@ -125,10 +125,13 @@ public class GoalWidgetProvider extends AppWidgetProvider {
             rv.setImageViewBitmap(R.id.circle, StatusBitmaps.none(size));
             rv.setOnClickPendingIntent(R.id.circle, openPi);
         } else if (!"o".equals(item.optString("k"))) {
-            int pct = (int) Math.round(item.optDouble("p", 0) * 100);
-            text(rv, name, pct + "% do ciclo · toque para abrir", COLOR_TEXT, COLOR_MUTED);
-            rv.setImageViewBitmap(R.id.circle, StatusBitmaps.progressRing(size, item.optDouble("p", 0), color));
-            rv.setOnClickPendingIntent(R.id.circle, openPi);
+            // meta que agrupa: mostra o progresso de HOJE das submetas (atualiza na hora) e abre o navegador de submetas
+            double[] gp = WidgetModel.groupProgress(day, goalId);
+            int cycle = (int) Math.round(item.optDouble("p", 0) * 100);
+            String sub = gp[2] > 0 ? (int) gp[1] + " de " + (int) gp[2] + " hoje · ciclo " + cycle + "%" : cycle + "% do ciclo";
+            text(rv, name, sub, COLOR_TEXT, COLOR_MUTED);
+            rv.setImageViewBitmap(R.id.circle, StatusBitmaps.progressRing(size, gp[2] > 0 ? gp[0] : item.optDouble("p", 0), color));
+            rv.setOnClickPendingIntent(R.id.circle, choosePi);
         } else {
             String status = item.optString("s", WidgetModel.PENDING);
             JSONObject q = item.optJSONObject("q");
@@ -140,6 +143,8 @@ public class GoalWidgetProvider extends AppWidgetProvider {
             int subColor = WidgetModel.COMPLETED.equals(status) ? COLOR_SUCCESS
                     : WidgetModel.PARTIAL.equals(status) ? COLOR_WARNING
                     : WidgetModel.NOT_DONE.equals(status) ? COLOR_DANGER : COLOR_MUTED;
+            double[] sg = WidgetModel.groupProgress(day, goalId);
+            if (sg[2] > 0) sub = sub + " · " + (int) sg[1] + " de " + (int) sg[2] + " hoje";
             text(rv, name, sub, COLOR_TEXT, subColor);
             rv.setImageViewResource(R.id.circle, StatusBitmaps.statusRes(status));
             rv.setInt(R.id.circle, "setColorFilter", StatusBitmaps.statusColor(status, color));
@@ -153,7 +158,7 @@ public class GoalWidgetProvider extends AppWidgetProvider {
     }
 
     private static String fmt(double v) {
-        return v == Math.rint(v) ? String.valueOf((long) v) : String.format(java.util.Locale.forLanguageTag("pt-BR"), "%.1f", v);
+        return WidgetModel.fmt(v);
     }
 
     private static void text(RemoteViews rv, String name, String sub, int nameColor, int subColor) {

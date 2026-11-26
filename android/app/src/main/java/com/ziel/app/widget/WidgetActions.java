@@ -36,6 +36,17 @@ public final class WidgetActions {
         WidgetUpdater.updateAll(c);
     }
 
+    public static void setQuantity(Context c, String goalId, String date, double qty) {
+        JSONObject item = WidgetStore.get(c).applyQuantity(goalId, date, qty);
+        if (item == null) return;
+        if (!WidgetModel.PENDING.equals(item.optString("s"))) cancelReminders(c, item.optJSONArray("r"));
+        WidgetUpdater.updateAll(c);
+    }
+
+    public static boolean addComment(Context c, String goalId, String date, String text) {
+        return WidgetStore.get(c).addComment(goalId, date, text);
+    }
+
     /** O dia que os widgets mostram agora (relógio do aparelho). */
     public static String today() {
         return WidgetModel.todayKey(System.currentTimeMillis(), TimeZone.getDefault());

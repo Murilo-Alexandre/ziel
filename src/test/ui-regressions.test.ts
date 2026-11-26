@@ -227,3 +227,42 @@ describe('widgets: prévias e acabamento (beta.13)', () => {
     expect(read('../../android/app/src/main/java/com/ziel/app/widget/DayWidgetService.java')).toMatch(/setViewPadding\(R\.id\.row_root, Math\.round\(\(2 \+ depth \* 12\) \* dens\), 0, 0, 0\)/);
   });
 });
+
+describe('widgets: hierarquia e registro completo (beta.14)', () => {
+  const java = (f: string) => read('../../android/app/src/main/java/com/ziel/app/widget/' + f);
+
+  it('seletor de metas em árvore: recuo, expandir/recolher, busca com caminho e qualquer nível selecionável', () => {
+    const c = java('GoalWidgetConfigActivity.java');
+    expect(c).toMatch(/Buscar meta/);
+    expect(c).toMatch(/Normalizer/); // busca sem acento
+    expect(c).toMatch(/expanded/);
+    expect(c).toMatch(/choose\(id\)/); // toda linha, de qualquer nível, escolhe a meta
+    expect(c).toMatch(/getSystemWindowInsetTop/); // margens laterais fixas
+  });
+
+  it('navegador de submetas nativo: níveis, voltar, registrar cada submeta, quantidade e comentário, sem abrir o app', () => {
+    const a = java('WidgetActionActivity.java');
+    for (const t of ['showBrowse', 'goBack', 'navigate', 'showChooser', 'WidgetActions.toggle', 'WidgetActions.setQuantity', 'WidgetActions.addComment', 'Ver submetas', 'Quanto você fez?', 'Comentário (opcional)']) expect(a, t).toContain(t);
+    // metas que agrupam abrem o navegador (e não o app)
+    expect(a).toMatch(/"browse"\.equals\(mode\) \|\| group/);
+    expect(read('../../android/app/src/main/java/com/ziel/app/widget/DayWidgetService.java')).toMatch(/putExtra\("mode", "choose"\)/);
+    expect(read('../../android/app/src/main/AndroidManifest.xml')).toMatch(/adjustResize|taskAffinity/);
+  });
+
+  it('o progresso das metas que agrupam vem das submetas de HOJE (em qualquer nível) e atualiza na hora', () => {
+    const m = java('WidgetModel.java');
+    expect(m).toMatch(/groupProgress/);
+    expect(m).toMatch(/childrenOf/);
+    expect(java('GoalWidgetProvider.java')).toMatch(/groupProgress\(day, goalId\)/);
+    expect(java('GoalWidgetProvider.java')).toMatch(/choosePi/);
+  });
+
+  it('a fila de marcações aceita status, quantidade e comentário (com id), e o app aplica tudo pelas regras dele', () => {
+    const w = read('../application/services/WidgetSyncService.ts');
+    expect(w).toMatch(/recordQuantity/);
+    expect(w).toMatch(/journal\.addRecord/);
+    expect(read('../infrastructure/platform/widgets/ZielWidgets.ts')).toMatch(/qty\?: number; comment\?: string; id\?: string/);
+    expect(java('WidgetStore.java')).toMatch(/applyQuantity/);
+    expect(java('WidgetStore.java')).toMatch(/addComment/);
+  });
+});

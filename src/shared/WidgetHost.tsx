@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { App as CapApp } from '@capacitor/app';
-import { occurrenceService, goalRepo, reminderService } from '../application/container';
+import { occurrenceService, goalRepo, reminderService, journalService } from '../application/container';
 import { WidgetSyncService } from '../application/services/WidgetSyncService';
 import { widgetsSupported, zielWidgets } from '../infrastructure/platform/widgets/ZielWidgets';
 import { renderTilePng } from '../infrastructure/platform/widgets/iconPng';
 import { useAppData } from './AppData';
 
-const widgetSync = new WidgetSyncService(occurrenceService, goalRepo, () => reminderService.plan());
+const widgetSync = new WidgetSyncService(occurrenceService, goalRepo, () => reminderService.plan(), undefined, journalService);
 
 /**
  * Mantém os widgets do Android em sincronia com o app:

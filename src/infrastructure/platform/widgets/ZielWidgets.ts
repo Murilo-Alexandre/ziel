@@ -1,6 +1,6 @@
 import { Capacitor, registerPlugin } from '@capacitor/core';
 
-export type WidgetPendingAction = { goalId: string; date: string; status: 'pending' | 'partial' | 'completed' | 'not_done'; ts: number };
+export type WidgetPendingAction = { goalId: string; date: string; status?: 'pending' | 'partial' | 'completed' | 'not_done'; qty?: number; comment?: string; id?: string; ts: number };
 
 interface ZielWidgetsPlugin {
   /** Entrega o retrato do app ao widget (e as imagens dos ícones, base64 PNG por chave). */

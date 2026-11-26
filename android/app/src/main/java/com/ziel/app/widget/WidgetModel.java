@@ -40,6 +40,12 @@ public final class WidgetModel {
         return COMPLETED.equals(status) ? PENDING : COMPLETED;
     }
 
+    /** Número em pt-BR: inteiro sem casas, senão uma casa com vírgula (1,5). */
+    public static String fmt(double v) {
+        if (v == Math.rint(v)) return String.valueOf((long) v);
+        return String.format(java.util.Locale.forLanguageTag("pt-BR"), "%.1f", v);
+    }
+
     public static String label(String status) {
         if (COMPLETED.equals(status)) return "Concluído";
         if (PARTIAL.equals(status)) return "Parcial";
@@ -115,13 +121,77 @@ public final class WidgetModel {
         day.put("progress", total > 0 ? score / total : 0);
     }
 
+    /** Metas filhas diretas (na ordem da Home) de `parentId` no dia; parentId null = raiz. */
+    public static java.util.List<JSONObject> childrenOf(JSONObject day, String parentId) {
+        java.util.List<JSONObject> out = new java.util.ArrayList<>();
+        JSONArray items = day == null ? null : day.optJSONArray("items");
+        if (items == null) return out;
+        for (int i = 0; i < items.length(); i++) {
+            JSONObject it = items.optJSONObject(i);
+            if (it == null) continue;
+            String pid = it.isNull("pid") ? null : it.optString("pid", null);
+            if (parentId == null ? pid == null : parentId.equals(pid)) out.add(it);
+        }
+        return out;
+    }
+
+    /**
+     * Progresso de HOJE de uma meta que agrupa: média dos registros de todas as submetas marcáveis abaixo dela
+     * (concluído = 1, parcial = peso do app). Atualiza na hora quando uma submeta muda, em qualquer nível.
+     * Devolve { progresso 0..1, concluídas, total }.
+     */
+    public static double[] groupProgress(JSONObject day, String goalId) {
+        double score = 0;
+        int total = 0;
+        int done = 0;
+        java.util.ArrayDeque<String> queue = new java.util.ArrayDeque<>();
+        queue.add(goalId);
+        while (!queue.isEmpty()) {
+            for (JSONObject c : childrenOf(day, queue.poll())) {
+                if ("o".equals(c.optString("k"))) {
+                    total++;
+                    String s = c.optString("s", PENDING);
+                    if (COMPLETED.equals(s)) {
+                        done++;
+                        score += 1;
+                    } else if (PARTIAL.equals(s)) {
+                        score += c.optDouble("pw", 0.5);
+                    }
+                }
+                queue.add(c.optString("id"));
+            }
+        }
+        return new double[] { total > 0 ? score / total : 0, done, total };
+    }
+
+    /** Registra a quantidade realizada; o status acompanha como no app (alvo = concluído, algo = parcial, zero = pendente). */
+    public static boolean setQuantity(JSONObject snap, String date, String goalId, double qty) {
+        if (Double.isNaN(qty) || qty < 0) return false;
+        JSONObject day = day(snap, date);
+        JSONObject item = findItem(day, goalId);
+        if (item == null || !"o".equals(item.optString("k"))) return false;
+        JSONObject q = item.optJSONObject("q");
+        if (q == null) return false;
+        try {
+            q.put("v", qty);
+            double target = q.optDouble("t", 0);
+            String status = target > 0 && qty >= target ? COMPLETED : qty > 0 ? PARTIAL : PENDING;
+            item.put("s", status);
+            recomputeProgress(day);
+        } catch (JSONException e) {
+            return false;
+        }
+        return true;
+    }
+
     /** Reaplica marcações pendentes (ainda não entregues ao app) sobre um retrato novo, na ordem em que ocorreram. */
     public static void applyPending(JSONObject snap, JSONArray pending) {
         if (pending == null) return;
         for (int i = 0; i < pending.length(); i++) {
             JSONObject a = pending.optJSONObject(i);
             if (a == null) continue;
-            setStatus(snap, a.optString("date"), a.optString("goalId"), a.optString("status"));
+            if (a.has("qty")) setQuantity(snap, a.optString("date"), a.optString("goalId"), a.optDouble("qty", -1));
+            else if (a.has("status")) setStatus(snap, a.optString("date"), a.optString("goalId"), a.optString("status"));
         }
     }
 

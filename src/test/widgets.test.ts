@@ -147,3 +147,68 @@ describe('widgets: marcações feitas com o app fechado são aplicadas pelas reg
     expect(snap.days[TODAY].items[0].p).toBeCloseTo(after, 5);
   });
 });
+
+describe('widgets: hierarquia, quantidade e comentários', () => {
+  const mk = (date = TODAY) => {
+    const w = makeWorld(date);
+    const svc = new WidgetSyncService(w.occ, w.goalRepo, async () => [], () => w.clock.today, w.journal);
+    return { w, svc };
+  };
+
+  it('o retrato traz a meta mãe de cada item e a lista de metas em ordem de árvore com profundidade', async () => {
+    const { w, svc } = mk();
+    const t = await createTreinar(w);
+    const snap = await svc.buildSnapshot();
+    expect(snap.goals.map((g) => `${g.dp}:${g.n}`)).toEqual(['0:Treinar', '1:Futebol', '1:Corrida', '1:Musculação']);
+    expect(snap.goals.find((g) => g.n === 'Futebol')).toMatchObject({ pid: t.parent.id, pn: 'Treinar' });
+    expect(snap.goals[0].pid).toBeNull();
+    const items = snap.days[TODAY].items;
+    expect(items.find((i) => i.n === 'Treinar')!.pid).toBeNull();
+    expect(items.filter((i) => i.pid === t.parent.id).map((i) => i.n)).toEqual(['Futebol', 'Corrida', 'Musculação']);
+  });
+
+  it('hierarquia profunda (3 níveis) preserva pai e ordem', async () => {
+    const { w, svc } = mk();
+    const root = (await w.goals.createGoal({ name: 'Semana top', schedule: { type: 'custom', expression: 'container' }, activePeriod: PERIOD })).definition;
+    const agua = (await w.goals.addSubGoal(root.id, { name: 'Água', schedule: { type: 'custom', expression: 'container' }, activePeriod: PERIOD })).definition;
+    for (const n of ['1ª Garrafa', '2ª Garrafa', '3ª Garrafa']) await w.goals.addSubGoal(agua.id, { name: n, schedule: { type: 'daily' }, activePeriod: PERIOD });
+    const snap = await svc.buildSnapshot();
+    expect(snap.goals.map((g) => `${g.dp}:${g.n}`)).toEqual(['0:Semana top', '1:Água', '2:1ª Garrafa', '2:2ª Garrafa', '2:3ª Garrafa']);
+    const g1 = snap.days[TODAY].items.find((i) => i.n === '1ª Garrafa')!;
+    expect(g1.pid).toBe(agua.id);
+    expect(snap.days[TODAY].items.find((i) => i.n === 'Água')!.k).toBe('g');
+  });
+
+  it('marcar um grupo (meta que só agrupa) pelo widget não altera nenhuma submeta', async () => {
+    const { w, svc } = mk();
+    const t = await createTreinar(w);
+    expect(await svc.applyActions([{ goalId: t.parent.id, date: TODAY, status: 'completed' }])).toBe(0);
+    const tree = await w.occ.getTodayGoalTree(TODAY);
+    expect(tree.nodes[0].children.every((c) => c.occurrence?.status === 'pending')).toBe(true);
+  });
+
+  it('quantidade registrada pelo widget segue a regra do app (alvo = concluído, parte = parcial, zero = pendente)', async () => {
+    const { w, svc } = mk();
+    const g = (await w.goals.createGoal({ name: 'Água', schedule: { type: 'daily' }, activePeriod: PERIOD, progressRule: { type: 'quantity', target: 3, unit: 'L' } })).definition;
+    const st = async () => (await w.occ.getTodayGoalTree(TODAY)).nodes[0].occurrence!;
+    expect(await svc.applyActions([{ goalId: g.id, date: TODAY, qty: 1.5, ts: 1 }])).toBe(1);
+    expect(await st()).toMatchObject({ status: 'partial', quantityValue: 1.5 });
+    await svc.applyActions([{ goalId: g.id, date: TODAY, qty: 3, ts: 2 }]);
+    expect((await st()).status).toBe('completed');
+    await svc.applyActions([{ goalId: g.id, date: TODAY, qty: 0, ts: 3 }]);
+    expect((await st()).status).toBe('pending');
+    expect(await svc.applyActions([{ goalId: g.id, date: TODAY, qty: -2, ts: 4 }])).toBe(0);
+  });
+
+  it('comentário feito no widget vira registro na linha do tempo da ocorrência, uma única vez mesmo se a fila for reentregue', async () => {
+    const { w, svc } = mk();
+    const g = (await w.goals.createGoal({ name: 'Remédio', schedule: { type: 'daily' }, activePeriod: PERIOD })).definition;
+    const a = { goalId: g.id, date: TODAY, comment: '  tomei com água  ', id: 'c1', ts: 1 };
+    expect(await svc.applyActions([a])).toBe(1);
+    expect(await svc.applyActions([a])).toBe(0);
+    const occ = (await w.occ.getTodayGoalTree(TODAY)).nodes[0].occurrence!;
+    const tl = await w.journal.getTimelineForOccurrence(occ.id);
+    expect(tl.map((r) => r.comment)).toEqual(['tomei com água']);
+    expect(await svc.applyActions([{ goalId: g.id, date: TODAY, comment: '   ', id: 'c2' }])).toBe(0); // vazio não grava
+  });
+});

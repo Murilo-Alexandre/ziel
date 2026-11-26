@@ -144,6 +144,41 @@ public final class WidgetStore {
         }
     }
 
+    /** Quantidade realizada (meta por quantidade): atualiza o retrato e enfileira para o app. */
+    public JSONObject applyQuantity(String goalId, String date, double qty) {
+        synchronized (LOCK) {
+            String s = read(stateFile);
+            if (s == null) return null;
+            try {
+                JSONObject snap = new JSONObject(s);
+                if (!WidgetModel.setQuantity(snap, date, goalId, qty)) return null;
+                JSONArray pending = loadPendingLocked();
+                pending.put(new JSONObject().put("goalId", goalId).put("date", date).put("qty", qty).put("ts", System.currentTimeMillis()));
+                write(pendingFile, pending.toString());
+                write(stateFile, snap.toString());
+                return WidgetModel.findItem(WidgetModel.day(snap, date), goalId);
+            } catch (JSONException | IOException e) {
+                return null;
+            }
+        }
+    }
+
+    /** Comentário da ocorrência de hoje: só vai para a fila (o app grava no histórico, uma vez só, pelo id). */
+    public boolean addComment(String goalId, String date, String text) {
+        if (text == null || text.trim().isEmpty()) return false;
+        synchronized (LOCK) {
+            try {
+                JSONArray pending = loadPendingLocked();
+                long ts = System.currentTimeMillis();
+                pending.put(new JSONObject().put("goalId", goalId).put("date", date).put("comment", text.trim()).put("id", "wc" + ts + "_" + Math.abs(goalId.hashCode())).put("ts", ts));
+                write(pendingFile, pending.toString());
+                return true;
+            } catch (JSONException | IOException e) {
+                return false;
+            }
+        }
+    }
+
     /** Lê as marcações feitas nos widgets SEM apagá-las: só saem da fila quando o app confirma (ackPending). */
     public JSONArray readPending() {
         synchronized (LOCK) {
